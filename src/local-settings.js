@@ -120,10 +120,6 @@ export function getEnsRegistryAddress() {
   return getLocalSetting(ENS_REGISTRY_ADDRESS) || ''
 }
 
-export function getEthNetworkType() {
-  return getLocalSetting(ETH_NETWORK_TYPE) || 'rinkeby'
-}
-
 export function getEthSubscriptionEventDelay() {
   const delay = parseInt(getLocalSetting(ETH_SUBSCRIPTION_EVENT_DELAY), 10)
   return Number.isFinite(delay) ? delay : 0

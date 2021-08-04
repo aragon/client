@@ -7,7 +7,6 @@ import { toWei } from 'web3-utils'
 import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
 import { log } from './utils'
-import { getEthNode } from './environment'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -234,16 +233,6 @@ export function getWeb3(provider) {
   const web3 = new Web3(provider)
   web3Cache.set(provider, web3)
   return web3
-}
-
-/**
- * Get the web3 provider by the network type
- * @param {string} networkType node network type, i.e. main, rinkeby
- * @returns {object} web3 web socket provider
- */
-export function getWeb3Provider(networkType = 'main') {
-  const host = getEthNode(networkType)
-  return new Web3.providers.WebsocketProvider(host)
 }
 
 export function isConnected(provider) {

@@ -68,7 +68,7 @@ function WalletContextProvider({ children }) {
       account,
       balance: new BN(filterBalanceValue(balance)),
       ethereum,
-      networkType: connected ? networkType : 'main',
+      networkType: connected ? networkType : NETWORK_TYPE_DEFAULT,
       providerInfo: providerInfo,
       web3: walletWeb3,
       status,

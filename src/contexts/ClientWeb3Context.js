@@ -1,43 +1,19 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { useWallet } from '../wallet'
-import { getWeb3Provider } from '../web3-utils'
+import { web3Provider } from '../Web3Provider'
 
 const ClientWeb3Context = React.createContext()
-
-function disconnect(web3) {
-  if (!web3) {
-    return
-  }
-
-  if (!web3.connected) {
-    return
-  }
-
-  if (web3.disconnect) {
-    web3.disconnect()
-  } else if (web3.connection && web3.connection.close) {
-    web3.connection.close()
-  }
-}
 
 function ClientWeb3Provider(props) {
   const { networkType } = useWallet()
 
-  const [web3, setWeb3] = useState(null)
-
-  useEffect(() => {
-    setWeb3(prevWeb3 => {
-      disconnect(prevWeb3)
-      return getWeb3Provider(networkType)
-    })
-  }, [networkType])
-
   const contextValue = useMemo(
     () => ({
-      web3: web3 || getWeb3Provider(),
+      web3: web3Provider.getProvider(networkType),
     }),
-    [web3]
+    [networkType]
   )
+
   return <ClientWeb3Context.Provider value={contextValue} {...props} />
 }
 

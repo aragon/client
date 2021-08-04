@@ -16,7 +16,6 @@ import {
 import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import initializeSentryIfEnabled from './sentry'
-import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
 import { ClientWeb3Provider } from './contexts/ClientWeb3Context'
 
 // Initialize Sentry as early as possible, if enabled
@@ -64,9 +63,7 @@ function Providers() {
           <ClientWeb3Provider>
             <ConsoleVisibleProvider>
               <GlobalErrorHandler>
-                <ClientBlockNumberProvider>
-                  <App />
-                </ClientBlockNumberProvider>
+                <App />
               </GlobalErrorHandler>
             </ConsoleVisibleProvider>
           </ClientWeb3Provider>
