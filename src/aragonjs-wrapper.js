@@ -254,7 +254,7 @@ const initWrapper = async (
     walletAccount = null,
   } = {}
 ) => {
-  const ipfsConf = { gateway: getIpfsGateway(networkType) }
+  const ipfsConf = { gateway: getIpfsGateway() }
   const isDomain = isValidEnsName(dao)
   const daoAddress = isDomain
     ? await resolveEnsDomain(networkType, provider, dao)

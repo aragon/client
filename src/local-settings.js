@@ -125,11 +125,8 @@ export function getEthSubscriptionEventDelay() {
   return Number.isFinite(delay) ? delay : 0
 }
 
-export function getIpfsGateway(networkType) {
-  return (
-    getLocalSetting(IPFS_GATEWAY, networkType) ||
-    'https://ipfs.eth.aragon.network/ipfs'
-  )
+export function getIpfsGateway() {
+  return getLocalSetting(IPFS_GATEWAY) || 'https://ipfs.eth.aragon.network/ipfs'
 }
 
 export function setIpfsGateway(gateway, networkType) {
