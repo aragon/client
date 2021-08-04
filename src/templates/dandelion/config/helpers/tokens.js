@@ -1,3 +1,5 @@
+import { NETWORK_TYPE } from '../../../../NetworkType'
+
 export const ETHER_TOKEN_FAKE_ADDRESS =
   '0x0000000000000000000000000000000000000000'
 
@@ -8,9 +10,9 @@ const getDaiToken = networkType => ({
   symbol: 'DAI',
   name: 'Dai Stablecoin',
   address:
-    networkType === 'main'
+    networkType === NETWORK_TYPE.main
       ? DAI_MAINNET_TOKEN_ADDRESS
-      : networkType === 'rinkeby'
+      : networkType === NETWORK_TYPE.rinkeby
       ? DAI_RINKEBY_TOKEN_ADDRESS
       : '',
 })

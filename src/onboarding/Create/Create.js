@@ -190,7 +190,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
 
     let cancelled = false
     const fetchArtifact = () => {
-      const ipfsGateway = getIpfsGateway(networkType)
+      const ipfsGateway = getIpfsGateway()
 
       fetchApmArtifact(web3, templateRepoAddress, ipfsGateway)
         .then(templateInfo => {

@@ -1,3 +1,5 @@
+import { NETWORK_TYPE } from './NetworkType'
+
 // List of configurable settings
 const APP_LOCATOR = 'APP_LOCATOR'
 const CLIENT_THEME = 'THEME'
@@ -72,7 +74,9 @@ const CONFIGURATION_VARS = [
 )
 
 function toStorageKey(key, networkType) {
-  return networkType && networkType !== 'main' ? `${networkType}:${key}` : key
+  return networkType && networkType !== NETWORK_TYPE.main
+    ? `${networkType}:${key}`
+    : key
 }
 
 // Get a setting from localStorage
@@ -120,20 +124,13 @@ export function getEnsRegistryAddress() {
   return getLocalSetting(ENS_REGISTRY_ADDRESS) || ''
 }
 
-export function getEthNetworkType() {
-  return getLocalSetting(ETH_NETWORK_TYPE) || 'rinkeby'
-}
-
 export function getEthSubscriptionEventDelay() {
   const delay = parseInt(getLocalSetting(ETH_SUBSCRIPTION_EVENT_DELAY), 10)
   return Number.isFinite(delay) ? delay : 0
 }
 
-export function getIpfsGateway(networkType) {
-  return (
-    getLocalSetting(IPFS_GATEWAY, networkType) ||
-    'https://ipfs.eth.aragon.network/ipfs'
-  )
+export function getIpfsGateway() {
+  return getLocalSetting(IPFS_GATEWAY) || 'https://ipfs.eth.aragon.network/ipfs'
 }
 
 export function setIpfsGateway(gateway, networkType) {

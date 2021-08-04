@@ -8,6 +8,7 @@ import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
 import { log } from './utils'
 import { getEthNode } from './environment'
+import { NETWORK_TYPE } from './NetworkType'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -146,7 +147,7 @@ export async function getGasPrice(
   networkType,
   { mainnet: { safeMinimum = '3', disableEstimate } = {} } = {}
 ) {
-  if (networkType !== 'main') {
+  if (networkType !== NETWORK_TYPE.main) {
     // Hardcode 10 for non-mainnet networks
     return toWei('10', 'gwei')
   }
@@ -241,7 +242,7 @@ export function getWeb3(provider) {
  * @param {string} networkType node network type, i.e. main, rinkeby
  * @returns {object} web3 web socket provider
  */
-export function getWeb3Provider(networkType = 'main') {
+export function getWeb3Provider(networkType) {
   const host = getEthNode(networkType)
   return new Web3.providers.WebsocketProvider(host)
 }
