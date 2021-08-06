@@ -37,7 +37,7 @@ function AccountModuleConnectedScreen({
   const wallet = useWallet()
   const theme = useTheme()
 
-  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
+  const { walletNetworkName, isWrongNetwork } = useNetworkConnectionData()
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 
@@ -156,7 +156,7 @@ function AccountModuleConnectedScreen({
         )}
       </FlexWrapper>
 
-      {hasNetworkMismatch ? (
+      {isWrongNetwork ? (
         <div
           css={`
             margin-top: ${1 * GU}px;

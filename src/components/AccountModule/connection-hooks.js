@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import { useTheme } from '@aragon/ui'
 import BN from 'bn.js'
 import {
@@ -16,41 +16,27 @@ import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
   OK_PROVIDER_SYNC_DELAY,
-  normalizeNetworkName,
 } from './utils'
 import { pollEvery } from '../../utils'
-import { useWallet } from '../../wallet'
+import { useWallet, ChainUnsupportedError, WALLET_STATUS } from '../../wallet'
 import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
-import { getNetworkSettings } from '../../network-config'
+import { getNetworkSettings, normalizeNetworkName } from '../../network-config'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
 export function useNetworkConnectionData() {
-  const { web3: walletWeb3, chainId } = useWallet()
-  const [walletChainId, setWalletChainId] = useState(-1)
+  const { networkType, status, error } = useWallet()
 
-  // get the wallet chainId whenever chainId changes to make
-  // sure web3 is connected to the same chain
-  useEffect(() => {
-    if (!walletWeb3) {
-      return
-    }
-
-    let cancelled = false
-    walletWeb3.eth.getChainId((err, web3ChainId) => {
-      if (!err && !cancelled) {
-        setWalletChainId(web3ChainId)
-      }
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [walletWeb3, chainId])
+  const isWrongNetwork = useMemo(() => {
+    return (
+      status === WALLET_STATUS.error && error instanceof ChainUnsupportedError
+    )
+  }, [status, error])
 
   return {
-    walletNetworkName: normalizeNetworkName(walletChainId),
-    hasNetworkMismatch: walletChainId !== chainId,
+    walletNetworkName: normalizeNetworkName(networkType),
+    isWrongNetwork,
   }
 }
 
@@ -62,7 +48,7 @@ export function useWalletConnectionDetails(
   clientSyncDelay,
   walletSyncDelay
 ) {
-  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
+  const { walletNetworkName, isWrongNetwork } = useNetworkConnectionData()
   const theme = useTheme()
   const { networkType } = useWallet()
   const networkSettings = getNetworkSettings(networkType)
@@ -107,7 +93,7 @@ export function useWalletConnectionDetails(
       connectionMessageLong: 'Syncing issues',
       connectionColor: theme.warning,
     }
-  } else if (hasNetworkMismatch) {
+  } else if (isWrongNetwork) {
     return {
       connectionMessage: 'Wrong network',
       connectionMessageLong: 'Wrong network',

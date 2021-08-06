@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useWallet } from '../../wallet'
+import { useWallet, WALLET_STATUS } from '../../wallet'
 import { useLocalIdentity } from '../../hooks'
 import {
   useNetworkConnectionData,
@@ -15,11 +15,18 @@ import ConnectingScreen from './AccountModuleConnectingScreen'
 import ConnectedScreen from './AccountModuleConnectedScreen'
 import ErrorScreen from './AccountModuleErrorScreen'
 
+const SCREEN_ID = Object.freeze({
+  providers: WALLET_STATUS.providerId,
+  connecting: WALLET_STATUS.connecting,
+  connected: WALLET_STATUS.connected,
+  error: WALLET_STATUS.error,
+})
+
 const SCREENS = [
-  { id: 'providers', title: 'Use account from' },
-  { id: 'connecting', title: 'Use account from' },
-  { id: 'connected', title: 'Active account' },
-  { id: 'error', title: 'Connection error' },
+  { id: SCREEN_ID.providers, title: 'Use account from' },
+  { id: SCREEN_ID.connecting, title: 'Use account from' },
+  { id: SCREEN_ID.connected, title: 'Active account' },
+  { id: SCREEN_ID.error, title: 'Connection error' },
 ]
 
 function AccountModule() {
@@ -48,7 +55,7 @@ function AccountModule() {
     clientSyncDelay,
     connectionColor,
     connectionMessage,
-    hasNetworkMismatch,
+    isWrongNetwork,
     label,
     walletConnectionStatus,
     walletListening,
@@ -59,11 +66,11 @@ function AccountModule() {
   useEffect(() => {
     let timer
 
-    if (status === 'error') {
+    if (status === WALLET_STATUS.error) {
       setActivatingDelayed(null)
     }
 
-    if (status === 'connecting') {
+    if (status === WALLET_STATUS.connecting) {
       setActivatingDelayed(providerInfo.id)
       timer = setTimeout(() => {
         setActivatingDelayed(null)
@@ -76,7 +83,8 @@ function AccountModule() {
   const previousScreenIndex = useRef(-1)
 
   const { screenIndex, direction } = useMemo(() => {
-    const screenId = status === 'disconnected' ? 'providers' : status
+    const screenId =
+      status === WALLET_STATUS.disconnected ? SCREEN_ID.providers : status
 
     const screenIndex = SCREENS.findIndex(screen => screen.id === screenId)
     const direction = previousScreenIndex.current > screenIndex ? -1 : 1
@@ -90,7 +98,7 @@ function AccountModule() {
   const screenId = screen.id
 
   const handlePopoverClose = useCallback(() => {
-    if (screenId === 'connecting' || screenId === 'error') {
+    if (screenId === SCREEN_ID.connecting || screenId === SCREEN_ID.error) {
       // reject closing the popover
       return false
     }
@@ -106,11 +114,11 @@ function AccountModule() {
         height: 100%;
       `}
     >
-      {screenId === 'connected' ? (
+      {screenId === SCREEN_ID.connected || isWrongNetwork ? (
         <ButtonAccount
           connectionColor={connectionColor}
           connectionMessage={connectionMessage}
-          hasNetworkMismatch={hasNetworkMismatch}
+          isWrongNetwork={isWrongNetwork}
           label={label}
           onClick={toggle}
         />
@@ -148,7 +156,7 @@ function AccountModule() {
         visible={opened}
       >
         {({ account, screenId, activating, activationError, providerInfo }) => {
-          if (screenId === 'connecting') {
+          if (screenId === SCREEN_ID.connecting) {
             return (
               <ConnectingScreen
                 providerId={activating}
@@ -156,7 +164,7 @@ function AccountModule() {
               />
             )
           }
-          if (screenId === 'connected') {
+          if (screenId === SCREEN_ID.connected) {
             return (
               <ConnectedScreen
                 account={account}
@@ -172,7 +180,7 @@ function AccountModule() {
               />
             )
           }
-          if (screenId === 'error') {
+          if (screenId === SCREEN_ID.error) {
             return (
               <ErrorScreen
                 error={activationError}
@@ -205,7 +213,7 @@ function useConnectionInfo() {
     syncDelay: clientSyncDelay,
   } = useSyncInfo()
 
-  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
+  const { walletNetworkName, isWrongNetwork } = useNetworkConnectionData()
 
   const { connectionMessage, connectionColor } = useWalletConnectionDetails(
     clientListening,
@@ -224,7 +232,7 @@ function useConnectionInfo() {
     clientSyncDelay,
     connectionColor,
     connectionMessage,
-    hasNetworkMismatch,
+    isWrongNetwork,
     label,
     walletConnectionStatus,
     walletListening,
