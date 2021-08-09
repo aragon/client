@@ -38,7 +38,6 @@ function Onboarding({ web3 }) {
 
   const [connectModalOpened, setConnectModalOpened] = useState(false)
   const [templates, setTemplates] = useState(initialEmbeddedTemplates)
-  const [templatesResolved, setTemplatesResolved] = useState(false)
   const [connectIntent, setConnectIntent] = useState('')
   const [requirementsError, setRequirementsError] = useState([null])
 
@@ -152,7 +151,7 @@ function Onboarding({ web3 }) {
 
   useEffect(() => {
     let cancelled = false
-    if (status === 'create' && !templatesResolved) {
+    if (status === 'create') {
       Promise.all(
         embeddedTemplates.map(async template => {
           let repoAddress
@@ -175,7 +174,6 @@ function Onboarding({ web3 }) {
         .then(templatesWithRepoAddress => {
           if (!cancelled) {
             setTemplates(templatesWithRepoAddress)
-            setTemplatesResolved(true)
           }
           return null
         })
@@ -186,7 +184,7 @@ function Onboarding({ web3 }) {
     return () => {
       cancelled = true
     }
-  }, [status, templatesResolved, web3, networkType])
+  }, [status, web3, networkType])
 
   useEffect(() => {
     if (status !== 'create') {
