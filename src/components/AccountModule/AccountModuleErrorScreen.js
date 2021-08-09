@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { GU, Link, textStyle, useTheme } from '@aragon/ui'
-import { ChainUnsupportedError } from 'use-wallet'
+import { ChainUnsupportedError } from '../../wallet'
 import { useNetworkConfig } from '../../network-config'
 import connectionError from './assets/connection-error.png'
 

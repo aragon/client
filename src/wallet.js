@@ -1,11 +1,23 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import BN from 'bn.js'
-import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
+import {
+  useWallet as useWalletBase,
+  UseWalletProvider,
+  ChainUnsupportedError,
+} from 'use-wallet'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 import { useWalletConnectors } from './ethereum-providers/connectors'
 import { LocalStorageWrapper } from './local-storage-wrapper'
 import { NETWORK_TYPE } from './NetworkType'
+
+export const WALLET_STATUS = Object.freeze({
+  providers: 'providers',
+  connecting: 'connecting',
+  connected: 'connected',
+  disconnected: 'disconnected',
+  error: 'error',
+})
 
 const NETWORK_TYPE_DEFAULT = NETWORK_TYPE.main
 
@@ -23,8 +35,6 @@ function WalletContextProvider({ children }) {
     type,
     ...walletBaseRest
   } = useWalletBase()
-
-  console.log('========= ', type)
 
   const [walletWeb3, setWalletWeb3] = useState(null)
   const [networkType, setNetworkType] = useState(NETWORK_TYPE_DEFAULT)
@@ -110,3 +120,5 @@ WalletProvider.propTypes = { children: PropTypes.node }
 export function useWallet() {
   return useContext(WalletContext)
 }
+
+export { ChainUnsupportedError }

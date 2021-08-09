@@ -132,13 +132,8 @@ export function getNetworkConfig(type) {
   )
 }
 
-export function getNetworkByChainId(chainId = -1) {
-  chainId = Number(chainId)
-  return (
-    Object.values(networkConfigs).find(
-      network => network.settings.chainId === chainId
-    ) || networkConfigs.unknown
-  )
+export function normalizeNetworkName(networkType) {
+  return getNetworkConfig(networkType).settings.shortName
 }
 
 export function sanitizeNetworkType(networkType) {
