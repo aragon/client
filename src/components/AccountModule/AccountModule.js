@@ -16,7 +16,7 @@ import ConnectedScreen from './AccountModuleConnectedScreen'
 import ErrorScreen from './AccountModuleErrorScreen'
 
 const SCREEN_ID = Object.freeze({
-  providers: WALLET_STATUS.providerId,
+  providers: WALLET_STATUS.providers,
   connecting: WALLET_STATUS.connecting,
   connected: WALLET_STATUS.connected,
   error: WALLET_STATUS.error,

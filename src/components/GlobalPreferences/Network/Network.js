@@ -147,7 +147,9 @@ const useNetwork = wrapper => {
     window.location.reload()
   }, [ethNode, ipfsGateway, networkType])
   const handleClearCache = useCallback(async () => {
-    await wrapper.cache.clear()
+    if (wrapper) {
+      await wrapper.cache.clear()
+    }
     window.localStorage.clear()
     window.location.reload()
   }, [wrapper])
