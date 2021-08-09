@@ -83,7 +83,7 @@ function BoxBase({
 
 BoxBase.propTypes = {
   children: PropTypes.node.isRequired,
-  background: PropTypes.string.isRequired,
+  background: PropTypes.string,
   boxTransform: PropTypes.object.isRequired,
   direction: PropTypes.oneOf([
     'column',
