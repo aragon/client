@@ -31,6 +31,8 @@ import { useWallet } from '../../wallet'
 import { getIpfsGateway } from '../../local-settings'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
+const MAX_RETRY = 5
+
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
 const CONFIGURE_PLACEHOLDER_SCREENS = [
@@ -179,6 +181,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
   const [templateAddress, setTemplateAddress] = useState(null)
   const { networkType } = useWallet()
   const { web3 } = useClientWeb3()
+  const [templateError, setTemplateError] = useState(null)
 
   // Fetch latest information about the template from its aragonPM repository
   useEffect(() => {
@@ -188,8 +191,9 @@ function useTemplateRepoInformation(templateRepoAddress) {
 
     setFetchingTemplateInformation(true)
 
+    let timer
     let cancelled = false
-    const fetchArtifact = () => {
+    const fetchArtifact = (depth = 0) => {
       const ipfsGateway = getIpfsGateway()
 
       fetchApmArtifact(web3, templateRepoAddress, ipfsGateway)
@@ -198,13 +202,20 @@ function useTemplateRepoInformation(templateRepoAddress) {
             setTemplateAddress(templateInfo.contractAddress)
             setTemplateAbi(templateInfo.abi)
             setFetchingTemplateInformation(false)
+            setTemplateError(null)
           }
           return null
         })
-        .catch(() => {
+        .catch(err => {
           // Continuously re-request until this component gets unmounted or the template changes
+          // add exponential backoff to avoid freezing up the site
           if (!cancelled) {
-            fetchArtifact()
+            if (depth > MAX_RETRY) {
+              setTemplateError(err)
+            } else {
+              const timeoutMs = 2 ** depth * 10
+              timer = setTimeout(() => fetchArtifact(depth + 1), timeoutMs)
+            }
           }
         })
     }
@@ -213,6 +224,9 @@ function useTemplateRepoInformation(templateRepoAddress) {
 
     return () => {
       cancelled = true
+      if (timer) {
+        clearTimeout(timer)
+      }
     }
   }, [web3, networkType, templateRepoAddress])
 
@@ -220,6 +234,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
     fetchingTemplateInformation,
     templateAbi,
     templateAddress,
+    templateError,
   }
 }
 
@@ -412,7 +427,14 @@ const Create = React.memo(function Create({
     fetchingTemplateInformation,
     templateAbi,
     templateAddress,
+    templateError,
   } = useTemplateRepoInformation(template && template.repoAddress)
+
+  useEffect(() => {
+    if (templateError) {
+      throw new Error(`Template error: ${templateError}`)
+    }
+  }, [templateError])
 
   const applyEstimateGas = useCallback(
     async transaction => {
