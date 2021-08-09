@@ -43,17 +43,7 @@ const GenericError = React.memo(function GenericError({
         <Link href={SUPPORT_URL}>contact</Link> us if the problem persists.
       </p>
       {(detailsTitle || detailsContent) && (
-        <Details
-          label={
-            <span
-              css={`
-                margin-left: ${-1 * GU}px;
-              `}
-            >
-              Click here to see more details
-            </span>
-          }
-        >
+        <Details label="Click here to see more details">
           <div
             css={`
               overflow: auto;
