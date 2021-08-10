@@ -22,18 +22,19 @@ import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
+import { useWallet } from '../../wallet'
+import { isOnMainnet } from '../../network-config'
+
+const CUSTOM_LABELS_KEY = 'custom-labels'
+const NETWORK_KEY = 'network'
+const NOTIFICATIONS_KEY = 'notifications'
 
 const SECTIONS = new Map([
-  ['custom-labels', 'Custom Labels'],
-  ['network', 'Network'],
-  ['notifications', 'Notifications'],
+  [CUSTOM_LABELS_KEY, 'Custom Labels'],
+  [NETWORK_KEY, 'Network'],
+  [NOTIFICATIONS_KEY, 'Notifications'],
 ])
-const SECTION_PATHS = Array.from(SECTIONS.keys())
-const SECTION_VALUES = Array.from(SECTIONS.values())
-
-const CUSTOM_LABELS_INDEX = 0
-const NETWORK_INDEX = 1
-const NOTIFICATIONS_INDEX = 2
+const SECTION_KEYS = Array.from(SECTIONS.keys())
 
 const AnimatedDiv = animated.div
 
@@ -41,7 +42,8 @@ function GlobalPreferencesContent({
   apps,
   compact,
   onNavigation,
-  sectionIndex,
+  menuKeys,
+  menuIndex,
   subsection,
   wrapper,
 }) {
@@ -79,12 +81,14 @@ function GlobalPreferencesContent({
     }
   }, [])
 
-  const [menuItems, menuItemIndex] = useMemo(() => {
-    // Only show network preferences if the `wrapper` does not exist yet (for example, during onboarding)
-    return wrapper
-      ? [SECTION_VALUES, sectionIndex]
-      : [[SECTION_VALUES[NETWORK_INDEX]], 0]
-  }, [wrapper, sectionIndex])
+  const menuItems = useMemo(() => {
+    return menuKeys.map(key => SECTIONS.get(key))
+  }, [menuKeys])
+
+  // no menu selected, no need to render anything
+  if (menuIndex < 0) {
+    return null
+  }
 
   return (
     <div ref={container} tabIndex="0" css="outline: 0">
@@ -118,19 +122,21 @@ function GlobalPreferencesContent({
             <Tabs
               items={menuItems}
               onChange={wrapper ? onNavigation : noop}
-              selected={menuItemIndex}
+              selected={menuIndex}
             />
             <main>
-              {sectionIndex === CUSTOM_LABELS_INDEX && (
+              {menuKeys[menuIndex] === CUSTOM_LABELS_KEY && (
                 <CustomLabels wrapper={wrapper} />
               )}
-              {sectionIndex === NETWORK_INDEX && <Network wrapper={wrapper} />}
-              {sectionIndex === NOTIFICATIONS_INDEX && (
+              {menuKeys[menuIndex] === NETWORK_KEY && (
+                <Network wrapper={wrapper} />
+              )}
+              {menuKeys[menuIndex] === NOTIFICATIONS_KEY && (
                 <Notifications
                   apps={apps}
                   subsection={subsection}
                   handleNavigation={onNavigation}
-                  navigationIndex={2}
+                  navigationIndex={menuIndex}
                 />
               )}
             </main>
@@ -145,32 +151,52 @@ GlobalPreferencesContent.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   compact: PropTypes.bool,
   onNavigation: PropTypes.func.isRequired,
-  sectionIndex: PropTypes.number,
+  menuIndex: PropTypes.number,
+  menuKeys: PropTypes.arrayOf(PropTypes.string),
   subsection: PropTypes.string,
   wrapper: AragonType,
 }
 
-function useGlobalPreferences() {
+function useGlobalPreferences(wrapper) {
   const routing = useRouting()
   const { preferences } = routing
+  const { networkType } = useWallet()
+
+  const menuKeys = useMemo(() => {
+    // Only show network preferences if the `wrapper` does not exist yet (for example, during onboarding)
+    // Only show network preferences if on mainnet
+    const keys = SECTION_KEYS.filter(section => {
+      return (
+        (isOnMainnet(networkType) && section === NETWORK_KEY) ||
+        (wrapper && section !== NETWORK_KEY)
+      )
+    })
+    return keys
+  }, [wrapper, networkType])
 
   const handleNavigation = useCallback(
     index => {
       routing.update(locator => ({
         ...locator,
-        preferences: { section: SECTION_PATHS[index] },
+        preferences: { section: menuKeys[index] },
       }))
     },
-    [routing]
+    [routing, menuKeys]
   )
 
   const { subsection } = preferences
 
-  const sectionIndex = SECTION_PATHS.findIndex(
-    section => section === preferences.section
-  )
+  const menuIndex = useMemo(() => {
+    const index = menuKeys.findIndex(section => section === preferences.section)
+    return index
+  }, [menuKeys, preferences])
 
-  return { sectionIndex, subsection, handleNavigation }
+  return {
+    menuKeys,
+    menuIndex,
+    subsection,
+    handleNavigation,
+  }
 }
 
 function Close({ compact, onClick }) {
@@ -207,7 +233,12 @@ Close.propTypes = {
 }
 
 function GlobalPreferences(props) {
-  const { sectionIndex, subsection, handleNavigation } = useGlobalPreferences()
+  const {
+    menuKeys,
+    menuIndex,
+    subsection,
+    handleNavigation,
+  } = useGlobalPreferences(props.wrapper)
 
   const { below, above } = useViewport()
   const compact = below('medium')
@@ -216,7 +247,7 @@ function GlobalPreferences(props) {
   return (
     <Transition
       native
-      items={sectionIndex > -1}
+      items={menuIndex > -1}
       from={{ opacity: 0, enterProgress: 0, blocking: false }}
       enter={{ opacity: 1, enterProgress: 1, blocking: true }}
       leave={{ opacity: 0, enterProgress: 1, blocking: false }}
@@ -259,7 +290,8 @@ function GlobalPreferences(props) {
             <GlobalPreferencesContent
               {...props}
               compact={compact}
-              sectionIndex={sectionIndex}
+              menuKeys={menuKeys}
+              menuIndex={menuIndex}
               subsection={subsection}
               onNavigation={handleNavigation}
             />
