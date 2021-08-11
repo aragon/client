@@ -97,11 +97,9 @@ function useConfigureState(templates, onScreenUpdate) {
   )
 
   useEffect(() => {
-    const {
-      templateData,
-      templateId,
-      templateScreenIndex,
-    } = loadTemplateState()
+    const { templateData, templateId, templateScreenIndex } = loadTemplateState(
+      networkType
+    )
 
     if (templateId) {
       updateTemplateScreen(templateId, templateScreenIndex)
@@ -258,7 +256,10 @@ function useDeploymentState(
 
   const deployTransactions = useMemo(
     () =>
-      status === STATUS_DEPLOYMENT && templateAbi && templateAddress
+      status === STATUS_DEPLOYMENT &&
+      templateAbi &&
+      templateAddress &&
+      walletWeb3
         ? template.prepareTransactions(
             prepareTransactionCreatorFromAbi(
               walletWeb3,
