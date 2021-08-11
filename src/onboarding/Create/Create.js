@@ -133,7 +133,7 @@ function useConfigureState(templates, onScreenUpdate, setError) {
       updateTemplateScreen(templateId, templateScreenIndex)
       setTemplateData(templateData)
     }
-  }, [updateTemplateScreen, networkType])
+  }, [updateTemplateScreen, setError, networkType])
 
   // Save the template state
   useEffect(() => {
@@ -253,7 +253,7 @@ function useTemplateRepoInformation(templateRepoAddress, setError) {
         clearTimeout(timer)
       }
     }
-  }, [networkType, templateRepoAddress])
+  }, [networkType, setError, templateRepoAddress])
 
   return {
     fetchingTemplateInformation,
@@ -585,6 +585,7 @@ const Create = React.memo(function Create({
 Create.propTypes = {
   account: EthereumAddressType,
   onOpenOrg: PropTypes.func.isRequired,
+  goToHome: PropTypes.func.isRequired,
   templates: PropTypes.array.isRequired,
   walletWeb3: PropTypes.object,
   web3: PropTypes.object,

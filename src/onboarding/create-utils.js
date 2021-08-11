@@ -1,5 +1,3 @@
-import { getLocalStorageKey } from '../utils'
-
 const templateStateKey = 'create-org'
 
 export function loadTemplateState() {
