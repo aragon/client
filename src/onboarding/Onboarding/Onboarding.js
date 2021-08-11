@@ -94,7 +94,7 @@ function Onboarding({ web3 }) {
 
   const handleCreate = useCallback(() => {
     // reset the creation state
-    saveTemplateState(networkType, {})
+    saveTemplateState({ networkType })
 
     const requirementsError = validateCreationRequirements(
       account,
@@ -258,6 +258,7 @@ function Onboarding({ web3 }) {
             <Create
               account={account}
               onOpenOrg={goToOrg}
+              goToHome={goToHome}
               templates={templates}
               walletWeb3={walletWeb3}
               web3={web3}

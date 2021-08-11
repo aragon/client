@@ -29,7 +29,7 @@ import {
 } from './create-statuses'
 import { useWallet } from '../../wallet'
 import { getIpfsGateway } from '../../local-settings'
-import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
+import { web3Provider } from '../../Web3Provider'
 
 const MAX_RETRY = 5
 
@@ -40,6 +40,24 @@ const CONFIGURE_PLACEHOLDER_SCREENS = [
   'Configure template',
   'Review information',
 ]
+
+// error messages
+const ERROR_NETWORK = 'network'
+const ERROR_TEMPLATE = 'template'
+
+const ERRORS = Object.freeze({
+  [ERROR_NETWORK]: {
+    subject: 'Change of network detected',
+    details: 'Restart with the current network',
+  },
+  [ERROR_TEMPLATE]: { subject: 'Error getting template' },
+})
+
+function createError(type, details) {
+  const error = ERRORS[type]
+  error.details = error.details ?? details
+  return error
+}
 
 function getConfigureSteps(status, template, templateData) {
   if (!template || status === STATUS_SELECT_TEMPLATE) {
@@ -63,7 +81,7 @@ function getTemplateById(templates, templateId) {
 }
 
 // Handle and store everything related to a template state.
-function useConfigureState(templates, onScreenUpdate) {
+function useConfigureState(templates, onScreenUpdate, setError) {
   const { networkType } = useWallet()
 
   // The current template
@@ -97,9 +115,19 @@ function useConfigureState(templates, onScreenUpdate) {
   )
 
   useEffect(() => {
-    const { templateData, templateId, templateScreenIndex } = loadTemplateState(
-      networkType
-    )
+    const {
+      networkType: templateNetworkType,
+      templateData,
+      templateId,
+      templateScreenIndex,
+    } = loadTemplateState()
+
+    if (templateNetworkType !== networkType) {
+      // If the network has changed in the middle of
+      // the creation workflow, we need to go back to the home
+      // page to re-validate account balance, ENS domain, etc again..
+      setError(createError(ERROR_NETWORK))
+    }
 
     if (templateId) {
       updateTemplateScreen(templateId, templateScreenIndex)
@@ -110,7 +138,8 @@ function useConfigureState(templates, onScreenUpdate) {
   // Save the template state
   useEffect(() => {
     if (template && template.id) {
-      saveTemplateState(networkType, {
+      saveTemplateState({
+        networkType,
         templateData,
         templateId: template.id,
         templateScreenIndex,
@@ -170,7 +199,7 @@ function useConfigureState(templates, onScreenUpdate) {
   }
 }
 
-function useTemplateRepoInformation(templateRepoAddress) {
+function useTemplateRepoInformation(templateRepoAddress, setError) {
   const [
     fetchingTemplateInformation,
     setFetchingTemplateInformation,
@@ -178,8 +207,6 @@ function useTemplateRepoInformation(templateRepoAddress) {
   const [templateAbi, setTemplateAbi] = useState(null)
   const [templateAddress, setTemplateAddress] = useState(null)
   const { networkType } = useWallet()
-  const { web3 } = useClientWeb3()
-  const [templateError, setTemplateError] = useState(null)
 
   // Fetch latest information about the template from its aragonPM repository
   useEffect(() => {
@@ -193,14 +220,14 @@ function useTemplateRepoInformation(templateRepoAddress) {
     let cancelled = false
     const fetchArtifact = (depth = 0) => {
       const ipfsGateway = getIpfsGateway()
-
+      const web3 = web3Provider.getProvider(networkType)
       fetchApmArtifact(web3, templateRepoAddress, ipfsGateway)
         .then(templateInfo => {
           if (!cancelled) {
+            log(`fetched template abi for ${templateRepoAddress}`)
             setTemplateAddress(templateInfo.contractAddress)
             setTemplateAbi(templateInfo.abi)
             setFetchingTemplateInformation(false)
-            setTemplateError(null)
           }
           return null
         })
@@ -209,7 +236,7 @@ function useTemplateRepoInformation(templateRepoAddress) {
           // add exponential backoff to avoid freezing up the site
           if (!cancelled) {
             if (depth > MAX_RETRY) {
-              setTemplateError(err)
+              setError(createError(ERROR_TEMPLATE, err.message))
             } else {
               const timeoutMs = 2 ** depth * 10
               timer = setTimeout(() => fetchArtifact(depth + 1), timeoutMs)
@@ -226,13 +253,12 @@ function useTemplateRepoInformation(templateRepoAddress) {
         clearTimeout(timer)
       }
     }
-  }, [web3, networkType, templateRepoAddress])
+  }, [networkType, templateRepoAddress])
 
   return {
     fetchingTemplateInformation,
     templateAbi,
     templateAddress,
-    templateError,
   }
 }
 
@@ -380,10 +406,12 @@ function useDeploymentState(
 const Create = React.memo(function Create({
   account,
   onOpenOrg,
+  goToHome,
   templates,
   walletWeb3,
   web3,
 }) {
+  const [error, setError] = useState(null)
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
   const { networkType } = useWallet()
 
@@ -407,7 +435,7 @@ const Create = React.memo(function Create({
     template,
     templateData,
     templateScreenIndex,
-  } = useConfigureState(templates, onScreenUpdate)
+  } = useConfigureState(templates, onScreenUpdate, setError)
 
   const configureSteps = getConfigureSteps(status, template, templateData)
   const templateScreens = (template && template.screens) || []
@@ -428,14 +456,7 @@ const Create = React.memo(function Create({
     fetchingTemplateInformation,
     templateAbi,
     templateAddress,
-    templateError,
-  } = useTemplateRepoInformation(template && template.repoAddress)
-
-  useEffect(() => {
-    if (templateError) {
-      throw new Error(`Template error: ${templateError}`)
-    }
-  }, [templateError])
+  } = useTemplateRepoInformation(template && template.repoAddress, setError)
 
   const applyEstimateGas = useCallback(
     async transaction => {
@@ -545,6 +566,18 @@ const Create = React.memo(function Create({
         header="Something went wrong"
         visible={erroredTransactions > -1}
       />
+      {error && (
+        <ErrorModal
+          action={
+            <Button mode="strong" onClick={goToHome}>
+              Start over
+            </Button>
+          }
+          content={error.details}
+          header={error.subject}
+          visible
+        />
+      )}
     </div>
   )
 })

@@ -1,14 +1,13 @@
 import { getLocalStorageKey } from '../utils'
 
-const getTemplateStateKey = networkType =>
-  getLocalStorageKey(`create-org`, networkType)
+const templateStateKey = 'create-org'
 
-export function loadTemplateState(networkType) {
-  const key = getTemplateStateKey(networkType)
-  const value = localStorage.getItem(key)
+export function loadTemplateState() {
+  const value = localStorage.getItem(templateStateKey)
   try {
     const data = JSON.parse(value)
     return {
+      networkType: data.networkType,
       templateScreenIndex: data.templateScreenIndex,
       templateData: data.templateData || {},
       templateId: data.templateId,
@@ -18,8 +17,8 @@ export function loadTemplateState(networkType) {
   }
 }
 
-export function saveTemplateState(networkType, state) {
-  localStorage.setItem(getTemplateStateKey(networkType), JSON.stringify(state))
+export function saveTemplateState(state) {
+  localStorage.setItem(templateStateKey, JSON.stringify(state))
 }
 
 export function prepareTransactionCreatorFromAbi(web3, abi, toAddress) {
