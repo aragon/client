@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -16,8 +16,7 @@ import {
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import appIds from '../../known-app-ids'
 import { AppType, DaoAddressType } from '../../prop-types'
-import { toChecksumAddress } from '../../web3-utils'
-import { getEmptyAddress } from '../../web3-utils'
+import { getEmptyAddress, toChecksumAddress } from '../../web3-utils'
 import styled from 'styled-components'
 import { NETWORK_TYPE } from '../../NetworkType'
 import { useWallet } from '../../wallet'
@@ -176,7 +175,7 @@ const GovernMigration = React.memo(function GovernMigration({
         `}
       >
         <Label>Your new Aragon Govern DAO</Label>
-        <TextInput wide placeholder={getEmptyAddress()}></TextInput>
+        <TextInput wide placeholder={getEmptyAddress()} />
         <Info mode="warning">
           Make sure your <b>Aragon Govern Executor</b> address is correct,
           otherwise you might send all your funds to an invalid address and lose
