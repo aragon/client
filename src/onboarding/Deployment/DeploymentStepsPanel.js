@@ -24,7 +24,14 @@ function DeploymentStepsPanel({ transactionsStatus, pending, allSuccess }) {
       <ProgressBar
         value={Math.max(
           0,
-          Math.min(1, allSuccess ? 1 : pending / transactionsStatus.length)
+          Math.min(
+            1,
+            allSuccess
+              ? 1
+              : transactionsStatus.length
+              ? pending / transactionsStatus.length
+              : 0
+          )
         )}
       />
       <div

@@ -41,19 +41,7 @@ For a long time (2018-2020), these releases were our primary "official" builds. 
 
 A number of environment secrets are required during publishing and these are sometimes different per network.
 
-You may either specify these secrets as environment variables or use a `.env`. An Aragon One encrypted file ([`.env.enc`](./.env.enc)) is included in this repo with the current secrets used when publishing to aragonPM.
-
-To decrypt:
-
-```
-keybase decrypt -i .env.enc -o .env
-```
-
-To encrypt:
-
-```
-keybase encrypt --team aragonone -i .env -o .env.enc
-```
+You may either specify these secrets as environment variables or use a `.env`.
 
 ## Contributing
 

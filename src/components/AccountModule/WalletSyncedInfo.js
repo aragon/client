@@ -11,7 +11,7 @@ import {
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
 import { useWallet } from '../../wallet'
-import { getNetworkName } from '../../network-config'
+import { getNetworkName, isOnMainnet } from '../../network-config'
 
 function WalletSyncedInfo({ header, info, status }) {
   return (
@@ -81,7 +81,10 @@ function ConnectionInfoMessage({ connectionStatus }) {
     )
   }
 
-  if (connectionStatus === STATUS_CLIENT_CONNECTION_DROPPED) {
+  if (
+    isOnMainnet(networkType) &&
+    connectionStatus === STATUS_CLIENT_CONNECTION_DROPPED
+  ) {
     return (
       <span>
         We cannot connect to the wallet's Ethereum node. You can change the node

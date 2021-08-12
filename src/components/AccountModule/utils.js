@@ -2,7 +2,6 @@ import {
   STATUS_CONNECTION_ERROR,
   STATUS_CONNECTION_WARNING,
 } from './connection-statuses'
-import { getNetworkByChainId } from '../../network-config'
 
 export const DROPPED_PROVIDER_SYNC_DELAY = 45
 export const MAX_PROVIDER_SYNC_DELAY = 30
@@ -55,8 +54,4 @@ export function getClientSyncState(
     state: 'Synced:',
     description: `current block ${latestClientBlockNumber}`,
   }
-}
-
-export function normalizeNetworkName(chainId) {
-  return getNetworkByChainId(chainId).settings.shortName
 }

@@ -115,7 +115,7 @@ export const isEnsDomainAvailable = async (networkType, provider, name) => {
 }
 
 export const fetchApmArtifact = async (provider, repoAddress, ipfsGateway) => {
-  return apm(provider, {
+  return apm(getWeb3(provider), {
     ipfsGateway,
   }).fetchLatestRepoContent(repoAddress)
 }

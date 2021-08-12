@@ -15,7 +15,6 @@ const SUPPORT_URL = 'https://github.com/aragon/aragon/issues/new'
 const GenericError = React.memo(function GenericError({
   detailsTitle,
   detailsContent,
-  reportCallback,
 }) {
   const theme = useTheme()
 
@@ -43,17 +42,7 @@ const GenericError = React.memo(function GenericError({
         <Link href={SUPPORT_URL}>contact</Link> us if the problem persists.
       </p>
       {(detailsTitle || detailsContent) && (
-        <Details
-          label={
-            <span
-              css={`
-                margin-left: ${-1 * GU}px;
-              `}
-            >
-              Click here to see more details
-            </span>
-          }
-        >
+        <Details label="Click here to see more details">
           <div
             css={`
               overflow: auto;
@@ -81,25 +70,13 @@ const GenericError = React.memo(function GenericError({
           </div>
         </Details>
       )}
-      <div
-        css={`
-          ${reportCallback
-            ? `
-              display: flex;
-              justify-content: flex-end;
-            `
-            : ''}
-        `}
-      >
-        {reportCallback && (
-          <Button onClick={reportCallback}>Send Report</Button>
-        )}
+      <div>
         <Button
           mode="strong"
           onClick={() => window.location.reload(true)}
-          wide={!reportCallback}
+          wide
           css={`
-            margin-left: ${reportCallback ? 1.5 * GU : 0}px;
+            margin-left: 0px;
           `}
         >
           Reload
@@ -112,7 +89,6 @@ const GenericError = React.memo(function GenericError({
 GenericError.propTypes = {
   detailsTitle: PropTypes.node,
   detailsContent: PropTypes.node,
-  reportCallback: PropTypes.func,
 }
 
 export default GenericError
