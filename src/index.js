@@ -15,11 +15,7 @@ import {
 } from './local-settings'
 import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
-import initializeSentryIfEnabled from './sentry'
 import { ClientWeb3Provider } from './contexts/ClientWeb3Context'
-
-// Initialize Sentry as early as possible, if enabled
-initializeSentryIfEnabled()
 
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()

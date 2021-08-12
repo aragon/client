@@ -11,7 +11,6 @@ const IPFS_GATEWAY = 'IPFS_GATEWAY'
 const LOCAL_CHAIN_ID = 'LOCAL_CHAIN_ID'
 const PACKAGE_VERSION = 'PACKAGE_VERSION'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
-const SENTRY_DSN = 'SENTRY_DSN'
 const PORTIS_DAPP_ID = 'PORTIS_DAPP_ID'
 const FORTMATIC_API_KEY = 'FORTMATIC_API_KEY'
 
@@ -52,7 +51,6 @@ const CONFIGURATION_VARS = [
     process.env.ARAGON_SELECTED_CURRENCY,
     process.env.REACT_APP_SELECTED_CURRENCY,
   ],
-  [SENTRY_DSN, process.env.ARAGON_SENTRY_DSN, process.env.REACT_APP_SENTRY_DSN],
   [
     PACKAGE_VERSION,
     process.env.ARAGON_PACKAGE_VERSION,
@@ -143,10 +141,6 @@ export function getSelectedCurrency() {
 
 export function setSelectedCurrency(currency) {
   return setLocalSetting(SELECTED_CURRENCY, currency.toUpperCase())
-}
-
-export function getSentryDsn() {
-  return getLocalSetting(SENTRY_DSN) || ''
 }
 
 // The previous package version is stored in localStorage,
