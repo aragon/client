@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-ARAGON_IPFS_GATEWAY=https://goerli.lido.fi/ipfs \
+ARAGON_IPFS_GATEWAY=https://testnet.lido.fi/ipfs \
 ARAGON_DEFAULT_ETH_NODE=wss://goerli-light.eth.linkpool.io/ws \
 ARAGON_WALLETCONNECT_RPC_URL=https://goerli-light.eth.linkpool.io \
 ARAGON_APP_LOCATOR=ipfs \
