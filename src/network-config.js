@@ -11,6 +11,7 @@ export const networkConfigs = {
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+      governExecutorProxy: '0x2ac40310167fb00afa3c0bb5953c707db155afac',
     },
     nodes: {
       defaultEth: 'wss://mainnet.eth.aragon.network/ws',
@@ -30,6 +31,7 @@ export const networkConfigs = {
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x98df287b6c145399aaa709692c8d308357bc085d',
+      governExecutorProxy: '0x0451533f685fe028c439821b7502e4cf63b4c32f',
     },
     nodes: {
       defaultEth: 'wss://rinkeby.eth.aragon.network/ws',
@@ -49,6 +51,7 @@ export const networkConfigs = {
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
+      governExecutorProxy: null,
     },
     nodes: {
       defaultEth: 'wss://ropsten.eth.aragon.network/ws',
@@ -66,6 +69,7 @@ export const networkConfigs = {
     enableMigrateBanner: true,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
+      governExecutorProxy: null,
     },
     nodes: {
       defaultEth: 'ws://localhost:8545',
@@ -89,6 +93,7 @@ export const networkConfigs = {
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0xaafca6b0c89521752e559650206d7c925fd0e530',
+      governExecutorProxy: null,
     },
     nodes: {
       defaultEth: 'wss://xdai.poanetwork.dev/wss',
@@ -106,6 +111,7 @@ export const networkConfigs = {
     enableMigrateBanner: true,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
+      governExecutorProxy: null,
     },
     nodes: {
       defaultEth: 'ws://localhost:8545',

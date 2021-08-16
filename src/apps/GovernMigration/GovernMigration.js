@@ -1,5 +1,12 @@
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import GenerateMigration from "@aragon/v2-migrator-script/build"
+import { getDefaultProvider, Wallet, Contract, providers } from 'ethers'
+import { getNetworkConfig } from '../../network-config'
+//f
+
+console.log(Wallet, getDefaultProvider, ' ethers' );
+
 import {
   Box,
   Header,
@@ -61,6 +68,8 @@ const GovernMigration = React.memo(function GovernMigration({
   const [addressError, setAddressError] = useState(null)
   const addressRef = useRef(null)
 
+  const [orgsByName, setOrgsByName] = useState([]);
+
   const shortAddresses = layoutName !== 'large'
 
   const checksummedDaoAddr =
@@ -76,7 +85,13 @@ const GovernMigration = React.memo(function GovernMigration({
           },
         ]
       : []
-    return org.concat(apps.filter(app => !app.isAragonOsInternalApp))
+    const orgs = org.concat(apps.filter(app => !app.isAragonOsInternalApp))
+    
+    const orgsbyKey = []
+    orgs.forEach(item => orgsbyKey[item.name.toLowerCase()] = item.proxyAddress)
+    setOrgsByName(orgsbyKey)
+
+    return orgs
   }, [apps, checksummedDaoAddr])
 
   const handleAddressChange = useCallback(e => {
@@ -85,12 +100,87 @@ const GovernMigration = React.memo(function GovernMigration({
     setAddressError(validateAddress(address))
   }, [])
 
-  const handleMigration = useCallback(() => {
+  const handleMigration = useCallback(async () => {
     const error = validateAddress(governAddress)
     setAddressError(error)
-    if (!error) {
-      alert('migration')
+    if(error) return;
+    
+    if(!orgsByName.voting) {
+      // show the following message: `Internal error. Please contact us.`
+      return
     }
+
+    const governExecutorProxy = getNetworkConfig(networkType).addresses.governExecutorProxy
+
+    if(!governExecutorProxy) {
+      // show the following message: `on the {networkType} chain, migration is not supported.
+      return
+    }
+
+    const migrationParams = {
+      address: governAddress,
+      voting: orgsByName.voting,
+      executor: governAddress,
+      finance: orgsByName.finance
+    }
+
+    let calldatas = []
+
+    // checks if the funds exist on vault and if it does
+    // generates the calldata
+    let calldata = await GenerateMigration(networkType,  {
+      ...migrationParams,
+      vault: orgsByName.vault
+    })
+
+    if(calldata) {
+      calldatas = [...calldatas, calldata]
+    }
+
+    // if the agent is installed, checks if the funds exist on it
+    // and generates the calldata if it does.
+    if(orgsByName.agent) {
+      calldata = await GenerateMigration(networkType,  {
+        ...migrationParams,
+        vault: orgsByName.agent
+      })
+
+      if(calldata) {
+        calldatas = [...calldatas, calldata]
+      }
+    }
+
+    // if the calldatas is empty, it means funds were not found
+    // on neither agent nor vault.
+    if(calldatas.length === 0) {
+      // TODO: show the following error message: `migration can't happen because there's no funds on this dao to migrate.`
+      return
+    }
+
+    const provider =  new providers.Web3Provider(window.ethereum);
+    const signer = await provider.getSigner()
+    console.log("good")
+    calldatas.forEach(calldata => {
+      let tx = signer.sendTransaction({
+        from: '0x94C34FB5025e054B24398220CBDaBE901bd8eE5e',
+        to: orgsByName.voting,
+        data: calldata,
+        value: 0,
+        type: 2,
+        accessList: [
+          {
+            address: governExecutorProxy, // whatever is behind the proxy...
+            storageKeys: []
+          }
+        ]
+      })
+    })
+  
+    // console.log('0x94C34FB5025e054B24398220CBDaBE901bd8eE5e',
+    // orgsByName.voting,
+    // data,
+    // governExecutorProxy);
+
   }, [governAddress])
 
   // focus address field on mount
