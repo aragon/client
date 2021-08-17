@@ -2,7 +2,6 @@ import appIds from './known-app-ids'
 import { parseAppLocator } from './app-locator'
 import { getAppLocator, getDefaultEthNode } from './local-settings'
 import { getNetworkConfig } from './network-config'
-import { NETWORK_TYPE } from './NetworkType'
 
 const appsOrder = ['TokenManager', 'Voting', 'Finance', 'Agent']
 
@@ -62,7 +61,7 @@ export function getParsedAppLocator(networkType) {
   return parseAppLocator(getAppLocator(networkType))
 }
 
-export const getEthNode = (networkType = NETWORK_TYPE.main) => {
+export const getEthNode = networkType => {
   return (
     getDefaultEthNode(networkType) ||
     getNetworkConfig(networkType).nodes.defaultEth

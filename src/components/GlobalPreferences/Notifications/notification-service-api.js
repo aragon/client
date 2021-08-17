@@ -1,4 +1,4 @@
-import { NETWORK_TYPE } from '../../../NetworkType'
+import { isOnMainnet } from '../../../network-config'
 import {
   NOTIFICATION_SERVICE_ACCOUNT,
   NOTIFICATION_SERVICE_LOGIN,
@@ -9,9 +9,10 @@ import {
   UnauthorizedError,
 } from './constants'
 
-// The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
+// The notifications API expects mainnet for Ethereum mainnet. This deviates from deviates
+// from networkType returned from use-wallet that returns main instead of mainnet
 const sanitizeNetworkType = networkType =>
-  networkType === NETWORK_TYPE.main ? 'mainnet' : NETWORK_TYPE.rinkeby
+  isOnMainnet(networkType) ? 'mainnet' : networkType
 
 const isAuthTokenExpired = response =>
   response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
