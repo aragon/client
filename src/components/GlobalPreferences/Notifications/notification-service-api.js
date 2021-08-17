@@ -1,4 +1,3 @@
-import { NETWORK_TYPE } from '../../../NetworkType'
 import {
   NOTIFICATION_SERVICE_ACCOUNT,
   NOTIFICATION_SERVICE_LOGIN,
@@ -8,10 +7,6 @@ import {
   ExpiredTokenError,
   UnauthorizedError,
 } from './constants'
-
-// The notifications API expects mainnet or rinkeby. This deviates from web3's getNetworkType which returns main
-const sanitizeNetworkType = networkType =>
-  networkType === NETWORK_TYPE.main ? 'mainnet' : networkType
 
 const isAuthTokenExpired = response =>
   response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
@@ -28,7 +23,7 @@ export const login = async ({ networkType, email, dao }) => {
       body: JSON.stringify({
         email,
         dao,
-        network: sanitizeNetworkType(networkType),
+        network: networkType,
       }),
     })
     if (!rawResponse.ok) {
@@ -190,7 +185,7 @@ export async function deleteSubscriptions({ subscriptionIds, authToken } = {}) {
 
 export async function getSubscriptions(networkType, token) {
   const url = new URL(NOTIFICATION_SERVICE_SUBSCRIPTIONS)
-  url.searchParams.append('network', sanitizeNetworkType(networkType))
+  url.searchParams.append('network', networkType)
 
   try {
     const rawResponse = await fetch(url, {
@@ -257,7 +252,7 @@ export const createSubscription = async ({
         ensName,
         abi,
         contractAddress: appContractAddress,
-        network: sanitizeNetworkType(networkType),
+        network: networkType,
       }),
     })
 

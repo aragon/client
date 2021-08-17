@@ -5,11 +5,11 @@ import {
   useWallet as useWalletBase,
   UseWalletProvider,
   ChainUnsupportedError,
+  KNOWN_CHAINS,
 } from 'use-wallet'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 import { useWalletConnectors } from './ethereum-providers/connectors'
 import { LocalStorageWrapper } from './local-storage-wrapper'
-import { NETWORK_TYPE } from './NetworkType'
 
 export const WALLET_STATUS = Object.freeze({
   providers: 'providers',
@@ -19,8 +19,8 @@ export const WALLET_STATUS = Object.freeze({
   error: 'error',
 })
 
-const NETWORK_TYPE_DEFAULT = NETWORK_TYPE.main
-const CHAIN_ID_DEFAULT = 1
+const CHAIN_ID_MAINNET = 1
+const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(CHAIN_ID_MAINNET)
 
 const WalletContext = React.createContext()
 
@@ -42,11 +42,11 @@ function WalletContextProvider({ children }) {
 
   const connected = useMemo(() => status === 'connected', [status])
   const networkType = useMemo(
-    () => (connected ? networkName : NETWORK_TYPE_DEFAULT),
-    [connected, networkName]
+    () => (status === 'connected' ? networkName : NETWORK_TYPE_DEFAULT),
+    [status, networkName]
   )
 
-  // get web3 and networkType whenever chainId changes
+  // get web3 and set local storage prefix whenever networkType changes
   useEffect(() => {
     let cancel = false
 
@@ -77,7 +77,7 @@ function WalletContextProvider({ children }) {
       providerInfo: providerInfo,
       web3: walletWeb3,
       status,
-      chainId: connected ? chainId : CHAIN_ID_DEFAULT,
+      chainId: connected ? chainId : CHAIN_ID_MAINNET,
       connected,
       ...walletBaseRest,
     }),
@@ -114,4 +114,4 @@ export function useWallet() {
   return useContext(WalletContext)
 }
 
-export { ChainUnsupportedError }
+export { ChainUnsupportedError, KNOWN_CHAINS, CHAIN_ID_MAINNET }

@@ -1,6 +1,5 @@
 import { getLocalChainId, getEnsRegistryAddress } from './local-settings'
-import { useWallet } from './wallet'
-import { NETWORK_TYPE } from './NetworkType'
+import { useWallet, KNOWN_CHAINS, CHAIN_ID_MAINNET } from './wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
@@ -24,7 +23,7 @@ export const networkConfigs = {
       chainId: 1,
       name: 'Mainnet',
       shortName: 'Mainnet',
-      type: NETWORK_TYPE.main, // as returned by web3.eth.net.getNetworkType()
+      type: 'main',
       live: true,
     },
   },
@@ -163,7 +162,7 @@ export function useNetworkConfig() {
 }
 
 export function isOnMainnet(networkType) {
-  return networkType === NETWORK_TYPE.main
+  return networkType === KNOWN_CHAINS.get(CHAIN_ID_MAINNET)
 }
 
 export function getDaiTokenAddress(networkType) {
