@@ -9,7 +9,8 @@ import {
   UnauthorizedError,
 } from './constants'
 
-// The notifications API expects mainnet for Ethereum mainnet. This deviates from networkType which is main for mainnet
+// The notifications API expects mainnet for Ethereum mainnet. This deviates from deviates
+// from networkType returned from use-wallet that returns main instead of mainnet
 const sanitizeNetworkType = networkType =>
   isOnMainnet(networkType) ? 'mainnet' : networkType
 
