@@ -20,6 +20,7 @@ export const WALLET_STATUS = Object.freeze({
 })
 
 const NETWORK_TYPE_DEFAULT = NETWORK_TYPE.main
+const CHAIN_ID_DEFAULT = 1
 
 const WalletContext = React.createContext()
 
@@ -33,13 +34,17 @@ function WalletContextProvider({ children }) {
     chainId,
     providerInfo,
     type,
+    networkName,
     ...walletBaseRest
   } = useWalletBase()
 
   const [walletWeb3, setWalletWeb3] = useState(null)
-  const [networkType, setNetworkType] = useState(NETWORK_TYPE_DEFAULT)
 
   const connected = useMemo(() => status === 'connected', [status])
+  const networkType = useMemo(
+    () => (connected ? networkName : NETWORK_TYPE_DEFAULT),
+    [connected, networkName]
+  )
 
   // get web3 and networkType whenever chainId changes
   useEffect(() => {
@@ -51,40 +56,28 @@ function WalletContextProvider({ children }) {
     }
 
     const walletWeb3 = getWeb3(ethereum)
-    setWalletWeb3(walletWeb3)
-
-    walletWeb3.eth.net
-      .getNetworkType()
-      .then(networkType => {
-        if (!cancel) {
-          setNetworkType(networkType)
-          LocalStorageWrapper.setPrefix(networkType)
-        }
-        return null
-      })
-      .catch(() => {
-        setNetworkType(NETWORK_TYPE_DEFAULT)
-        LocalStorageWrapper.setPrefix(NETWORK_TYPE_DEFAULT)
-      })
+    if (!cancel) {
+      setWalletWeb3(walletWeb3)
+      LocalStorageWrapper.setPrefix(networkType)
+    }
 
     return () => {
       cancel = true
       setWalletWeb3(null)
-      setNetworkType(NETWORK_TYPE_DEFAULT)
       LocalStorageWrapper.setPrefix(NETWORK_TYPE_DEFAULT)
     }
-  }, [ethereum, chainId])
+  }, [ethereum, networkType])
 
   const wallet = useMemo(
     () => ({
       account,
       balance: new BN(filterBalanceValue(balance)),
       ethereum,
-      networkType: connected ? networkType : NETWORK_TYPE_DEFAULT,
+      networkType,
       providerInfo: providerInfo,
       web3: walletWeb3,
       status,
-      chainId,
+      chainId: connected ? chainId : CHAIN_ID_DEFAULT,
       connected,
       ...walletBaseRest,
     }),

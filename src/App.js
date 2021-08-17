@@ -456,13 +456,7 @@ class App extends React.Component {
 }
 
 export default function AppHooksWrapper(props) {
-  const {
-    account,
-    connected,
-    networkType,
-    networkName,
-    providerInfo,
-  } = useWallet()
+  const { account, connected, networkType, providerInfo } = useWallet()
 
   const theme = useTheme()
   const clientTheme = useClientTheme()
@@ -475,11 +469,11 @@ export default function AppHooksWrapper(props) {
       connected &&
       typeof account === 'string' &&
       providerInfo.id !== 'unknown' &&
-      networkName
+      networkType
     ) {
-      identifyUser(account, networkName, providerInfo.name)
+      identifyUser(account, networkType, providerInfo.name)
     }
-  }, [account, connected, networkName, providerInfo])
+  }, [account, connected, networkType, providerInfo])
 
   return (
     <App

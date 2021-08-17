@@ -3,6 +3,8 @@ import { useWallet } from './wallet'
 import { NETWORK_TYPE } from './NetworkType'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
+const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
+const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 
 // connectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
@@ -11,6 +13,7 @@ export const networkConfigs = {
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+      dai: DAI_MAINNET_TOKEN_ADDRESS,
     },
     nodes: {
       defaultEth: 'wss://mainnet.eth.aragon.network/ws',
@@ -30,6 +33,7 @@ export const networkConfigs = {
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x98df287b6c145399aaa709692c8d308357bc085d',
+      dai: DAI_RINKEBY_TOKEN_ADDRESS,
     },
     nodes: {
       defaultEth: 'wss://rinkeby.eth.aragon.network/ws',
@@ -160,4 +164,8 @@ export function useNetworkConfig() {
 
 export function isOnMainnet(networkType) {
   return networkType === NETWORK_TYPE.main
+}
+
+export function getDaiTokenAddress(networkType) {
+  return getNetworkConfig(networkType).addresses.dai || ''
 }
