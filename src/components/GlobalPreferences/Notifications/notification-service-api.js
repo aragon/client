@@ -1,3 +1,4 @@
+import { isOnMainnet } from '../../../network-config'
 import {
   NOTIFICATION_SERVICE_ACCOUNT,
   NOTIFICATION_SERVICE_LOGIN,
@@ -7,6 +8,10 @@ import {
   ExpiredTokenError,
   UnauthorizedError,
 } from './constants'
+
+// The notifications API expects mainnet for Ethereum mainnet. This deviates from networkType which is main for mainnet
+const sanitizeNetworkType = networkType =>
+  isOnMainnet(networkType) ? 'mainnet' : networkType
 
 const isAuthTokenExpired = response =>
   response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
@@ -23,7 +28,7 @@ export const login = async ({ networkType, email, dao }) => {
       body: JSON.stringify({
         email,
         dao,
-        network: networkType,
+        network: sanitizeNetworkType(networkType),
       }),
     })
     if (!rawResponse.ok) {
@@ -185,7 +190,7 @@ export async function deleteSubscriptions({ subscriptionIds, authToken } = {}) {
 
 export async function getSubscriptions(networkType, token) {
   const url = new URL(NOTIFICATION_SERVICE_SUBSCRIPTIONS)
-  url.searchParams.append('network', networkType)
+  url.searchParams.append('network', sanitizeNetworkType(networkType))
 
   try {
     const rawResponse = await fetch(url, {
@@ -252,7 +257,7 @@ export const createSubscription = async ({
         ensName,
         abi,
         contractAddress: appContractAddress,
-        network: networkType,
+        network: sanitizeNetworkType(networkType),
       }),
     })
 
