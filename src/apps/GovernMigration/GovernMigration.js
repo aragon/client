@@ -13,7 +13,7 @@ import {
   Button,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import { AppType, DaoAddressType } from '../../prop-types'
+import { AppType, AragonType, DaoAddressType } from '../../prop-types'
 import {
   getEmptyAddress,
   toChecksumAddress,
@@ -25,6 +25,7 @@ import { NETWORK_TYPE } from '../../NetworkType'
 import { useWallet } from '../../wallet'
 import AddressField from '../../components/AddressField/AddressField'
 import { InvalidAddress, RequiredField } from '../../errors'
+import { performTransactionPaths } from '../../aragonjs-wrapper'
 
 const GOVERN_REWARD_URL = 'https://upgrade.aragon.org/governreward'
 const MIGRATE_REWARD_URL =
@@ -52,6 +53,7 @@ const GovernMigration = React.memo(function GovernMigration({
   appsLoading,
   apps,
   daoAddress,
+  wrapper,
 }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
@@ -85,13 +87,42 @@ const GovernMigration = React.memo(function GovernMigration({
     setAddressError(validateAddress(address))
   }, [])
 
-  const handleMigration = useCallback(() => {
+  const handleMigration = useCallback(async () => {
     const error = validateAddress(governAddress)
     setAddressError(error)
-    if (!error) {
-      alert('migration')
+    if (error) {
+      return
     }
-  }, [governAddress])
+
+    // TODO change this to call the migration contract
+    const contractAddress = '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735'
+    const abiFragment = {
+      constant: false,
+      inputs: [
+        { internalType: 'address', name: 'usr', type: 'address' },
+        { internalType: 'uint256', name: 'wad', type: 'uint256' },
+      ],
+      name: 'mint',
+      outputs: [],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    }
+
+    const params = [governAddress, 123]
+
+    const path = await wrapper.getExternalTransactionPath(
+      contractAddress,
+      abiFragment,
+      params
+    )
+    console.log('.....path', path)
+    try {
+      await performTransactionPaths(wrapper, [path])
+    } catch (err) {
+      console.log('Migration failed: ', err)
+    }
+  }, [governAddress, wrapper])
 
   // focus address field on mount
   useEffect(() => {
@@ -223,6 +254,7 @@ GovernMigration.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
   daoAddress: DaoAddressType.isRequired,
+  wrapper: AragonType,
 }
 
 export default GovernMigration
