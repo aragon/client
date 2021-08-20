@@ -38,7 +38,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
       name: template.name,
       network: networkName,
     })
-  }, [onUse, template, templateOptionalApps])
+  }, [onUse, template, templateOptionalApps, networkName])
 
   const handleSectionRef = useCallback(element => {
     if (element) {
