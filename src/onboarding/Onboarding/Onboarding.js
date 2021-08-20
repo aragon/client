@@ -18,6 +18,7 @@ import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
 import { useWallet } from '../../wallet'
 import validateCreationRequirements from '../validate-requirements'
+import { getWeb3 } from '../../web3-utils'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
@@ -261,7 +262,7 @@ function Onboarding({ web3 }) {
               goToHome={goToHome}
               templates={templates}
               walletWeb3={walletWeb3}
-              web3={web3}
+              web3={getWeb3(web3)}
             />
           )}
         </div>

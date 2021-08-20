@@ -8,6 +8,7 @@ import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import { Onboarding } from './onboarding'
+import { getWeb3 } from './web3-utils'
 import { getLocalStorageKey, log } from './utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
@@ -405,7 +406,7 @@ class App extends React.Component {
                     <FavoriteDaosProvider>
                       <ActivityProvider
                         daoDomain={daoAddress.domain}
-                        web3={web3}
+                        web3={getWeb3(web3)}
                       >
                         <PermissionsProvider
                           wrapper={wrapper}
@@ -426,7 +427,7 @@ class App extends React.Component {
                               signatureBag={signatureBag}
                               transactionBag={transactionBag}
                               visible={routing.mode.name === 'org'}
-                              web3={web3}
+                              web3={getWeb3(web3)}
                               wrapper={wrapper}
                               showMigrateBanner={showMigrateBanner}
                               closeMigrateBanner={() =>
