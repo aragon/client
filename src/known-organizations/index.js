@@ -241,8 +241,8 @@ export const KnownOrganizations = {
   goerli: new Map(
     [
       {
-        address: '0xE2Bb0843167da9672534cc939c59D6F6F31d3D42',
-        domain: 'lido-testnet.aragonid.eth',
+        address: '0x1dD91b354Ebd706aB3Ac7c727455C7BAA164945A',
+        domain: 'lido-testnet-prater.aragonid.eth',
         image: lidoImage,
         name: 'Lido',
         template: TEMPLATE_COMPANY,
