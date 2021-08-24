@@ -55,7 +55,10 @@ const ERRORS = Object.freeze({
 
 function createError(type, details) {
   const error = ERRORS[type]
-  error.details = error.details == null || error.details == undefined ? details : error.details
+  error.details =
+    error.details === null || error.details === undefined
+      ? details
+      : error.details
   return error
 }
 
