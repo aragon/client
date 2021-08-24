@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import GenerateMigration from "@aragon/v2-migrator-script/build"
-import { getDefaultProvider, Wallet, Contract, providers } from 'ethers'
 import { getNetworkConfig } from '../../network-config'
 import { usePermissionsByRole } from '../../contexts/PermissionsContext'
 import { Modal } from '@aragon/ui'
@@ -27,7 +26,6 @@ import {
   isEmptyAddress,
 } from '../../web3-utils'
 import styled from 'styled-components'
-import { NETWORK_TYPE } from '../../NetworkType'
 import { useWallet } from '../../wallet'
 import AddressField from '../../components/AddressField/AddressField'
 import { InvalidAddress, RequiredField } from '../../errors'
@@ -38,7 +36,7 @@ const MIGRATE_REWARD_URL =
 
 function getCreateOneUrl(networkType) {
   return `https://govern${
-    networkType === NETWORK_TYPE.main ? '' : '-' + networkType
+    networkType === 'main' ? '' : '-' + networkType
   }.aragon.org/#/create-dao`
 }
 
