@@ -1,11 +1,9 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import { Button, springs, useViewport } from '@aragon/ui'
 import Banner, { BANNER_HEIGHT } from '../Banner/Banner'
-
-const MIGRATE_REWARD_URL =
-  'https://help.aragon.org/article/99-aragon-govern-migration-reward-program'
+import { useRouting } from '../../routing'
 
 const BANNER_TEXT = {
   large: 'Your DAO is eligible for the migration reward program.',
@@ -16,6 +14,17 @@ const MigrateBanner = React.memo(({ visible, onClose }) => {
   const { width } = useViewport()
   const compact = useMemo(() => width < 570, [width])
   const bannerHeight = useMemo(() => (compact ? 70 : BANNER_HEIGHT), [compact])
+  const routing = useRouting()
+
+  const goToMigration = useCallback(() => {
+    routing.update(({ mode }) => ({
+      mode: {
+        name: 'org',
+        orgAddress: mode.orgAddress,
+        instanceId: 'govern-migration',
+      },
+    }))
+  }, [routing])
 
   return (
     <React.Fragment>
@@ -35,9 +44,9 @@ const MigrateBanner = React.memo(({ visible, onClose }) => {
               <Banner
                 text={compact ? BANNER_TEXT.compact : BANNER_TEXT.large}
                 button={
-                  <Button href={MIGRATE_REWARD_URL} mode="normal" size="small">
+                  <Button mode="normal" size="small" onClick={goToMigration}>
                     <span style={{ color: '#00C2FF', fontWeight: 'bold' }}>
-                      Apply Now!
+                      Migrate!
                     </span>
                   </Button>
                 }
