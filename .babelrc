@@ -11,7 +11,7 @@
     "@babel/preset-react"
   ],
   "plugins": [
-    ["styled-components", { "displayName": true }],
+    ["styled-components", { "displayName": true }]
   ],
   "env": {
     "test": {
