@@ -15,7 +15,7 @@ import {
   useLayout,
   useTheme,
   Button,
-  Modal
+  Modal,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { AppType, DaoAddressType } from '../../prop-types'
@@ -208,7 +208,7 @@ const GovernMigration = React.memo(function GovernMigration({
 
     setCalldata(`${toAddress}${separator}${calldatas}`)
     setOpened(true)
-  }, [governAddress, orgsByName, permissions])
+  }, [governAddress, orgsByName, permissions, networkType])
 
   // focus address field on mount
   useEffect(() => {
