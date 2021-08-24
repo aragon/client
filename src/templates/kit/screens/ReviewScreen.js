@@ -27,6 +27,7 @@ function ReviewScreen({
     trackEvent(events.DAO_CREATEBTN_CLICKED, {
       network: networkName,
       template: items[0].fields[0][1],
+      options: data,
     })
 
     next(data)

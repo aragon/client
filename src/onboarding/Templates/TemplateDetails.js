@@ -19,9 +19,11 @@ import { stripUrlProtocol, sanitizeCodeRepositoryUrl } from '../../url-utils'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import KnownAppBadge from '../../templates/kit/KnownAppBadge'
 import { trackEvent, events } from '../../analytics'
+import { useWallet } from '../../wallet'
 
 function TemplateDetails({ template, visible, onUse, onClose }) {
   const theme = useTheme()
+  const { networkName } = useWallet()
   const { above, below, width } = useViewport()
   const [templateOptionalApps, setTemplateOptionalApps] = useState({})
 
@@ -32,8 +34,11 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
     onUse(template.id, selectedOptionalApps)
 
     // analytics test
-    trackEvent(events.TEMPLATE_SELECTED, { name: template.name })
-  }, [onUse, template, templateOptionalApps])
+    trackEvent(events.DAOCREATION_TEMPLATE_SELECTED, {
+      name: template.name,
+      network: networkName,
+    })
+  }, [onUse, template, templateOptionalApps, networkName])
 
   const handleSectionRef = useCallback(element => {
     if (element) {
