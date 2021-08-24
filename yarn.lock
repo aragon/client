@@ -178,6 +178,31 @@
     recursive-copy "^2.0.9"
     use-inside "^0.2.0"
 
+"@aragon/ui@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-1.8.0.tgz#b26ec4258637bd93be9a933ac87358ffba794d3d"
+  integrity sha512-TduMRhkIq3iNk+t+DSy9SGFZnioms3ruN9stwdX8JTMWC2MmmX9f5pi81V+pAuI/uUiIr+0IlHRnwYZ43ODX4w==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    airbnb-prop-types "^2.9.0"
+    arg "^2.0.0"
+    command-exists "^1.2.6"
+    dayjs "^1.8.14"
+    js-sha3 "^0.8.0"
+    jsbi "^3.1.2"
+    lodash "^4.17.19"
+    markdown-to-jsx "^6.11.0"
+    popper.js "^1.14.4"
+    prop-types "^15.6.0"
+    react-blockies "^1.4.0"
+    react-display-name "^0.2.3"
+    react-onclickout "^2.0.8"
+    react-spring "^7.2.11"
+    recursive-copy "^2.0.9"
+    token-amount "^0.1.0"
+    use-inside "^0.2.0"
+    use-token "^0.2.0"
+
 "@aragon/wrapper@^5.1.0":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-5.1.0.tgz#b55d4f25bb0fdff2a4b522b7ef22ba7db37524bd"
@@ -9003,6 +9028,11 @@ js-yaml@^3.10.0, js-yaml@^3.13.0, js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
+jsbi@^3.1.1:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/jsbi/-/jsbi-3.1.6.tgz#572431b0ff4b9c0f5f4b41e214dba76a734e676b"
+  integrity sha512-CGjq13y28FrBA5mAU+rsfHaVKEF9jrw3PhzZpIzTeMiPsT0XRDAS6E7QS8/ZTmFQUtl2MDJsxKQoYJzAhF7B1w==
+
 jsbi@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/jsbi/-/jsbi-3.1.2.tgz#7502ed36fb2b32bb37efb3d2d0b3806a0d771780"
@@ -13977,6 +14007,13 @@ toidentifier@1.0.0:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
+token-amount@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/token-amount/-/token-amount-0.1.0.tgz#1b25775346a7de4df47a988ecf022ffe2d4b6f76"
+  integrity sha512-3p2HE8ef1PKB6Rl6tMmQW289esS5PWsPq/mG8JyyQUFe/1I3LtDBmSGYzzqW/99uvvoQNpUURI1fX8uZE6LSow==
+  dependencies:
+    jsbi "^3.1.1"
+
 toposort@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/toposort/-/toposort-2.0.2.tgz#ae21768175d1559d48bef35420b2f4962f09c330"
@@ -14367,9 +14404,16 @@ use-inside@^0.2.0:
   dependencies:
     prop-types "^15.7.2"
 
+use-token@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/use-token/-/use-token-0.2.0.tgz#5690aec9fcc327cf843eb8ff01cd1f75f7d93a25"
+  integrity sha512-lvKboDH7okV/SAb9q4Fs+kgEOS976SvHPMzpy+KCKXXVAMzG30znfsvYKiiK2Mdg+QU4vil0+NHXZ6ozuo+ysw==
+  dependencies:
+    js-sha3 "^0.8.0"
+
 "use-wallet@https://github.com/aragon/use-wallet.git#multichain":
   version "0.9.0"
-  resolved "https://github.com/aragon/use-wallet.git#1b60af6b2a14c1e36db492533c3edcee68a90b66"
+  resolved "https://github.com/aragon/use-wallet.git#b9969c7759aeeb6511895b000d9375bdde061888"
   dependencies:
     "@aragon/provided-connector" "^6.0.8"
     "@typescript-eslint/parser" "^4.1.0"

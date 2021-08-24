@@ -63,7 +63,7 @@ function AccountModuleConnectedScreen({
     trackEvent(events.WALLET_DISCONNECTED, {
       wallet_address: wallet.account,
       wallet_provider: wallet.providerInfo.name,
-      network: wallet.networkName,
+      network: wallet.networkType,
     })
 
     wallet.reset()

@@ -1,5 +1,3 @@
-import { NETWORK_TYPE } from './NetworkType'
-
 // List of configurable settings
 const APP_LOCATOR = 'APP_LOCATOR'
 const CLIENT_THEME = 'THEME'
@@ -72,9 +70,7 @@ const CONFIGURATION_VARS = [
 )
 
 function toStorageKey(key, networkType) {
-  return networkType && networkType !== NETWORK_TYPE.main
-    ? `${networkType}:${key}`
-    : key
+  return networkType ? `${networkType}:${key}` : key
 }
 
 // Get a setting from localStorage

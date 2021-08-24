@@ -8,6 +8,7 @@ import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import { Onboarding } from './onboarding'
+import { getWeb3 } from './web3-utils'
 import { getLocalStorageKey, log } from './utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
@@ -405,7 +406,7 @@ class App extends React.Component {
                     <FavoriteDaosProvider>
                       <ActivityProvider
                         daoDomain={daoAddress.domain}
-                        web3={web3}
+                        web3={getWeb3(web3)}
                       >
                         <PermissionsProvider
                           wrapper={wrapper}
@@ -426,7 +427,7 @@ class App extends React.Component {
                               signatureBag={signatureBag}
                               transactionBag={transactionBag}
                               visible={routing.mode.name === 'org'}
-                              web3={web3}
+                              web3={getWeb3(web3)}
                               wrapper={wrapper}
                               showMigrateBanner={showMigrateBanner}
                               closeMigrateBanner={() =>
@@ -456,13 +457,7 @@ class App extends React.Component {
 }
 
 export default function AppHooksWrapper(props) {
-  const {
-    account,
-    connected,
-    networkType,
-    networkName,
-    providerInfo,
-  } = useWallet()
+  const { account, connected, networkType, providerInfo } = useWallet()
 
   const theme = useTheme()
   const clientTheme = useClientTheme()
@@ -475,11 +470,11 @@ export default function AppHooksWrapper(props) {
       connected &&
       typeof account === 'string' &&
       providerInfo.id !== 'unknown' &&
-      networkName
+      networkType
     ) {
-      identifyUser(account, networkName, providerInfo.name)
+      identifyUser(account, networkType, providerInfo.name)
     }
-  }, [account, connected, networkName, providerInfo])
+  }, [account, connected, networkType, providerInfo])
 
   return (
     <App
