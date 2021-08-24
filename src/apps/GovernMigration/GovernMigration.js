@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import GenerateMigration from '@aragon/v2-migrator-script/build'
 import { getNetworkConfig } from '../../network-config'
 import { usePermissionsByRole } from '../../contexts/PermissionsContext'
-import { Modal } from '@aragon/ui'
 
 import {
   Box,
@@ -16,6 +15,7 @@ import {
   useLayout,
   useTheme,
   Button,
+  Modal
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { AppType, DaoAddressType } from '../../prop-types'
@@ -208,7 +208,7 @@ const GovernMigration = React.memo(function GovernMigration({
 
     setCalldata(`${toAddress}${separator}${calldatas}`)
     setOpened(true)
-  }, [governAddress])
+  }, [governAddress, orgsByName, permissions])
 
   // focus address field on mount
   useEffect(() => {
