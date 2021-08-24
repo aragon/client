@@ -158,6 +158,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
       <AnimatedDiv
         {...bindDrag()}
         style={{
+          // eslint-disable-next-line no-sequences
           transform: x.interpolate(x => `translate3d(${(0, x)}px, 0, 0)`),
           // transform: selectedX.interpolate(v => `translate3d(${v}px, 0, 0)`),
         }}
