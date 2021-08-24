@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import GenerateMigration from "@aragon/v2-migrator-script/build"
+import GenerateMigration from '@aragon/v2-migrator-script/build'
 import { getNetworkConfig } from '../../network-config'
 import { usePermissionsByRole } from '../../contexts/PermissionsContext'
 import { Modal } from '@aragon/ui'
@@ -65,7 +65,7 @@ const GovernMigration = React.memo(function GovernMigration({
   const [addressError, setAddressError] = useState(null)
   const addressRef = useRef(null)
 
-  const [orgsByName, setOrgsByName] = useState([]);
+  const [orgsByName, setOrgsByName] = useState([])
 
   const permissions = usePermissionsByRole()
 
@@ -85,9 +85,11 @@ const GovernMigration = React.memo(function GovernMigration({
         ]
       : []
     const orgs = org.concat(apps.filter(app => !app.isAragonOsInternalApp))
-    
+
     const orgsbyKey = []
-    orgs.forEach(item => orgsbyKey[item.name.toLowerCase()] = item.proxyAddress)
+    orgs.forEach(
+      item => (orgsbyKey[item.name.toLowerCase()] = item.proxyAddress)
+    )
     setOrgsByName(orgsbyKey)
 
     return orgs
@@ -98,7 +100,7 @@ const GovernMigration = React.memo(function GovernMigration({
     setGovernAddress(address)
     setAddressError(validateAddress(address))
   }, [])
-  
+
   const [opened, setOpened] = useState(false)
   const [calldata, setCalldata] = useState('')
   const close = () => setOpened(false)
@@ -106,29 +108,36 @@ const GovernMigration = React.memo(function GovernMigration({
   const handleMigration = useCallback(async () => {
     const error = validateAddress(governAddress)
     setAddressError(error)
-    if(error) return;
-    
-    if(!orgsByName.voting) {
-      setAddressError("Internal error. Please contact us.")
+    if (error) return
+
+    if (!orgsByName.voting) {
+      setAddressError('Internal error. Please contact us.')
       return
     }
 
-    const governExecutorProxy = getNetworkConfig(networkType).addresses.governExecutorProxy
+    const governExecutorProxy = getNetworkConfig(networkType).addresses
+      .governExecutorProxy
 
-    if(!governExecutorProxy) {
-      setAddressError(`on the ${networkType} chain, migration is not supported.`)
+    if (!governExecutorProxy) {
+      setAddressError(
+        `on the ${networkType} chain, migration is not supported.`
+      )
       return
     }
 
     // figure out if token manager and any address can create a vote
-    let votePermissions = permissions.filter(permission => permission.role.id === 'CREATE_VOTES_ROLE')
+    let votePermissions = permissions.filter(
+      permission => permission.role.id === 'CREATE_VOTES_ROLE'
+    )
     let anyoneNewVote = false
     let tokenManagerNewVote = false
 
-    if(votePermissions.length > 0) {
+    if (votePermissions.length > 0) {
       const entities = votePermissions[0].entities || []
-      anyoneNewVote = entities.filter(entity => entity.type === 'any').length > 0
-      tokenManagerNewVote = entities.filter(entity => entity.app?.name === 'Tokens').length > 0
+      anyoneNewVote =
+        entities.filter(entity => entity.type === 'any').length > 0
+      tokenManagerNewVote =
+        entities.filter(entity => entity.app?.name === 'Tokens').length > 0
     }
 
     const migrationParams = {
@@ -141,16 +150,18 @@ const GovernMigration = React.memo(function GovernMigration({
     let toAddress = ''
     const separator = '__'
 
-    if(anyoneNewVote) {
+    if (anyoneNewVote) {
       toAddress = orgsByName.voting
-    } else if(tokenManagerNewVote) {
+    } else if (tokenManagerNewVote) {
       toAddress = orgsByName.tokens
       migrationParams.tokenManager = orgsByName.tokens
     } else {
-      setAddressError(`There's no correct CREATE_NEW_VOTE permission on the Voting app`)
+      setAddressError(
+        `There's no correct CREATE_NEW_VOTE permission on the Voting app`
+      )
       return
     }
-    
+
     let calldatas = ''
     let calldata = ''
 
@@ -161,40 +172,42 @@ const GovernMigration = React.memo(function GovernMigration({
 
     // checks if the funds exist on vault and if it does
     // generates the calldata
-    if(orgsByName.vault) {
-      calldata = await GenerateMigration(networkType,  {
+    if (orgsByName.vault) {
+      calldata = await GenerateMigration(networkType, {
         ...migrationParams,
-        vault: orgsByName.vault
+        vault: orgsByName.vault,
       })
 
-      if(calldata) {
+      if (calldata) {
         calldatas += calldata
       }
     }
-    
+
     // if the agent is installed, checks if the funds exist on it
     // and generates the calldata if it does.
-    if(orgsByName.agent) {
-      calldata = await GenerateMigration(networkType,  {
+    if (orgsByName.agent) {
+      calldata = await GenerateMigration(networkType, {
         ...migrationParams,
-        vault: orgsByName.agent
+        vault: orgsByName.agent,
       })
 
-      if(calldata) {
-        calldatas = calldatas === '' ? calldata : `${calldatas}${separator}${calldata}`
+      if (calldata) {
+        calldatas =
+          calldatas === '' ? calldata : `${calldatas}${separator}${calldata}`
       }
     }
 
     // if the calldatas is empty, it means funds were not found
     // on neither agent nor vault.
-    if(calldatas === '') {
-      setAddressError(`Migration is not possible because there's no funds on this dao`)
+    if (calldatas === '') {
+      setAddressError(
+        `Migration is not possible because there's no funds on this dao`
+      )
       return
     }
-    
+
     setCalldata(`${toAddress}${separator}${calldatas}`)
     setOpened(true)
-
   }, [governAddress])
 
   // focus address field on mount
@@ -246,7 +259,8 @@ const GovernMigration = React.memo(function GovernMigration({
               value={governAddress}
               error={addressError}
             />
-            The address of the DAO Executor (available in the settings tab of your new Aragon Govern DAO)
+            The address of the DAO Executor (available in the settings tab of
+            your new Aragon Govern DAO)
             <Info mode="warning">
               Make sure your <b>Aragon Govern Executor</b> address is correct,
               otherwise you might send all your funds to an invalid address and
@@ -257,10 +271,10 @@ const GovernMigration = React.memo(function GovernMigration({
             </StyledButton>
             <Label theme={theme}>
               Once migration script is generated, follow{' '}
-                <StyledLink href="https://github.com/aragon/kpi-migration">
-                  these instructions
-                </StyledLink>{' '}
-                to create a proposal to execute it.
+              <StyledLink href="https://github.com/aragon/kpi-migration">
+                these instructions
+              </StyledLink>{' '}
+              to create a proposal to execute it.
             </Label>
             {networkType && (
               <Label theme={theme}>
@@ -285,19 +299,17 @@ const GovernMigration = React.memo(function GovernMigration({
                   }
                 `}
               >
-              <h1
-                css={`
-                  display: flex;
-                  align-items: center;
-                  gap: 10px;
-                `}
-              >
-                <span>Copy this and follow the below instructions </span>
-              </h1>
-              <p>
-                { calldata }
-              </p>
-        </div>
+                <h1
+                  css={`
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                  `}
+                >
+                  <span>Copy this and follow the below instructions </span>
+                </h1>
+                <p>{calldata}</p>
+              </div>
             </Modal>
             <Info>
               By executing this you will be creating a proposal that will be

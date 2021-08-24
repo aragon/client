@@ -158,7 +158,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
       <AnimatedDiv
         {...bindDrag()}
         style={{
-          transform: x.interpolate(x => `translate3d(${(0, x)}px, 0, 0)`),
+          transform: x.interpolate(x => `translate3d(${(0, x)}px, 0, 0)`)
           // transform: selectedX.interpolate(v => `translate3d(${v}px, 0, 0)`),
         }}
         css={`
