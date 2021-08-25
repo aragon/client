@@ -68,6 +68,26 @@ export const networkConfigs = {
       live: true,
     },
   },
+  mumbai: {
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry: '0x431f0eed904590b176f9ff8c36a1c4ff0ee9b982', // aragon local copy
+      dai: DAI_RINKEBY_TOKEN_ADDRESS, // TODO update this
+    },
+    nodes: {
+      defaultEth: 'wss://matic-testnet-archive-ws.bwarelabs.com',
+    },
+    connectGraphEndpoint:
+      'https://api.thegraph.com/subgraphs/name/aragon/aragon-rinkeby', // TODO update this
+    settings: {
+      chainId: 80001,
+      name: 'Mumbai testnet',
+      shortName: 'Mumbai',
+      type: 'mumbai',
+      live: true,
+      currency: 'MATIC',
+    },
+  },
   local: {
     enableMigrateBanner: true,
     addresses: {
