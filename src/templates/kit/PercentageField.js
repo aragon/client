@@ -42,7 +42,9 @@ const PercentageField = React.forwardRef(function PercentageField(
 
   const handleInputChange = useCallback(event => {
     const value = parseInt(event.target.value, 10)
-    if (!isNaN(value) && value >= 0 && value <= 100) {
+    if (isNaN(value)) {
+      setTextFieldValue(0)
+    } else if (!isNaN(value) && value >= 0 && value <= 100) {
       setTextFieldValue(value)
     }
   }, [])
