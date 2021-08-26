@@ -93,7 +93,7 @@ function Onboarding({ web3 }) {
     ) {
       setRequirementsError(requirementsErrorUpdated)
     }
-  }, [account, balance, isContractAccount, requirementsError])
+  }, [account, balance, chainId, isContractAccount, requirementsError])
 
   const handleCreate = useCallback(() => {
     // reset the creation state
@@ -118,7 +118,7 @@ function Onboarding({ web3 }) {
     if (requirementsError[0] === null) {
       goToCreate()
     }
-  }, [account, balance, goToCreate, isContractAccount, networkType])
+  }, [account, balance, chainId, goToCreate, isContractAccount, networkType])
 
   const closeConnectModal = useCallback(
     provider => {

@@ -14,7 +14,12 @@ function localFormatBalance(balance) {
     : formatBalance(balance, { precision: BALANCE_DECIMALS })
 }
 
-function validateCreationRequirements(account, balance, isContractAccount, tokenSymbol) {
+function validateCreationRequirements(
+  account,
+  balance,
+  isContractAccount,
+  tokenSymbol
+) {
   if (!account) {
     return ['no-account']
   }
@@ -28,7 +33,7 @@ function validateCreationRequirements(account, balance, isContractAccount, token
       {
         balance: localFormatBalance(balance),
         minimumBalance: fromWei(String(MINIMUM_BALANCE)),
-        tokenSymbol: tokenSymbol
+        tokenSymbol: tokenSymbol,
       },
     ]
   }
