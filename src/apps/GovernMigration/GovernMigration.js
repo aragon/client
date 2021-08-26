@@ -15,7 +15,6 @@ import {
   useLayout,
   useTheme,
   Button,
-  Modal,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { AppType, DaoAddressType } from '../../prop-types'
@@ -100,9 +99,6 @@ const GovernMigration = React.memo(function GovernMigration({
     setGovernAddress(address)
     setAddressError(validateAddress(address))
   }, [])
-
-  const [opened, setOpened] = useState(false)
-  const close = () => setOpened(false)
 
   const handleMigration = useCallback(async () => {
     const error = validateAddress(governAddress)
@@ -212,7 +208,7 @@ const GovernMigration = React.memo(function GovernMigration({
       })
       console.log(tx, ' tx ')
     })
-  }, [governAddress, orgsByName, permissions, networkType])
+  }, [governAddress, orgsByName, permissions, networkType, walletWeb3, account])
 
   // focus address field on mount
   useEffect(() => {
