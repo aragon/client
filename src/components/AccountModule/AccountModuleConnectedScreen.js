@@ -37,7 +37,11 @@ function AccountModuleConnectedScreen({
   const wallet = useWallet()
   const theme = useTheme()
 
-  const { walletNetworkName, walletNetworkFullName, isWrongNetwork } = useNetworkConnectionData()
+  const {
+    walletNetworkName,
+    walletNetworkFullName,
+    isWrongNetwork,
+  } = useNetworkConnectionData()
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 

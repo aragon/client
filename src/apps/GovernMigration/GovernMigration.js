@@ -206,8 +206,8 @@ const GovernMigration = React.memo(function GovernMigration({
     calldatas.forEach(callData => {
       const tx = walletWeb3.eth.sendTransaction({
         from: account,
-        to: toAddress, 
-        value: 0, 
+        to: toAddress,
+        value: 0,
         data: callData,
       })
       console.log(tx, ' tx ')

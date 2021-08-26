@@ -20,7 +20,11 @@ import {
 import { pollEvery } from '../../utils'
 import { useWallet, ChainUnsupportedError, WALLET_STATUS } from '../../wallet'
 import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
-import { getNetworkSettings, normalizeNetworkName, getNetworkName } from '../../network-config'
+import {
+  getNetworkSettings,
+  normalizeNetworkName,
+  getNetworkName,
+} from '../../network-config'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
@@ -49,7 +53,11 @@ export function useWalletConnectionDetails(
   clientSyncDelay,
   walletSyncDelay
 ) {
-  const { walletNetworkName, walletNetworkFullName, isWrongNetwork } = useNetworkConnectionData()
+  const {
+    walletNetworkName,
+    walletNetworkFullName,
+    isWrongNetwork,
+  } = useNetworkConnectionData()
 
   const theme = useTheme()
   const { networkType } = useWallet()
