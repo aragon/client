@@ -7,12 +7,6 @@ class Web3Provider {
     }
 
     if (this.provider && this.provider.connected) {
-      console.log(
-        '@@@@@@@@@@@@@@ disconnect provider ',
-        this.networkType,
-        'for new network',
-        networkType
-      )
       this.provider.disconnect()
     }
     this.networkType = networkType

@@ -204,7 +204,6 @@ class App extends React.Component {
         this.setState({ appIdentifiers })
       },
       onInstalledRepos: repos => {
-        log('installed repos', repos)
         const canUpgradeOrg = repos.some(
           ({ appId, currentVersion, latestVersion }) =>
             isKnownRepo(appId) &&
