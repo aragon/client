@@ -37,7 +37,7 @@ function AccountModuleConnectedScreen({
   const wallet = useWallet()
   const theme = useTheme()
 
-  const { walletNetworkName, isWrongNetwork } = useNetworkConnectionData()
+  const { walletNetworkName, walletNetworkFullName, isWrongNetwork } = useNetworkConnectionData()
 
   const copyAddress = useCopyToClipboard(account, 'Address copied')
 
@@ -72,7 +72,7 @@ function AccountModuleConnectedScreen({
   const Icon = connectionColor !== theme.positive ? IconCross : IconCheck
 
   const formattedConnectionMessage = connectionMessage.includes('Connected')
-    ? `Connected to Ethereum ${walletNetworkName} Network`
+    ? `Connected to ${walletNetworkFullName} Network`
     : connectionMessage
 
   return (

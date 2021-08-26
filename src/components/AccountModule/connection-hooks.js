@@ -20,7 +20,7 @@ import {
 import { pollEvery } from '../../utils'
 import { useWallet, ChainUnsupportedError, WALLET_STATUS } from '../../wallet'
 import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
-import { getNetworkSettings, normalizeNetworkName } from '../../network-config'
+import { getNetworkSettings, normalizeNetworkName, getNetworkName } from '../../network-config'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
@@ -36,6 +36,7 @@ export function useNetworkConnectionData() {
 
   return {
     walletNetworkName: normalizeNetworkName(networkType),
+    walletNetworkFullName: getNetworkName(networkType),
     isWrongNetwork,
   }
 }
@@ -48,7 +49,8 @@ export function useWalletConnectionDetails(
   clientSyncDelay,
   walletSyncDelay
 ) {
-  const { walletNetworkName, isWrongNetwork } = useNetworkConnectionData()
+  const { walletNetworkName, walletNetworkFullName, isWrongNetwork } = useNetworkConnectionData()
+
   const theme = useTheme()
   const { networkType } = useWallet()
   const networkSettings = getNetworkSettings(networkType)
@@ -62,7 +64,7 @@ export function useWalletConnectionDetails(
 
   const defaultOkConnectionDetails = {
     connectionMessage: `Connected to ${walletNetworkName}`,
-    connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
+    connectionMessageLong: `Connected to ${walletNetworkFullName} Network`,
     connectionColor: theme.positive,
   }
 

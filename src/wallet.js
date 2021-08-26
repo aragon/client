@@ -9,7 +9,6 @@ import {
 } from 'use-wallet'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 import { useWalletConnectors } from './ethereum-providers/connectors'
-import { LocalStorageWrapper } from './local-storage-wrapper'
 
 export const WALLET_STATUS = Object.freeze({
   providers: 'providers',
@@ -19,8 +18,8 @@ export const WALLET_STATUS = Object.freeze({
   error: 'error',
 })
 
-const CHAIN_ID_MAINNET = 1
-const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(CHAIN_ID_MAINNET)
+// default network is mainnet if user is not conncted
+const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(1)?.network
 
 const WalletContext = React.createContext()
 
@@ -51,20 +50,17 @@ function WalletContextProvider({ children }) {
     let cancel = false
 
     if (!ethereum) {
-      LocalStorageWrapper.setPrefix(NETWORK_TYPE_DEFAULT)
       return
     }
 
     const walletWeb3 = getWeb3(ethereum)
     if (!cancel) {
       setWalletWeb3(walletWeb3)
-      LocalStorageWrapper.setPrefix(networkType)
     }
 
     return () => {
       cancel = true
       setWalletWeb3(null)
-      LocalStorageWrapper.setPrefix(NETWORK_TYPE_DEFAULT)
     }
   }, [ethereum, networkType])
 
@@ -77,7 +73,7 @@ function WalletContextProvider({ children }) {
       providerInfo: providerInfo,
       web3: walletWeb3,
       status,
-      chainId: connected ? chainId : CHAIN_ID_MAINNET,
+      chainId: connected ? chainId : 1, // connect to mainnet if wallet is not connected
       connected,
       ...walletBaseRest,
     }),
@@ -114,4 +110,4 @@ export function useWallet() {
   return useContext(WalletContext)
 }
 
-export { ChainUnsupportedError, KNOWN_CHAINS, CHAIN_ID_MAINNET }
+export { ChainUnsupportedError, KNOWN_CHAINS }
