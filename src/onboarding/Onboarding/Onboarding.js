@@ -16,7 +16,7 @@ import { log } from '../../utils'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
-import { useWallet } from '../../wallet'
+import { useWallet, KNOWN_CHAINS } from '../../wallet'
 import validateCreationRequirements from '../validate-requirements'
 import { getWeb3 } from '../../web3-utils'
 
@@ -33,6 +33,7 @@ function Onboarding({ web3 }) {
     networkType,
     account,
     balance,
+    chainId,
     isContract: isContractAccount,
     web3: walletWeb3,
   } = useWallet()
@@ -82,7 +83,8 @@ function Onboarding({ web3 }) {
     const requirementsErrorUpdated = validateCreationRequirements(
       account,
       balance,
-      isContractAccount
+      isContractAccount,
+      KNOWN_CHAINS.get(chainId)?.nativeCurrency.symbol
     )
 
     if (
@@ -91,7 +93,7 @@ function Onboarding({ web3 }) {
     ) {
       setRequirementsError(requirementsErrorUpdated)
     }
-  }, [account, balance, isContractAccount, requirementsError])
+  }, [account, balance, chainId, isContractAccount, requirementsError])
 
   const handleCreate = useCallback(() => {
     // reset the creation state
@@ -100,7 +102,8 @@ function Onboarding({ web3 }) {
     const requirementsError = validateCreationRequirements(
       account,
       balance,
-      isContractAccount
+      isContractAccount,
+      KNOWN_CHAINS.get(chainId)?.nativeCurrency.symbol
     )
     setRequirementsError(requirementsError)
 
@@ -115,7 +118,7 @@ function Onboarding({ web3 }) {
     if (requirementsError[0] === null) {
       goToCreate()
     }
-  }, [account, balance, goToCreate, isContractAccount, networkType])
+  }, [account, balance, chainId, goToCreate, isContractAccount, networkType])
 
   const closeConnectModal = useCallback(
     provider => {
