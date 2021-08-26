@@ -1,5 +1,5 @@
-import { getLocalChainId, getEnsRegistryAddress } from './local-settings'
-import { useWallet, KNOWN_CHAINS, CHAIN_ID_MAINNET } from './wallet'
+import { getEnsRegistryAddress } from './local-settings'
+import { useWallet, KNOWN_CHAINS } from './wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
@@ -7,7 +7,7 @@ const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 
 // connectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
-  main: {
+  [KNOWN_CHAINS.get(1).network]: {
     enableMigrateBanner: false,
     addresses: {
       ensRegistry:
@@ -22,13 +22,11 @@ export const networkConfigs = {
       'https://api.thegraph.com/subgraphs/name/aragon/aragon-mainnet',
     settings: {
       chainId: 1,
-      name: 'Mainnet',
-      shortName: 'Mainnet',
-      type: 'main',
+      ...KNOWN_CHAINS.get(1),
       live: true,
     },
   },
-  rinkeby: {
+  [KNOWN_CHAINS.get(4).network]: {
     enableMigrateBanner: true,
     addresses: {
       ensRegistry:
@@ -43,13 +41,11 @@ export const networkConfigs = {
       'https://api.thegraph.com/subgraphs/name/aragon/aragon-rinkeby',
     settings: {
       chainId: 4,
-      name: 'Rinkeby testnet',
-      shortName: 'Rinkeby',
-      type: 'rinkeby', // as returned by web3.eth.net.getNetworkType()
+      ...KNOWN_CHAINS.get(4), // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
   },
-  ropsten: {
+  [KNOWN_CHAINS.get(3).network]: {
     enableMigrateBanner: true,
     addresses: {
       ensRegistry:
@@ -62,13 +58,11 @@ export const networkConfigs = {
     connectGraphEndpoint: null,
     settings: {
       chainId: 3,
-      name: 'Ropsten testnet',
-      shortName: 'Ropsten',
-      type: 'ropsten', // as returned by web3.eth.net.getNetworkType()
+      ...KNOWN_CHAINS.get(3),
       live: true,
     },
   },
-  local: {
+  [KNOWN_CHAINS.get(1337).network]: {
     enableMigrateBanner: true,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
@@ -82,16 +76,14 @@ export const networkConfigs = {
       // Local development environments by convention use
       // a chainId of value 1337, but for the sake of configuration
       // we expose a way to change this value.
-      chainId: Number(getLocalChainId()),
-      name: 'local testnet',
-      shortName: 'Local',
-      type: 'private',
+      chainId: 1337,
+      ...KNOWN_CHAINS.get(1337),
       live: false,
     },
   },
   // xDai is an experimental chain in the Aragon Client. It's possible
   // and expected that a few things will break.
-  xdai: {
+  [KNOWN_CHAINS.get(100).network]: {
     enableMigrateBanner: false,
     addresses: {
       ensRegistry:
@@ -104,14 +96,29 @@ export const networkConfigs = {
     connectGraphEndpoint: null,
     settings: {
       chainId: 100,
-      name: 'xDai',
-      shortName: 'xdai',
-      type: 'private',
+      ...KNOWN_CHAINS.get(100),
+      live: true,
+    },
+  },
+  [KNOWN_CHAINS.get(80001).network]: {
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x431f0eed904590b176f9ff8c36a1c4ff0ee9b982',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://matic-testnet-archive-ws.bwarelabs.com',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 80001,
+      ...KNOWN_CHAINS.get(80001),
       live: true,
     },
   },
   unknown: {
-    enableMigrateBanner: true,
+    enableMigrateBanner: false,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
       governExecutorProxy: null,
@@ -142,7 +149,7 @@ export function getNetworkConfig(type) {
 }
 
 export function normalizeNetworkName(networkType) {
-  return getNetworkConfig(networkType).settings.shortName
+  return getNetworkConfig(networkType).settings?.shortName || 'unknown'
 }
 
 export function sanitizeNetworkType(networkType) {
@@ -155,7 +162,7 @@ export function sanitizeNetworkType(networkType) {
 }
 
 export function getNetworkName(networkType) {
-  return getNetworkConfig(networkType).settings.name
+  return getNetworkConfig(networkType).settings?.fullName || 'uknown'
 }
 
 export function getNetworkSettings(networkType) {
@@ -168,7 +175,7 @@ export function useNetworkConfig() {
 }
 
 export function isOnMainnet(networkType) {
-  return networkType === KNOWN_CHAINS.get(CHAIN_ID_MAINNET)
+  return networkType === KNOWN_CHAINS.get(1)
 }
 
 export function getDaiTokenAddress(networkType) {

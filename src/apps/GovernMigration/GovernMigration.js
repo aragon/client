@@ -15,7 +15,6 @@ import {
   useLayout,
   useTheme,
   Button,
-  Modal,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { AppType, DaoAddressType } from '../../prop-types'
@@ -59,7 +58,7 @@ const GovernMigration = React.memo(function GovernMigration({
 }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
-  const { networkType } = useWallet()
+  const { networkType, web3: walletWeb3, account } = useWallet()
 
   const [governAddress, setGovernAddress] = useState('')
   const [addressError, setAddressError] = useState(null)
@@ -100,10 +99,6 @@ const GovernMigration = React.memo(function GovernMigration({
     setGovernAddress(address)
     setAddressError(validateAddress(address))
   }, [])
-
-  const [opened, setOpened] = useState(false)
-  const [calldata, setCalldata] = useState('')
-  const close = () => setOpened(false)
 
   const handleMigration = useCallback(async () => {
     const error = validateAddress(governAddress)
@@ -148,7 +143,6 @@ const GovernMigration = React.memo(function GovernMigration({
     }
 
     let toAddress = ''
-    const separator = '__'
 
     if (anyoneNewVote) {
       toAddress = orgsByName.voting
@@ -162,7 +156,7 @@ const GovernMigration = React.memo(function GovernMigration({
       return
     }
 
-    let calldatas = ''
+    let calldatas = []
     let calldata = ''
 
     // NOTE: Below code assumes that it's possible to have both Vault and Agent
@@ -179,7 +173,7 @@ const GovernMigration = React.memo(function GovernMigration({
       })
 
       if (calldata) {
-        calldatas += calldata
+        calldatas.push(calldata)
       }
     }
 
@@ -192,23 +186,29 @@ const GovernMigration = React.memo(function GovernMigration({
       })
 
       if (calldata) {
-        calldatas =
-          calldatas === '' ? calldata : `${calldatas}${separator}${calldata}`
+        calldatas.push(calldata)
       }
     }
 
     // if the calldatas is empty, it means funds were not found
     // on neither agent nor vault.
-    if (calldatas === '') {
+    if (calldatas.length === 0) {
       setAddressError(
         `Migration is not possible because there's no funds on this dao`
       )
       return
     }
 
-    setCalldata(`${toAddress}${separator}${calldatas}`)
-    setOpened(true)
-  }, [governAddress, orgsByName, permissions, networkType])
+    calldatas.forEach(callData => {
+      const tx = walletWeb3.eth.sendTransaction({
+        from: account,
+        to: toAddress,
+        value: 0,
+        data: callData,
+      })
+      console.log(tx, ' tx ')
+    })
+  }, [governAddress, orgsByName, permissions, networkType, walletWeb3, account])
 
   // focus address field on mount
   useEffect(() => {
@@ -285,32 +285,6 @@ const GovernMigration = React.memo(function GovernMigration({
                 .
               </Label>
             )}
-            <Modal visible={opened} onClose={close}>
-              <div
-                css={`
-                  overflow: scroll;
-                  padding: 0 24px;
-                  h1,
-                  p {
-                    margin: 24px 0;
-                  }
-                  h1 {
-                    font-size: 24px;
-                  }
-                `}
-              >
-                <h1
-                  css={`
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                  `}
-                >
-                  <span>Copy this and follow the below instructions </span>
-                </h1>
-                <p>{calldata}</p>
-              </div>
-            </Modal>
             <Info>
               By executing this you will be creating a proposal that will be
               voted in your DAO. Once it is approved and executed,{' '}
