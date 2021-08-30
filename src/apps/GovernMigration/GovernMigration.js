@@ -28,13 +28,14 @@ import styled from 'styled-components'
 import { useWallet } from '../../wallet'
 import AddressField from '../../components/AddressField/AddressField'
 import { InvalidAddress, RequiredField } from '../../errors'
+import { performTransactionPaths } from '../../aragonjs-wrapper'
+import { useRouting } from '../../routing'
 
 const GOVERN_REWARD_URL = 'https://upgrade.aragon.org/governReward'
 const MIGRATE_REWARD_URL =
   'https://help.aragon.org/article/99-aragon-govern-migration-reward-program'
 
 function getCreateOneUrl(networkType) {
-  console.log('networkType', networkType)
   return `https://govern${
     networkType === 'main' ? '' : '-' + networkType
   }.aragon.org/#/create-dao`
@@ -56,10 +57,12 @@ const GovernMigration = React.memo(function GovernMigration({
   appsLoading,
   apps,
   daoAddress,
+  wrapper,
 }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
   const { networkType, web3: walletWeb3, account } = useWallet()
+  const routing = useRouting()
 
   const [governAddress, setGovernAddress] = useState('')
   const [addressError, setAddressError] = useState(null)
@@ -94,6 +97,16 @@ const GovernMigration = React.memo(function GovernMigration({
 
     return orgs
   }, [apps, checksummedDaoAddr])
+
+  const goToVote = useCallback(() => {
+    routing.update(({ mode }) => ({
+      mode: {
+        name: 'org',
+        orgAddress: mode.orgAddress,
+        instanceId: orgsByName.voting,
+      },
+    }))
+  }, [routing, orgsByName])
 
   const handleAddressChange = useCallback(e => {
     const address = e.target.value
@@ -200,16 +213,31 @@ const GovernMigration = React.memo(function GovernMigration({
       return
     }
 
-    calldatas.forEach(callData => {
-      const tx = walletWeb3.eth.sendTransaction({
+    const paths = calldatas.map(data => {
+      return {
         from: account,
         to: toAddress,
         value: 0,
-        data: callData,
-      })
-      console.log(tx, ' tx ')
+        data: data,
+      }
     })
-  }, [governAddress, orgsByName, permissions, networkType, walletWeb3, account])
+
+    try {
+      await performTransactionPaths(wrapper, [paths])
+      goToVote()
+    } catch (err) {
+      console.log('Migration failed: ', err)
+      setAddressError(`Migration failed.`)
+    }
+  }, [
+    wrapper,
+    governAddress,
+    orgsByName,
+    permissions,
+    networkType,
+    walletWeb3,
+    account,
+  ])
 
   // focus address field on mount
   useEffect(() => {
@@ -278,40 +306,7 @@ const GovernMigration = React.memo(function GovernMigration({
             <StyledButton mode="strong" onClick={handleMigration}>
               Create Proposal
             </StyledButton>
-            {/* <Label theme={theme}>
-              Once migration script is generated and copied, follow{' '}
-              <StyledLink href="https://github.com/aragon/kpi-migration">
-                these instructions
-              </StyledLink>{' '}
-              to create a proposal to execute it.
-            </Label> */}
 
-            {/* <Modal visible={opened} onClose={close}>
-              <div
-                css={`
-                  overflow: scroll;
-                  padding: 0 24px;
-                  h1,
-                  p {
-                    margin: 24px 0;
-                  }
-                  h1 {
-                    font-size: 24px;
-                  }
-                `}
-              >
-                <h1
-                  css={`
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                  `}
-                >
-                  <span>Copy this and follow the below instructions </span>
-                </h1>
-                <p>{calldata}</p>
-              </div>
-            </Modal> */}
             <Info>
               By following the instructions and executing the script you will be
               creating a proposal that will be available to be voted in your

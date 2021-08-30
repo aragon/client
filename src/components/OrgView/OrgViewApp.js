@@ -227,6 +227,7 @@ function App({
           apps={apps}
           appsLoading={appsLoading}
           daoAddress={daoAddress}
+          wrapper={wrapper}
         />
       </AppInternal>
     )
