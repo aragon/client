@@ -17,7 +17,7 @@ import {
   Button,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import { AppType, DaoAddressType } from '../../prop-types'
+import { AppType, AragonType, DaoAddressType } from '../../prop-types'
 import {
   getEmptyAddress,
   toChecksumAddress,
@@ -236,6 +236,7 @@ const GovernMigration = React.memo(function GovernMigration({
     networkType,
     walletWeb3,
     account,
+    goToVote,
   ])
 
   // focus address field on mount
@@ -392,6 +393,7 @@ GovernMigration.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
   daoAddress: DaoAddressType.isRequired,
+  wrapper: AragonType,
 }
 
 export default GovernMigration
