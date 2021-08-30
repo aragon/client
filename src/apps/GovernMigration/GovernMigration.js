@@ -15,7 +15,6 @@ import {
   useLayout,
   useTheme,
   Button,
-  Modal,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import { AppType, DaoAddressType } from '../../prop-types'
@@ -276,25 +275,17 @@ const GovernMigration = React.memo(function GovernMigration({
               invalid address and lose access to them
             </Info>
             <StyledButton mode="strong" onClick={handleMigration}>
-              Generate Migration
+              Create Proposal
             </StyledButton>
-            <Label theme={theme}>
+            {/* <Label theme={theme}>
               Once migration script is generated and copied, follow{' '}
               <StyledLink href="https://github.com/aragon/kpi-migration">
                 these instructions
               </StyledLink>{' '}
               to create a proposal to execute it.
-            </Label>
-            {networkType && (
-              <Label theme={theme}>
-                Don't have a Aragon Govern DAO?{' '}
-                <StyledLink href={getCreateOneUrl(networkType)}>
-                  Create one
-                </StyledLink>
-                .
-              </Label>
-            )}
-            <Modal visible={opened} onClose={close}>
+            </Label> */}
+
+            {/* <Modal visible={opened} onClose={close}>
               <div
                 css={`
                   overflow: scroll;
@@ -319,7 +310,7 @@ const GovernMigration = React.memo(function GovernMigration({
                 </h1>
                 <p>{calldata}</p>
               </div>
-            </Modal>
+            </Modal> */}
             <Info>
               By following the instructions and executing the script you will be
               creating a proposal that will be available to be voted in your
@@ -340,6 +331,20 @@ const GovernMigration = React.memo(function GovernMigration({
                 upgrade.aragon.org/governReward
               </StyledLink>
             </Info>
+            {networkType && (
+              <Label
+                theme={theme}
+                css={`
+                  margin-top: ${2 * GU}px;
+                `}
+              >
+                Don't have a Aragon Govern DAO?{' '}
+                <StyledLink href={getCreateOneUrl(networkType)}>
+                  Create one
+                </StyledLink>
+                .
+              </Label>
+            )}
           </div>
         </Box>
       </React.Fragment>
