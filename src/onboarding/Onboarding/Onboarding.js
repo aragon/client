@@ -177,7 +177,10 @@ function Onboarding({ web3 }) {
       )
         .then(templatesWithRepoAddress => {
           if (!cancelled) {
-            setTemplates(templatesWithRepoAddress)
+            const availableTemplates = templatesWithRepoAddress.filter(
+              item => item.status === TEMPLATE_AVAILABLE
+            )
+            setTemplates(availableTemplates)
           }
           return null
         })
