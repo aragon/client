@@ -227,7 +227,6 @@ const GovernMigration = React.memo(function GovernMigration({
       goToVote()
     } catch (err) {
       console.log('Migration failed: ', err)
-      setAddressError(`Migration failed.`)
     }
   }, [
     wrapper,
