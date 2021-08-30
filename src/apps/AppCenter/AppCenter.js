@@ -16,11 +16,6 @@ import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
 import { useWallet } from '../../wallet'
 
-const SCREENS = [
-  { id: 'installed', label: 'Installed apps' },
-  { id: 'discover', label: 'Discover apps' },
-]
-
 function getLocation(localPath, extendedRepos) {
   const defaultScreen = { screen: 'installed' }
 
@@ -105,7 +100,15 @@ const AppCenter = React.memo(function AppCenter({
   wrapper,
 }) {
   const [upgradePanelOpened, setUpgradePanelOpened] = useState(false)
-  const { networkType } = useWallet()
+  const { networkType, chainId } = useWallet()
+
+  const SCREENS = useMemo(() => {
+      let result = [{ id: 'installed', label: 'Installed apps' }]
+      if(chainId === 1 || chainId === 4) {
+        result = [...result, { id: 'discover', label: 'Discover apps' }]
+      }
+      return result
+  }, [chainId])
 
   const extendedRepos = useMemo(
     () => getExtendedRepos(appInstanceGroups, repos, networkType),
