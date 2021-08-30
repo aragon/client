@@ -103,11 +103,11 @@ const AppCenter = React.memo(function AppCenter({
   const { networkType, chainId } = useWallet()
 
   const SCREENS = useMemo(() => {
-      let result = [{ id: 'installed', label: 'Installed apps' }]
-      if(chainId === 1 || chainId === 4) {
-        result = [...result, { id: 'discover', label: 'Discover apps' }]
-      }
-      return result
+    let result = [{ id: 'installed', label: 'Installed apps' }]
+    if (chainId === 1 || chainId === 4) {
+      result = [...result, { id: 'discover', label: 'Discover apps' }]
+    }
+    return result
   }, [chainId])
 
   const extendedRepos = useMemo(
