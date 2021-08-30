@@ -135,7 +135,7 @@ const AppCenter = React.memo(function AppCenter({
     screenIndex => {
       onPathRequest(`/${SCREENS[screenIndex].id}`)
     },
-    [onPathRequest]
+    [onPathRequest, SCREENS]
   )
 
   const handleOpenRepo = useCallback(
