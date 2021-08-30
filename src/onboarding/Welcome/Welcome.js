@@ -97,8 +97,10 @@ function CreateSubtitle({ error }) {
           color: ${theme.negative};
         `}
       >
-        You need at least {errorData.minimumBalance} ETH (
-        <strong>you have {errorData.balance} ETH</strong>
+        You need at least {errorData.minimumBalance} {errorData.tokenSymbol} (
+        <strong>
+          you have {errorData.balance} {errorData.tokenSymbol}
+        </strong>
         ).
       </span>
     )
