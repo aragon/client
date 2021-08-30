@@ -285,7 +285,7 @@ const Organization = React.memo(function Organization({
                   ) : (
                     <span>
                       Unfortunately, importing into Tenderly is not available on
-                      the {sanitizeNetworkType(network.type)} network. Please
+                      the {sanitizeNetworkType(network.network)} network. Please
                       use Aragon on Ethereum mainnet instead.
                     </span>
                   )}
