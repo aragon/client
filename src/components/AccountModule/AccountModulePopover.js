@@ -123,7 +123,10 @@ function AccountModulePopover({
                   setMeasuredHeight(true)
                 }}
               >
-                {screenData => ({ opacity, transform }) => (
+                {screenData => /* eslint-disable react/prop-types */ ({
+                  opacity,
+                  transform,
+                }) => (
                   <AnimatedDiv
                     ref={elt => {
                       if (elt) {
@@ -140,7 +143,7 @@ function AccountModulePopover({
                   >
                     {children(screenData)}
                   </AnimatedDiv>
-                )}
+                ) /* eslint-enable react/prop-types */}
               </Transition>
             </AnimatedDiv>
           )}
