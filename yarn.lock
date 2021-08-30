@@ -144,10 +144,10 @@
   dependencies:
     "@truffle/hdwallet-provider" "^1.0.0"
 
-"@aragon/ui@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-1.8.0.tgz#b26ec4258637bd93be9a933ac87358ffba794d3d"
-  integrity sha512-TduMRhkIq3iNk+t+DSy9SGFZnioms3ruN9stwdX8JTMWC2MmmX9f5pi81V+pAuI/uUiIr+0IlHRnwYZ43ODX4w==
+"@aragon/ui@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-1.9.0.tgz#760c114070fda58402b87066fe31dda3e11da302"
+  integrity sha512-iYZPQLz4h8PaXIjVxvnfNBd54pe82AYH9mSS9pxBBTuuJq2EdeNMGOeJOL4t6i3C6tUFxhat6QUWG9hXR0vbPA==
   dependencies:
     "@babel/runtime" "^7.3.1"
     airbnb-prop-types "^2.9.0"
