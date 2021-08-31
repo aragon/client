@@ -25,6 +25,11 @@ export async function getOrganizationByAddress(networkType, daoAddress) {
   }
 
   const graphEndpoint = getGraphEndpoint(networkType)
+  if (!graphEndpoint) {
+    // some network do not have subgraph (i.e. polygon)
+    return null
+  }
+
   const data = await fetch(graphEndpoint, {
     method: 'POST',
     headers: {
