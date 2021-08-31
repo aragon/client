@@ -27,7 +27,6 @@ export async function getOrganizationByAddress(networkType, daoAddress) {
   const graphEndpoint = getGraphEndpoint(networkType)
   if (!graphEndpoint) {
     // some network do not have subgraph (i.e. polygon)
-    // TODO: confirm with Giorgi to see if it's ok to return null
     return null
   }
 
