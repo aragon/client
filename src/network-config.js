@@ -7,7 +7,7 @@ const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 
 // connectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
-  [KNOWN_CHAINS.get(1).network]: {
+  [KNOWN_CHAINS.get(1).type]: {
     enableMigrateBanner: false,
     addresses: {
       ensRegistry:
@@ -26,7 +26,7 @@ export const networkConfigs = {
       live: true,
     },
   },
-  [KNOWN_CHAINS.get(4).network]: {
+  [KNOWN_CHAINS.get(4).type]: {
     enableMigrateBanner: true,
     addresses: {
       ensRegistry:
@@ -45,7 +45,7 @@ export const networkConfigs = {
       live: true,
     },
   },
-  [KNOWN_CHAINS.get(3).network]: {
+  [KNOWN_CHAINS.get(3).type]: {
     enableMigrateBanner: true,
     addresses: {
       ensRegistry:
@@ -62,7 +62,7 @@ export const networkConfigs = {
       live: true,
     },
   },
-  [KNOWN_CHAINS.get(1337).network]: {
+  [KNOWN_CHAINS.get(1337).type]: {
     enableMigrateBanner: true,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
@@ -83,7 +83,7 @@ export const networkConfigs = {
   },
   // xDai is an experimental chain in the Aragon Client. It's possible
   // and expected that a few things will break.
-  [KNOWN_CHAINS.get(100).network]: {
+  [KNOWN_CHAINS.get(100).type]: {
     enableMigrateBanner: false,
     addresses: {
       ensRegistry:
@@ -100,7 +100,7 @@ export const networkConfigs = {
       live: true,
     },
   },
-  [KNOWN_CHAINS.get(80001).network]: {
+  [KNOWN_CHAINS.get(80001).type]: {
     enableMigrateBanner: false,
     addresses: {
       ensRegistry:
@@ -167,6 +167,10 @@ export function getNetworkName(networkType) {
 
 export function getNetworkSettings(networkType) {
   return getNetworkConfig(networkType).settings
+}
+
+export function getChainId(networkType) {
+  return getNetworkSettings(networkType).chainId
 }
 
 export function useNetworkConfig() {
