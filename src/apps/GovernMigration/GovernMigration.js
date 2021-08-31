@@ -218,6 +218,8 @@ const GovernMigration = React.memo(function GovernMigration({
         from: account,
         to: toAddress,
         value: 0,
+        description:
+          'Create a new proposal to migrate your DAO funds to Aragon Govern',
         data: data,
       }
     })
