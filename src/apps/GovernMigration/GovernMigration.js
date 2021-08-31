@@ -129,7 +129,9 @@ const GovernMigration = React.memo(function GovernMigration({
       !data.createdAt ||
       data.createdAt > MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP
     ) {
-      setAddressError(`This DAO can't participate in this migration reward program`)
+      setAddressError(
+        `This DAO can't participate in this migration reward program`
+      )
       return
     }
 
