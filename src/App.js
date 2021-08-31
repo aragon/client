@@ -36,7 +36,7 @@ import {
 import { useClientWeb3 } from './contexts/ClientWeb3Context'
 
 const MIGRATION_BANNER_HIDE = 'MIGRATION_BANNER_HIDE&'
-const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
+export const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
   '2021-05-14T15:43:08Z'
 ).getTime()
 
