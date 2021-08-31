@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import GenerateMigration from '@aragon/v2-migrator-script/build'
 import { getNetworkConfig } from '../../network-config'
 import { usePermissionsByRole } from '../../contexts/PermissionsContext'
+import { getOrganizationByAddress } from '../../services/gql'
+import { MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP } from '../../App'
 
 import {
   Box,
@@ -115,6 +117,23 @@ const GovernMigration = React.memo(function GovernMigration({
   }, [])
 
   const handleMigration = useCallback(async () => {
+    // check once more if dao is eligible to be migrated due to createdAt restriction
+    const data = await getOrganizationByAddress(networkType, daoAddress.address)
+    if (data?.createdAt) {
+      // transform into ml seconds
+      data.createdAt = parseInt(data.createdAt) * 1000
+    }
+
+    if (
+      !data ||
+      !data.createdAt ||
+      data.createdAt > MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP
+    ) {
+      // TODO: uncomment this when it's 100% ready...
+      // setAddressError(`This DAO can't participate in this migration reward program`)
+      // return
+    }
+
     const error = validateAddress(governAddress)
     setAddressError(error)
     if (error) return
@@ -231,6 +250,7 @@ const GovernMigration = React.memo(function GovernMigration({
       console.log('Migration failed: ', err)
     }
   }, [
+    daoAddress,
     wrapper,
     governAddress,
     orgsByName,
