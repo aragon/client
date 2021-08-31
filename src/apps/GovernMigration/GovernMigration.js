@@ -61,7 +61,7 @@ const GovernMigration = React.memo(function GovernMigration({
 }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
-  const { networkType, web3: walletWeb3, account } = useWallet()
+  const { networkType, account } = useWallet()
   const routing = useRouting()
 
   const [governAddress, setGovernAddress] = useState('')
@@ -236,7 +236,6 @@ const GovernMigration = React.memo(function GovernMigration({
     orgsByName,
     permissions,
     networkType,
-    walletWeb3,
     account,
     goToVote,
   ])
