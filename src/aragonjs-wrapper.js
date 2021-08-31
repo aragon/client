@@ -20,7 +20,8 @@ import {
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 import { getOrganizationByAddress } from './services/gql'
-import { getNetworkConfig } from './network-config'
+import { getNetworkConfig, getChainId } from './network-config'
+import { KNOWN_CHAINS } from './wallet'
 
 const POLL_DELAY_CONNECTIVITY = 2000
 
@@ -296,7 +297,9 @@ const initWrapper = async (
   })
 
   try {
+    const network = KNOWN_CHAINS.get(getChainId(networkType))
     await wrapper.init({
+      network,
       accounts: {
         providedAccounts: walletAccount ? [walletAccount] : [],
       },
