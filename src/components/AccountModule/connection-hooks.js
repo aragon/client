@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useTheme } from '@aragon/ui'
 import BN from 'bn.js'
 import {
@@ -128,15 +128,20 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   )
   const [syncDelay, setSyncDelay] = useState(0)
 
-  const handleWebsocketDrop = useCallback(() => {
-    setIsListening(false)
-    setConnectionStatus(STATUS_CONNECTION_ERROR)
-  }, [])
-
   // listen to web3 connection drop due to inactivity
   useEffect(() => {
     if (!selectedWeb3 || !selectedWeb3.currentProvider) {
       return
+    }
+
+    let cancel = false
+    const handleWebsocketDrop = () => {
+      return () => {
+        if (!cancel) {
+          setIsListening(false)
+          setConnectionStatus(STATUS_CONNECTION_ERROR)
+        }
+      }
     }
 
     if (selectedWeb3.currentProvider.on) {
@@ -144,14 +149,15 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     }
 
     return () => {
-      if (selectedWeb3.currentProvider.removeEventListener) {
-        selectedWeb3.currentProvider.removeListener(
+      cancel = true
+      if (selectedWeb3.currentProvider.connection?.removeEventListener) {
+        selectedWeb3.currentProvider.connection.removeEventListener(
           'error',
           handleWebsocketDrop
         )
       }
     }
-  }, [selectedWeb3, handleWebsocketDrop])
+  }, [selectedWeb3])
 
   // check for connection loss from the browser
   useEffect(() => {
