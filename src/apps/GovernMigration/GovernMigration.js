@@ -124,7 +124,11 @@ const GovernMigration = React.memo(function GovernMigration({
       data.createdAt = parseInt(data.createdAt) * 1000
     }
 
-    if(!data || !data.createdAt || data.createdAt > MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP) {
+    if (
+      !data ||
+      !data.createdAt ||
+      data.createdAt > MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP
+    ) {
       // TODO: uncomment this when it's 100% ready...
       // setAddressError(`This DAO can't participate in this migration reward program`)
       // return
@@ -246,6 +250,7 @@ const GovernMigration = React.memo(function GovernMigration({
       console.log('Migration failed: ', err)
     }
   }, [
+    daoAddress,
     wrapper,
     governAddress,
     orgsByName,
