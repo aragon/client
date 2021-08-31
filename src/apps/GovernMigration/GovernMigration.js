@@ -17,7 +17,7 @@ import {
   Button,
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
-import { AppType, DaoAddressType } from '../../prop-types'
+import { AppType, AragonType, DaoAddressType } from '../../prop-types'
 import {
   getEmptyAddress,
   toChecksumAddress,
@@ -28,8 +28,10 @@ import styled from 'styled-components'
 import { useWallet } from '../../wallet'
 import AddressField from '../../components/AddressField/AddressField'
 import { InvalidAddress, RequiredField } from '../../errors'
+import { performTransactionPaths } from '../../aragonjs-wrapper'
+import { useRouting } from '../../routing'
 
-const GOVERN_REWARD_URL = 'https://upgrade.aragon.org/governreward'
+const GOVERN_REWARD_URL = 'https://upgrade.aragon.org/governReward'
 const MIGRATE_REWARD_URL =
   'https://help.aragon.org/article/99-aragon-govern-migration-reward-program'
 
@@ -55,10 +57,12 @@ const GovernMigration = React.memo(function GovernMigration({
   appsLoading,
   apps,
   daoAddress,
+  wrapper,
 }) {
   const theme = useTheme()
   const { layoutName } = useLayout()
-  const { networkType, web3: walletWeb3, account } = useWallet()
+  const { networkType, account } = useWallet()
+  const routing = useRouting()
 
   const [governAddress, setGovernAddress] = useState('')
   const [addressError, setAddressError] = useState(null)
@@ -93,6 +97,16 @@ const GovernMigration = React.memo(function GovernMigration({
 
     return orgs
   }, [apps, checksummedDaoAddr])
+
+  const goToVote = useCallback(() => {
+    routing.update(({ mode }) => ({
+      mode: {
+        name: 'org',
+        orgAddress: mode.orgAddress,
+        instanceId: orgsByName.voting,
+      },
+    }))
+  }, [routing, orgsByName])
 
   const handleAddressChange = useCallback(e => {
     const address = e.target.value
@@ -199,16 +213,32 @@ const GovernMigration = React.memo(function GovernMigration({
       return
     }
 
-    calldatas.forEach(callData => {
-      const tx = walletWeb3.eth.sendTransaction({
+    const paths = calldatas.map(data => {
+      return {
         from: account,
         to: toAddress,
         value: 0,
-        data: callData,
-      })
-      console.log(tx, ' tx ')
+        description:
+          'Create a new proposal to migrate your DAO funds to Aragon Govern',
+        data: data,
+      }
     })
-  }, [governAddress, orgsByName, permissions, networkType, walletWeb3, account])
+
+    try {
+      await performTransactionPaths(wrapper, [paths])
+      goToVote()
+    } catch (err) {
+      console.log('Migration failed: ', err)
+    }
+  }, [
+    wrapper,
+    governAddress,
+    orgsByName,
+    permissions,
+    networkType,
+    account,
+    goToVote,
+  ])
 
   // focus address field on mount
   useEffect(() => {
@@ -253,31 +283,58 @@ const GovernMigration = React.memo(function GovernMigration({
             <AddressField
               wide
               label="Your new Aragon Govern DAO"
+              subtitle="The address of the DAO Executor (available in the settings tab of
+                your new Aragon Govern DAO)"
               placeholder={getEmptyAddress()}
               ref={addressRef}
               onChange={handleAddressChange}
               value={governAddress}
               error={addressError}
+              noFieldMargin
             />
-            The address of the DAO Executor (available in the settings tab of
-            your new Aragon Govern DAO)
             <Info mode="warning">
-              Make sure your <b>Aragon Govern Executor</b> address is correct,
-              otherwise you might send all your funds to an invalid address and
-              lose access to them
+              Make sure your{' '}
+              <b
+                css={`
+                  font-weight: 700;
+                `}
+              >
+                Aragon Govern Executor
+              </b>{' '}
+              address is correct, otherwise you might send all your funds to an
+              invalid address and lose access to them
             </Info>
             <StyledButton mode="strong" onClick={handleMigration}>
-              Generate Migration
+              Create Proposal
             </StyledButton>
-            <Label theme={theme}>
-              Once migration script is generated, follow{' '}
-              <StyledLink href="https://github.com/aragon/kpi-migration">
-                these instructions
-              </StyledLink>{' '}
-              to create a proposal to execute it.
-            </Label>
+
+            <Info>
+              By following the instructions and executing the script you will be
+              creating a proposal that will be available to be voted in your
+              DAO. Once it is approved and executed,{' '}
+              <b
+                css={`
+                  font-weight: 700;
+                `}
+              >
+                all your DAO funds
+              </b>{' '}
+              will be transferred to the new DAO Govern Executor address, and
+              the new DAO will be entitled to receive the KPI options. The
+              options will be sent to the same Aragon Govern Executor address
+              within 10 days from the migration. You can consult the amount of
+              the option in{' '}
+              <StyledLink href={GOVERN_REWARD_URL}>
+                upgrade.aragon.org/governReward
+              </StyledLink>
+            </Info>
             {networkType && (
-              <Label theme={theme}>
+              <Label
+                theme={theme}
+                css={`
+                  margin-top: ${2 * GU}px;
+                `}
+              >
                 Don't have a Aragon Govern DAO?{' '}
                 <StyledLink href={getCreateOneUrl(networkType)}>
                   Create one
@@ -285,18 +342,6 @@ const GovernMigration = React.memo(function GovernMigration({
                 .
               </Label>
             )}
-            <Info>
-              By executing this you will be creating a proposal that will be
-              voted in your DAO. Once it is approved and executed,{' '}
-              <b>all your DAO funds</b> will be transfered to the new DAO Govern
-              Executor address, and the new DAO will be entitled to receive the
-              KPI options. The options will be sent to the same Aragon Govern
-              Executor address within 10 days from the migration. You can
-              consult the options amount in{' '}
-              <StyledLink href={GOVERN_REWARD_URL}>
-                governreward.aragon.org
-              </StyledLink>
-            </Info>
           </div>
         </Box>
       </React.Fragment>
@@ -349,6 +394,7 @@ GovernMigration.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsLoading: PropTypes.bool.isRequired,
   daoAddress: DaoAddressType.isRequired,
+  wrapper: AragonType,
 }
 
 export default GovernMigration
