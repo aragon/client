@@ -20,11 +20,18 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
   // Set the number of visible items,
   // and adjust the selected item if needed.
   useEffect(() => {
-    const visibleItems = Math.max(
+    const potencialVisibleItems = Math.max(
       1,
       Math.floor((containerWidth - itemSpacing * 2) / (itemWidth + itemSpacing))
     )
-    const lastSelectionableItem = items.length - visibleItems
+
+    const visibleItems =
+      potencialVisibleItems <= items.length
+        ? potencialVisibleItems
+        : items.length
+
+    const lastSelectionableItem =
+      items.length - visibleItems >= 0 ? items.length - visibleItems : 0
 
     setVisibleItems(visibleItems)
     setSelected(selected =>
@@ -58,7 +65,7 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
     setSelected(selected =>
       Math.min(items.length - visibleItems, selected + visibleItems)
     )
-  }, [items.length, visibleItems])
+  }, [items, visibleItems])
 
   // The total width of the visible items
   const visibleItemsWidth =
@@ -69,24 +76,8 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
 
   // Get the container x position from an item index
   const xFromItem = useCallback(
-    index => {
-      if (index >= 0) {
-        return sideSpace - (itemWidth + itemSpacing) * index
-      } else {
-        // center items
-        return (
-          containerWidth - visibleItemsWidth + (itemSpacing * items.length - 1)
-        )
-      }
-    },
-    [
-      sideSpace,
-      itemWidth,
-      itemSpacing,
-      containerWidth,
-      visibleItemsWidth,
-      items,
-    ]
+    index => sideSpace - (itemWidth + itemSpacing) * index,
+    [sideSpace, itemWidth, itemSpacing]
   )
 
   // Get an item index from the container x position
@@ -111,7 +102,9 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
   const selectedX = xFromItem(selected)
 
   // The x position of the last item, before the drag
-  const lastX = xFromItem(items.length - visibleItems)
+  const lastX = xFromItem(
+    items.length > visibleItems ? items.length - visibleItems : 0
+  )
 
   // Handles the actual x position, with the drag
   const [{ x }, setX] = useSpring(() => ({
