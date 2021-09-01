@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useWallet } from '../wallet'
 import StoredList from '../StoredList'
-import { network } from '../environment'
 import { EthereumAddressType } from '../prop-types'
 import {
   ACTIVITY_STATUS_CONFIRMED,
@@ -11,6 +10,7 @@ import {
   ACTIVITY_STATUS_TIMED_OUT,
   ACTIVITY_TYPE_TRANSACTION,
 } from '../symbols'
+import { getLocalStorageKey } from '../utils'
 
 const ActivityContext = React.createContext()
 
@@ -27,19 +27,22 @@ const SymbolsByName = new Map(
   })
 )
 
-const getStoredList = (daoDomain, account) =>
-  new StoredList(`activity:${network.type}:${daoDomain}:${account}`, {
-    preStringify: activity => ({
-      ...activity,
-      status: activity.status.description.replace('ACTIVITY_STATUS_', ''),
-      type: activity.type.description.replace('ACTIVITY_TYPE_', ''),
-    }),
-    postParse: activity => ({
-      ...activity,
-      status: SymbolsByName.get(`ACTIVITY_STATUS_${activity.status}`),
-      type: SymbolsByName.get(`ACTIVITY_TYPE_${activity.type}`),
-    }),
-  })
+const getStoredList = (networkType, daoDomain, account) =>
+  new StoredList(
+    getLocalStorageKey(`activity:${daoDomain}:${account}`, networkType),
+    {
+      preStringify: activity => ({
+        ...activity,
+        status: activity.status.description.replace('ACTIVITY_STATUS_', ''),
+        type: activity.type.description.replace('ACTIVITY_TYPE_', ''),
+      }),
+      postParse: activity => ({
+        ...activity,
+        status: SymbolsByName.get(`ACTIVITY_STATUS_${activity.status}`),
+        type: SymbolsByName.get(`ACTIVITY_TYPE_${activity.type}`),
+      }),
+    }
+  )
 
 // Provides easy access to the user activities list
 class ActivityProviderBase extends React.Component {
@@ -48,6 +51,7 @@ class ActivityProviderBase extends React.Component {
     children: PropTypes.node,
     daoDomain: PropTypes.string, // domain of current DAO
     web3: PropTypes.object,
+    networkType: PropTypes.string.isRequired,
   }
   static defaultProps = {
     account: '',
@@ -66,15 +70,19 @@ class ActivityProviderBase extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { daoDomain, account } = this.props
-    if (daoDomain !== prevProps.daoDomain || account !== prevProps.account) {
+    const { daoDomain, account, networkType } = this.props
+    if (
+      daoDomain !== prevProps.daoDomain ||
+      account !== prevProps.account ||
+      networkType !== prevProps.networkType
+    ) {
       this.updateStoredList()
     }
   }
 
   updateStoredList() {
-    const { daoDomain, account } = this.props
-    this._storedList = getStoredList(daoDomain, account)
+    const { daoDomain, account, networkType } = this.props
+    this._storedList = getStoredList(networkType, daoDomain, account)
     this.setState(
       { activities: this._storedList.getItems() },
       this.refreshPendingActivities
@@ -257,10 +265,15 @@ class ActivityProviderBase extends React.Component {
 }
 
 function ActivityProvider(props) {
-  const { account } = useWallet()
-  return <ActivityProviderBase account={account} {...props} />
+  const { account, networkType } = useWallet()
+  return (
+    <ActivityProviderBase
+      networkType={networkType}
+      account={account}
+      {...props}
+    />
+  )
 }
-ActivityProvider.propTypes = ActivityProviderBase.propTypes
 
 const ActivityConsumer = ActivityContext.Consumer
 

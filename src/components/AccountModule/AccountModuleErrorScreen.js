@@ -1,17 +1,17 @@
 import React, { useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { GU, Link, textStyle, useTheme } from '@aragon/ui'
-import { UnsupportedChainError } from 'use-wallet'
-import { network } from '../../environment'
-
+import { ChainUnsupportedError } from '../../wallet'
+import { useNetworkConfig } from '../../network-config'
 import connectionError from './assets/connection-error.png'
 
 function AccountModuleErrorScreen({ error, onBack }) {
   const theme = useTheme()
   const elementRef = useRef()
+  const { settings: network } = useNetworkConfig()
 
   const [title, secondary] = useMemo(() => {
-    if (error instanceof UnsupportedChainError) {
+    if (error instanceof ChainUnsupportedError) {
       return [
         'Wrong network',
         `Please select the ${network.shortName} network in your wallet and try again.`,
@@ -21,7 +21,7 @@ function AccountModuleErrorScreen({ error, onBack }) {
       'Failed to enable your account',
       'You can try another Ethereum wallet.',
     ]
-  }, [error])
+  }, [error, network])
 
   return (
     <section

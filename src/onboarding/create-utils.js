@@ -1,13 +1,11 @@
-import { network, web3Providers } from '../environment'
-import { getWeb3 } from '../web3-utils'
-
-const TEMPLATE_STATE_KEY = `create-org:${network.type}`
+const templateStateKey = 'create-org'
 
 export function loadTemplateState() {
-  const value = localStorage.getItem(TEMPLATE_STATE_KEY)
+  const value = localStorage.getItem(templateStateKey)
   try {
     const data = JSON.parse(value)
     return {
+      networkType: data.networkType,
       templateScreenIndex: data.templateScreenIndex,
       templateData: data.templateData || {},
       templateId: data.templateId,
@@ -18,11 +16,10 @@ export function loadTemplateState() {
 }
 
 export function saveTemplateState(state) {
-  localStorage.setItem(`create-org:${network.type}`, JSON.stringify(state))
+  localStorage.setItem(templateStateKey, JSON.stringify(state))
 }
 
-export function prepareTransactionCreatorFromAbi(abi, toAddress) {
-  const web3 = getWeb3(web3Providers.default)
+export function prepareTransactionCreatorFromAbi(web3, abi, toAddress) {
   const contract = new web3.eth.Contract(abi)
 
   return function(methodName, paramsList) {

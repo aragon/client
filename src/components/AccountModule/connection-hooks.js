@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useTheme } from '@aragon/ui'
 import BN from 'bn.js'
 import {
@@ -12,44 +12,36 @@ import {
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
-import { network, web3Providers } from '../../environment'
 import {
   MAX_PROVIDER_SYNC_DELAY,
   MILD_PROVIDER_SYNC_DELAY,
   OK_PROVIDER_SYNC_DELAY,
-  normalizeNetworkName,
 } from './utils'
 import { pollEvery } from '../../utils'
-import { useWallet } from '../../wallet'
+import { useWallet, ChainUnsupportedError, WALLET_STATUS } from '../../wallet'
 import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
+import {
+  getNetworkSettings,
+  normalizeNetworkName,
+  getNetworkName,
+} from '../../network-config'
+import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
 export function useNetworkConnectionData() {
-  const { web3: walletWeb3 } = useWallet()
-  const [walletChainId, setWalletChainId] = useState(-1)
-  const clientChainId = network.chainId
+  const { networkType, status, error } = useWallet()
 
-  useEffect(() => {
-    if (!walletWeb3) {
-      return
-    }
-
-    let cancelled = false
-    walletWeb3.eth.getChainId((err, chainId) => {
-      if (!err && !cancelled) {
-        setWalletChainId(chainId)
-      }
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [walletWeb3])
+  const isWrongNetwork = useMemo(() => {
+    return (
+      status === WALLET_STATUS.error && error instanceof ChainUnsupportedError
+    )
+  }, [status, error])
 
   return {
-    walletNetworkName: normalizeNetworkName(walletChainId),
-    clientNetworkName: normalizeNetworkName(clientChainId),
-    hasNetworkMismatch: walletChainId !== -1 && walletChainId !== clientChainId,
+    walletNetworkName: normalizeNetworkName(networkType),
+    walletNetworkFullName: getNetworkName(networkType),
+    isWrongNetwork,
   }
 }
 
@@ -61,8 +53,16 @@ export function useWalletConnectionDetails(
   clientSyncDelay,
   walletSyncDelay
 ) {
-  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
+  const {
+    walletNetworkName,
+    walletNetworkFullName,
+    isWrongNetwork,
+  } = useNetworkConnectionData()
+
   const theme = useTheme()
+  const { networkType } = useWallet()
+  const networkSettings = getNetworkSettings(networkType)
+
   const isWalletAndClientSynced =
     Math.abs(walletSyncDelay - clientSyncDelay) <= OK_PROVIDER_SYNC_DELAY
   const networkSlowdown =
@@ -72,11 +72,11 @@ export function useWalletConnectionDetails(
 
   const defaultOkConnectionDetails = {
     connectionMessage: `Connected to ${walletNetworkName}`,
-    connectionMessageLong: `Connected to Ethereum ${walletNetworkName} Network`,
+    connectionMessageLong: `Connected to ${walletNetworkFullName} Network`,
     connectionColor: theme.positive,
   }
 
-  if (clientListening && !network.live) {
+  if (clientListening && !networkSettings.live) {
     return defaultOkConnectionDetails
   }
 
@@ -103,7 +103,7 @@ export function useWalletConnectionDetails(
       connectionMessageLong: 'Syncing issues',
       connectionColor: theme.warning,
     }
-  } else if (hasNetworkMismatch) {
+  } else if (isWrongNetwork) {
     return {
       connectionMessage: 'Wrong network',
       connectionMessageLong: 'Wrong network',
@@ -116,9 +116,10 @@ export function useWalletConnectionDetails(
 
 export function useSyncInfo(wantedWeb3 = 'default') {
   const wallet = useWallet()
-  const clientWeb3 = getWeb3(web3Providers.default)
+  const { web3: clientWeb3 } = useClientWeb3()
   const walletWeb3 = wallet.web3
-  const selectedWeb3 = wantedWeb3 === 'wallet' ? walletWeb3 : clientWeb3
+  const selectedWeb3 =
+    wantedWeb3 === 'wallet' ? walletWeb3 : getWeb3(clientWeb3)
 
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
@@ -127,32 +128,34 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   )
   const [syncDelay, setSyncDelay] = useState(0)
 
-  const handleWebsocketDrop = useCallback(() => {
-    setIsListening(false)
-    setConnectionStatus(STATUS_CONNECTION_ERROR)
-  }, [])
-
   // listen to web3 connection drop due to inactivity
   useEffect(() => {
     if (!selectedWeb3 || !selectedWeb3.currentProvider) {
       return
     }
 
+    let cancel = false
+    const handleWebsocketDrop = () => {
+      if (!cancel) {
+        setIsListening(false)
+        setConnectionStatus(STATUS_CONNECTION_ERROR)
+      }
+    }
+
     if (selectedWeb3.currentProvider.on) {
-      selectedWeb3.currentProvider.on('end', handleWebsocketDrop)
       selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
     }
 
     return () => {
-      if (selectedWeb3.currentProvider.removeEventListener) {
-        selectedWeb3.currentProvider.removeListener('end', handleWebsocketDrop)
-        selectedWeb3.currentProvider.removeListener(
+      cancel = true
+      if (selectedWeb3.currentProvider.connection?.removeEventListener) {
+        selectedWeb3.currentProvider.connection.removeEventListener(
           'error',
           handleWebsocketDrop
         )
       }
     }
-  }, [selectedWeb3, handleWebsocketDrop])
+  }, [selectedWeb3])
 
   // check for connection loss from the browser
   useEffect(() => {
@@ -176,27 +179,48 @@ export function useSyncInfo(wantedWeb3 = 'default') {
       return
     }
 
+    let cancel = false
     const pollBlockTimestamp = pollEvery(
       () => ({
-        request: () => getLatestBlockTimestamp(selectedWeb3),
+        request: async () => {
+          if (!cancel) {
+            return getLatestBlockTimestamp(selectedWeb3).catch(err => {
+              if (!cancel) {
+                console.error('Get latest block timestamp', err)
+                setIsListening(false)
+                setConnectionStatus(STATUS_CONNECTION_ERROR)
+              }
+              return 0
+            })
+          }
+        },
         onResult: timestamp => {
-          const blockDiff = new Date() - timestamp
-          const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
-          const connectionHealth =
-            latestBlockDifference >= 30
-              ? STATUS_CONNECTION_ERROR
-              : latestBlockDifference >= 3
-              ? STATUS_CONNECTION_WARNING
-              : STATUS_CONNECTION_HEALTHY
-          setConnectionStatus(connectionHealth)
-          setSyncDelay(latestBlockDifference)
+          if (!cancel) {
+            const now = new Date()
+            const blockDiff = now - timestamp
+            const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
+            const connectionHealth =
+              latestBlockDifference >= 30
+                ? STATUS_CONNECTION_ERROR
+                : latestBlockDifference >= 3
+                ? STATUS_CONNECTION_WARNING
+                : STATUS_CONNECTION_HEALTHY
+            setConnectionStatus(connectionHealth)
+            setSyncDelay(latestBlockDifference)
+            if (connectionHealth === STATUS_CONNECTION_HEALTHY) {
+              setIsListening(true)
+            }
+          }
         },
       }),
       BLOCK_TIMESTAMP_POLL_INTERVAL
     )
     const cleanUpTimestampPoll = pollBlockTimestamp()
 
-    return () => cleanUpTimestampPoll()
+    return () => {
+      cancel = true
+      cleanUpTimestampPoll()
+    }
   }, [selectedWeb3])
 
   return {
@@ -214,7 +238,7 @@ export function useSyncState(
   clientSyncDelay,
   walletSyncDelay
 ) {
-  const { balance, getBlockNumber } = useWallet()
+  const { balance, getBlockNumber, networkType } = useWallet()
   const currentBlock = getBlockNumber()
 
   const minimumTransactionBalance = new BN(0.005)
@@ -225,7 +249,9 @@ export function useSyncState(
     status: STATUS_CONNECTION_OK,
   }
 
-  if (clientListening && !network.live) {
+  const networkSettings = getNetworkSettings(networkType)
+
+  if (clientListening && !networkSettings.live) {
     return defaultSyncedStatus
   }
 

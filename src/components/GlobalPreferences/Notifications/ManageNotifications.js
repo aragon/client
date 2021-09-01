@@ -20,6 +20,7 @@ import {
 import SubscriptionsForm from './SubscriptionsForm'
 import SubscriptionsTable from './SubscriptionsTable'
 import { DeleteAccountConfirmationModal } from './NotificationModals'
+import { useWallet } from '../../../wallet'
 
 export default function ManageNotifications({
   apps,
@@ -33,10 +34,11 @@ export default function ManageNotifications({
   const [apiError, setApiError] = useState(null)
   const [isFetching, setIsFetching] = useState(true)
   const [subscriptions, setSubscriptions] = useState([])
+  const { networkType } = useWallet()
 
   const fetchSubscriptions = useCallback(() => {
     setIsFetching(true)
-    return getSubscriptions(token)
+    return getSubscriptions(networkType, token)
       .then(subscriptions => {
         setApiError(null) // reset the error after successfully fetching
         setSubscriptions(subscriptions)
@@ -47,7 +49,7 @@ export default function ManageNotifications({
         setIsFetching(false)
         setApiError(error)
       })
-  }, [token])
+  }, [token, networkType])
 
   useEffect(() => {
     if (!token) {

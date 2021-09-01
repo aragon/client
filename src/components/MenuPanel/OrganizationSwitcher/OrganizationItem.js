@@ -2,16 +2,17 @@ import React from 'react'
 import { GU, textStyle } from '@aragon/ui'
 import { DaoItemType } from '../../../prop-types'
 import { getKnownOrganization } from '../../../known-organizations'
-import { network } from '../../../environment'
 import OrgIcon from '../../OrgIcon/OrgIcon'
+import PropTypes from 'prop-types'
 
 class OrganizationItem extends React.Component {
   static propTypes = {
     dao: DaoItemType.isRequired,
+    networkType: PropTypes.string.isRequired,
   }
   render() {
-    const { dao, ...props } = this.props
-    const knownOrg = getKnownOrganization(network.type, dao.address)
+    const { dao, networkType, ...props } = this.props
+    const knownOrg = getKnownOrganization(networkType, dao.address)
     return (
       <div
         css={`

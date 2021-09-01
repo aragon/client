@@ -1,11 +1,12 @@
 import React from 'react'
 import { IdentityBadge } from '@aragon/ui'
-import { network } from '../../environment'
+import { useWallet } from '../../wallet'
 
 const IdentityBadgeWithNetwork = React.memo(function IdentityBadgeWithNetwork(
   props
 ) {
-  return <IdentityBadge networkType={network.type} {...props} />
+  const { networkType } = useWallet()
+  return <IdentityBadge networkType={networkType} {...props} />
 })
 
 export default IdentityBadgeWithNetwork

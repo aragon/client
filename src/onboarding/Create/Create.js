@@ -29,6 +29,11 @@ import {
   STATUS_DEPLOYMENT,
 } from './create-statuses'
 import { useWallet } from '../../wallet'
+import { getIpfsGateway } from '../../local-settings'
+import { web3Provider } from '../../Web3Provider'
+
+const MAX_RETRY = 5
+
 import { trackEvent, events } from '../../analytics'
 import { completeDomain } from '../../check-domain'
 
@@ -39,6 +44,27 @@ const CONFIGURE_PLACEHOLDER_SCREENS = [
   'Configure template',
   'Review information',
 ]
+
+// error messages
+const ERROR_NETWORK = 'network'
+const ERROR_TEMPLATE = 'template'
+
+const ERRORS = Object.freeze({
+  [ERROR_NETWORK]: {
+    subject: 'Change of network detected',
+    details: 'Restart with the current network',
+  },
+  [ERROR_TEMPLATE]: { subject: 'Error getting template' },
+})
+
+function createError(type, details) {
+  const error = ERRORS[type]
+  error.details =
+    error.details === null || error.details === undefined
+      ? details
+      : error.details
+  return error
+}
 
 function getConfigureSteps(status, template, templateData) {
   if (!template || status === STATUS_SELECT_TEMPLATE) {
@@ -62,7 +88,9 @@ function getTemplateById(templates, templateId) {
 }
 
 // Handle and store everything related to a template state.
-function useConfigureState(templates, onScreenUpdate) {
+function useConfigureState(templates, onScreenUpdate, setError) {
+  const { networkType } = useWallet()
+
   // The current template
   const [template, setTemplate] = useState(null)
 
@@ -95,27 +123,36 @@ function useConfigureState(templates, onScreenUpdate) {
 
   useEffect(() => {
     const {
+      networkType: templateNetworkType,
       templateData,
       templateId,
       templateScreenIndex,
     } = loadTemplateState()
 
+    if (templateNetworkType !== networkType) {
+      // If the network has changed in the middle of
+      // the creation workflow, we need to go back to the home
+      // page to re-validate account balance, ENS domain, etc again..
+      setError(createError(ERROR_NETWORK))
+    }
+
     if (templateId) {
       updateTemplateScreen(templateId, templateScreenIndex)
       setTemplateData(templateData)
     }
-  }, [updateTemplateScreen])
+  }, [updateTemplateScreen, setError, networkType])
 
   // Save the template state
   useEffect(() => {
     if (template && template.id) {
       saveTemplateState({
+        networkType,
         templateData,
         templateId: template.id,
         templateScreenIndex,
       })
     }
-  }, [templateData, template, templateScreenIndex])
+  }, [templateData, template, templateScreenIndex, networkType])
 
   const relativeScreen = useCallback(
     diff => {
@@ -169,13 +206,14 @@ function useConfigureState(templates, onScreenUpdate) {
   }
 }
 
-function useTemplateRepoInformation(templateRepoAddress) {
+function useTemplateRepoInformation(templateRepoAddress, setError) {
   const [
     fetchingTemplateInformation,
     setFetchingTemplateInformation,
   ] = useState(false)
   const [templateAbi, setTemplateAbi] = useState(null)
   const [templateAddress, setTemplateAddress] = useState(null)
+  const { networkType } = useWallet()
 
   // Fetch latest information about the template from its aragonPM repository
   useEffect(() => {
@@ -185,21 +223,31 @@ function useTemplateRepoInformation(templateRepoAddress) {
 
     setFetchingTemplateInformation(true)
 
+    let timer
     let cancelled = false
-    const fetchArtifact = () => {
-      fetchApmArtifact(templateRepoAddress)
+    const fetchArtifact = (depth = 0) => {
+      const ipfsGateway = getIpfsGateway()
+      const web3 = web3Provider.getProvider(networkType)
+      fetchApmArtifact(web3, templateRepoAddress, ipfsGateway)
         .then(templateInfo => {
           if (!cancelled) {
+            log(`fetched template abi for ${templateRepoAddress}`)
             setTemplateAddress(templateInfo.contractAddress)
             setTemplateAbi(templateInfo.abi)
             setFetchingTemplateInformation(false)
           }
           return null
         })
-        .catch(() => {
+        .catch(err => {
           // Continuously re-request until this component gets unmounted or the template changes
+          // add exponential backoff to avoid freezing up the site
           if (!cancelled) {
-            fetchArtifact()
+            if (depth > MAX_RETRY) {
+              setError(createError(ERROR_TEMPLATE, err.message))
+            } else {
+              const timeoutMs = 2 ** depth * 10
+              timer = setTimeout(() => fetchArtifact(depth + 1), timeoutMs)
+            }
           }
         })
     }
@@ -208,8 +256,11 @@ function useTemplateRepoInformation(templateRepoAddress) {
 
     return () => {
       cancelled = true
+      if (timer) {
+        clearTimeout(timer)
+      }
     }
-  }, [templateRepoAddress])
+  }, [networkType, setError, templateRepoAddress])
 
   return {
     fetchingTemplateInformation,
@@ -236,15 +287,33 @@ function useDeploymentState(
     error: -1,
   })
 
+  const { networkType } = useWallet()
+
   const deployTransactions = useMemo(
     () =>
-      status === STATUS_DEPLOYMENT && templateAbi && templateAddress
+      status === STATUS_DEPLOYMENT &&
+      templateAbi &&
+      templateAddress &&
+      walletWeb3
         ? template.prepareTransactions(
-            prepareTransactionCreatorFromAbi(templateAbi, templateAddress),
-            templateData
+            prepareTransactionCreatorFromAbi(
+              walletWeb3,
+              templateAbi,
+              templateAddress
+            ),
+            templateData,
+            networkType
           )
         : null,
-    [status, templateAbi, templateAddress, template, templateData]
+    [
+      status,
+      templateAbi,
+      templateAddress,
+      template,
+      templateData,
+      walletWeb3,
+      networkType,
+    ]
   )
 
   // Call tx functions in the template, one after another.
@@ -378,11 +447,14 @@ function useDeploymentState(
 const Create = React.memo(function Create({
   account,
   onOpenOrg,
+  goToHome,
   templates,
   walletWeb3,
   web3,
 }) {
+  const [error, setError] = useState(null)
   const [status, setStatus] = useState(STATUS_SELECT_TEMPLATE)
+  const { networkType } = useWallet()
 
   const onScreenUpdate = useCallback((index, screens) => {
     if (index > -1 && index < screens.length) {
@@ -404,7 +476,7 @@ const Create = React.memo(function Create({
     template,
     templateData,
     templateScreenIndex,
-  } = useConfigureState(templates, onScreenUpdate)
+  } = useConfigureState(templates, onScreenUpdate, setError)
 
   const configureSteps = getConfigureSteps(status, template, templateData)
   const templateScreens = (template && template.screens) || []
@@ -425,7 +497,7 @@ const Create = React.memo(function Create({
     fetchingTemplateInformation,
     templateAbi,
     templateAddress,
-  } = useTemplateRepoInformation(template && template.repoAddress)
+  } = useTemplateRepoInformation(template && template.repoAddress, setError)
 
   const applyEstimateGas = useCallback(
     async transaction => {
@@ -435,14 +507,14 @@ const Create = React.memo(function Create({
         estimatedGas,
         { gasFuzzFactor: 1.1 }
       )
-      const recommendedPrice = await getGasPrice()
+      const recommendedPrice = await getGasPrice(networkType)
       return {
         ...transaction,
         gas: recommendedLimit,
         gasPrice: recommendedPrice,
       }
     },
-    [web3]
+    [web3, networkType]
   )
 
   const [attempts, setAttempts] = useState(0)
@@ -541,6 +613,18 @@ const Create = React.memo(function Create({
         header="Something went wrong"
         visible={erroredTransactions > -1}
       />
+      {error && (
+        <ErrorModal
+          action={
+            <Button mode="strong" onClick={goToHome}>
+              Start over
+            </Button>
+          }
+          content={error.details}
+          header={error.subject}
+          visible
+        />
+      )}
     </div>
   )
 })
@@ -548,6 +632,7 @@ const Create = React.memo(function Create({
 Create.propTypes = {
   account: EthereumAddressType,
   onOpenOrg: PropTypes.func.isRequired,
+  goToHome: PropTypes.func.isRequired,
   templates: PropTypes.array.isRequired,
   walletWeb3: PropTypes.object,
   web3: PropTypes.object,

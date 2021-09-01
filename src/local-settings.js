@@ -9,7 +9,6 @@ const IPFS_GATEWAY = 'IPFS_GATEWAY'
 const LOCAL_CHAIN_ID = 'LOCAL_CHAIN_ID'
 const PACKAGE_VERSION = 'PACKAGE_VERSION'
 const SELECTED_CURRENCY = 'SELECTED_CURRENCY'
-const SENTRY_DSN = 'SENTRY_DSN'
 const PORTIS_DAPP_ID = 'PORTIS_DAPP_ID'
 const FORTMATIC_API_KEY = 'FORTMATIC_API_KEY'
 
@@ -50,7 +49,6 @@ const CONFIGURATION_VARS = [
     process.env.ARAGON_SELECTED_CURRENCY,
     process.env.REACT_APP_SELECTED_CURRENCY,
   ],
-  [SENTRY_DSN, process.env.ARAGON_SENTRY_DSN, process.env.REACT_APP_SENTRY_DSN],
   [
     PACKAGE_VERSION,
     process.env.ARAGON_PACKAGE_VERSION,
@@ -71,9 +69,15 @@ const CONFIGURATION_VARS = [
   {}
 )
 
+function toStorageKey(key, networkType) {
+  return networkType ? `${networkType}:${key}` : key
+}
+
 // Get a setting from localStorage
-function getLocalStorageSetting(confKey) {
-  return window.localStorage.getItem(CONFIGURATION_VARS[confKey].storageKey)
+function getLocalStorageSetting(confKey, networkType) {
+  const key = CONFIGURATION_VARS[confKey].storageKey
+  const storageKey = toStorageKey(key, networkType)
+  return window.localStorage.getItem(storageKey)
 }
 
 // Get a setting from the env vars
@@ -82,17 +86,18 @@ function getEnvSetting(confKey) {
 }
 
 // Get a local setting: from the local storage if available, or the env vars.
-function getLocalSetting(confKey) {
-  return getLocalStorageSetting(confKey) || getEnvSetting(confKey)
+function getLocalSetting(confKey, networkType) {
+  return getLocalStorageSetting(confKey, networkType) || getEnvSetting(confKey)
 }
 
-function setLocalSetting(confKey, value) {
+function setLocalSetting(confKey, value, networkType) {
   const confVar = CONFIGURATION_VARS[confKey]
-  return window.localStorage.setItem(confVar.storageKey, value)
+  const key = toStorageKey(confVar.storageKey, networkType)
+  return window.localStorage.setItem(key, value)
 }
 
-export function getAppLocator() {
-  return getLocalSetting(APP_LOCATOR) || ''
+export function getAppLocator(networkType) {
+  return getLocalSetting(APP_LOCATOR, networkType) || ''
 }
 
 export function getLocalChainId() {
@@ -100,22 +105,17 @@ export function getLocalChainId() {
   return getLocalSetting(LOCAL_CHAIN_ID) || 1337
 }
 
-export function getDefaultEthNode() {
-  // Let the network configuration handle node defaults
-  return getLocalSetting(DEFAULT_ETH_NODE) || ''
+export function getDefaultEthNode(networkType) {
+  return getLocalSetting(DEFAULT_ETH_NODE, networkType) || ''
 }
 
-export function setDefaultEthNode(node) {
-  return setLocalSetting(DEFAULT_ETH_NODE, node)
+export function setDefaultEthNode(node, networkType) {
+  return setLocalSetting(DEFAULT_ETH_NODE, node, networkType)
 }
 
 export function getEnsRegistryAddress() {
   // Let the network configuration handle contract address defaults
   return getLocalSetting(ENS_REGISTRY_ADDRESS) || ''
-}
-
-export function getEthNetworkType() {
-  return getLocalSetting(ETH_NETWORK_TYPE) || 'rinkeby'
 }
 
 export function getEthSubscriptionEventDelay() {
@@ -127,8 +127,8 @@ export function getIpfsGateway() {
   return getLocalSetting(IPFS_GATEWAY) || 'https://ipfs.eth.aragon.network/ipfs'
 }
 
-export function setIpfsGateway(gateway) {
-  return setLocalSetting(IPFS_GATEWAY, gateway)
+export function setIpfsGateway(gateway, networkType) {
+  return setLocalSetting(IPFS_GATEWAY, gateway, networkType)
 }
 
 export function getSelectedCurrency() {
@@ -137,10 +137,6 @@ export function getSelectedCurrency() {
 
 export function setSelectedCurrency(currency) {
   return setLocalSetting(SELECTED_CURRENCY, currency.toUpperCase())
-}
-
-export function getSentryDsn() {
-  return getLocalSetting(SENTRY_DSN) || ''
 }
 
 // The previous package version is stored in localStorage,

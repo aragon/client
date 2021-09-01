@@ -1,4 +1,9 @@
-import { connectGraphEndpoint } from '../environment'
+import { networkConfigs } from '../network-config'
+import { getLocalStorageKey } from '../utils'
+
+const getGraphEndpoint = networkType => {
+  return networkConfigs[networkType].connectGraphEndpoint
+}
 
 const query = `query Organizations($id: ID!) {
     organizations(where: {id: $id},  orderBy: createdAt, orderDirection: desc){ 
@@ -10,13 +15,22 @@ const query = `query Organizations($id: ID!) {
 
 const ORGANIZATION_INFO = 'ORGANIZATION_INFO&'
 
-export async function getOrganizationByAddress(daoAddress) {
-  const LOCAL_STORAGE_KEY = `${ORGANIZATION_INFO}${daoAddress}`
+export async function getOrganizationByAddress(networkType, daoAddress) {
+  const LOCAL_STORAGE_KEY = getLocalStorageKey(
+    `${ORGANIZATION_INFO}${daoAddress}`,
+    networkType
+  )
   if (localStorage.getItem(LOCAL_STORAGE_KEY)) {
     return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
   }
 
-  const data = await fetch(connectGraphEndpoint, {
+  const graphEndpoint = getGraphEndpoint(networkType)
+  if (!graphEndpoint) {
+    // some network do not have subgraph (i.e. polygon)
+    return null
+  }
+
+  const data = await fetch(graphEndpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -16,9 +16,12 @@ import {
 } from '@aragon/ui'
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import appIds from '../../known-app-ids'
-import { network } from '../../environment'
-import { getProviderString } from '../../ethereum-providers'
-import { sanitizeNetworkType } from '../../network-config'
+import { getProviderString } from 'use-wallet'
+import {
+  sanitizeNetworkType,
+  getNetworkConfig,
+  isOnMainnet,
+} from '../../network-config'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
@@ -38,6 +41,8 @@ const Organization = React.memo(function Organization({
   const wallet = useWallet()
   const { mode } = useRouting()
   const { orgAddress } = mode
+
+  const { settings: network } = getNetworkConfig(wallet.networkType)
 
   const handleDepositTestTokens = useCallback(() => {
     const finance = apps.find(app => app.appId === appIds.Finance)
@@ -97,16 +102,15 @@ const Organization = React.memo(function Organization({
       `project=${projectName}&` +
       `contracts=${contractsQueryParameter}`
     )
-  }, [apps, appsLoading, orgAddress])
+  }, [apps, appsLoading, orgAddress, network.chainId])
 
   const apmApps = apps.filter(app => !app.isAragonOsInternalApp)
   const hasAgentApp = apps.some(app => app.appId === appIds.Agent)
   const hasFinanceApp = apps.some(app => app.appId === appIds.Finance)
   const checksummedDaoAddr =
     daoAddress.address && toChecksumAddress(daoAddress.address)
-  const enableTransactions =
-    wallet.connected && wallet.networkType === network.type
-  const isMainnet = network.type === 'main'
+  const enableTransactions = wallet.connected && wallet.account
+  const isMainnet = isOnMainnet(network.type)
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (

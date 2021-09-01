@@ -9,6 +9,9 @@ export const extendError = (name, { defaultMessage }) =>
 export const InvalidAddress = extendError('InvalidAddress', {
   defaultMessage: 'The address is invalid',
 })
+export const RequiredField = extendError('RequiredField', {
+  defaultMessage: 'This field is required.',
+})
 export const InvalidNetworkType = extendError('InvalidNetworkType', {
   defaultMessage: 'The network type is invalid',
 })

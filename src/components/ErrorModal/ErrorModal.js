@@ -41,7 +41,7 @@ function ErrorModal({ action, content, header, onClose, visible }) {
         >
           {header}
         </h1>
-        <p
+        <div
           css={`
             margin-bottom: ${7 * GU}px;
             ${textStyle('body1')};
@@ -49,7 +49,7 @@ function ErrorModal({ action, content, header, onClose, visible }) {
           `}
         >
           {content}
-        </p>
+        </div>
         {action}
       </section>
     </Modal>

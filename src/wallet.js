@@ -1,13 +1,25 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import BN from 'bn.js'
-import { useWallet as useWalletBase, UseWalletProvider } from 'use-wallet'
-import { getFortmaticApiKey, getPortisDappId } from './local-settings'
-import { getProviderFromUseWalletId } from './ethereum-providers'
-import { network } from './environment'
+import {
+  useWallet as useWalletBase,
+  UseWalletProvider,
+  ChainUnsupportedError,
+  KNOWN_CHAINS,
+} from 'use-wallet'
 import { getWeb3, filterBalanceValue } from './web3-utils'
+import { useWalletConnectors } from './ethereum-providers/connectors'
 
-const NETWORK_TYPE_DEFAULT = 'private'
+export const WALLET_STATUS = Object.freeze({
+  providers: 'providers',
+  connecting: 'connecting',
+  connected: 'connected',
+  disconnected: 'disconnected',
+  error: 'error',
+})
+
+// default network is mainnet if user is not conncted
+const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(1)?.type
 
 const WalletContext = React.createContext()
 
@@ -16,14 +28,24 @@ function WalletContextProvider({ children }) {
     account,
     balance,
     ethereum,
-    activated,
-    activating,
+    connector,
+    status,
+    chainId,
+    providerInfo,
+    type,
+    networkName,
     ...walletBaseRest
   } = useWalletBase()
 
   const [walletWeb3, setWalletWeb3] = useState(null)
-  const [networkType, setNetworkType] = useState(NETWORK_TYPE_DEFAULT)
 
+  const connected = useMemo(() => status === 'connected', [status])
+  const networkType = useMemo(
+    () => (status === 'connected' ? networkName : NETWORK_TYPE_DEFAULT),
+    [status, networkName]
+  )
+
+  // get web3 and set local storage prefix whenever networkType changes
   useEffect(() => {
     let cancel = false
 
@@ -32,26 +54,15 @@ function WalletContextProvider({ children }) {
     }
 
     const walletWeb3 = getWeb3(ethereum)
-    setWalletWeb3(walletWeb3)
-
-    walletWeb3.eth.net
-      .getNetworkType()
-      .then(networkType => {
-        if (!cancel) {
-          setNetworkType(networkType)
-        }
-        return null
-      })
-      .catch(() => {
-        setNetworkType(NETWORK_TYPE_DEFAULT)
-      })
+    if (!cancel) {
+      setWalletWeb3(walletWeb3)
+    }
 
     return () => {
       cancel = true
       setWalletWeb3(null)
-      setNetworkType(NETWORK_TYPE_DEFAULT)
     }
-  }, [account, ethereum])
+  }, [ethereum, networkType])
 
   const wallet = useMemo(
     () => ({
@@ -59,18 +70,24 @@ function WalletContextProvider({ children }) {
       balance: new BN(filterBalanceValue(balance)),
       ethereum,
       networkType,
-      providerInfo: getProviderFromUseWalletId(activated),
+      providerInfo: providerInfo,
       web3: walletWeb3,
+      status,
+      chainId: connected ? chainId : 1, // connect to mainnet if wallet is not connected
+      connected,
       ...walletBaseRest,
     }),
     [
-      activated,
       account,
       balance,
       ethereum,
       networkType,
+      providerInfo,
+      status,
+      chainId,
       walletBaseRest,
       walletWeb3,
+      connected,
     ]
   )
 
@@ -82,14 +99,7 @@ WalletContextProvider.propTypes = { children: PropTypes.node }
 
 export function WalletProvider({ children }) {
   return (
-    <UseWalletProvider
-      chainId={network.chainId}
-      connectors={{
-        fortmatic: { apiKey: getFortmaticApiKey() },
-        portis: { dAppId: getPortisDappId() },
-        provided: { provider: window.cleanEthereum },
-      }}
-    >
+    <UseWalletProvider connectors={useWalletConnectors}>
       <WalletContextProvider>{children}</WalletContextProvider>
     </UseWalletProvider>
   )
@@ -99,3 +109,5 @@ WalletProvider.propTypes = { children: PropTypes.node }
 export function useWallet() {
   return useContext(WalletContext)
 }
+
+export { ChainUnsupportedError, KNOWN_CHAINS }

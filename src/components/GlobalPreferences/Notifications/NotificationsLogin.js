@@ -16,11 +16,13 @@ import { login } from './notification-service-api'
 import { validateEmail } from '../../../utils'
 import { useRouting } from '../../../routing'
 import notificationPng from './notifications.png'
+import { useWallet } from '../../../wallet'
 
 export default function NotificationsLogin({ onEmailChange, hasLoggedOut }) {
   const [inputEmail, setInputEmail] = useState('')
   const [emailInvalid, setEmailInvalid] = useState(null)
   const [apiError, setApiError] = useState(null)
+  const { networkType } = useWallet()
 
   const { mode } = useRouting()
 
@@ -48,14 +50,14 @@ export default function NotificationsLogin({ onEmailChange, hasLoggedOut }) {
       }
 
       try {
-        await login({ email: inputEmail, dao: mode.orgAddress })
+        await login({ networkType, email: inputEmail, dao: mode.orgAddress })
         onEmailChange(inputEmail)
       } catch (e) {
         setApiError(e.message)
         console.error('Failed to login', e)
       }
     },
-    [mode, inputEmail, onEmailChange]
+    [mode, inputEmail, onEmailChange, networkType]
   )
 
   const theme = useTheme()

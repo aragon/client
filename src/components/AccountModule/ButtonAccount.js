@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   ButtonBase,
@@ -10,16 +10,21 @@ import {
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { shortenAddress } from '../../web3-utils'
+import { shortenAddress, getEmptyAddress } from '../../web3-utils'
 import { useWallet } from '../../wallet'
 
 const ButtonAccount = React.forwardRef(function ButtonAccount(
-  { connectionColor, connectionMessage, hasNetworkMismatch, label, onClick },
+  { connectionColor, connectionMessage, isWrongNetwork, label, onClick },
   ref
 ) {
   const theme = useTheme()
   const wallet = useWallet()
   const { above } = useViewport()
+
+  const walletAccount = useMemo(() => {
+    return wallet.account || getEmptyAddress()
+  }, [wallet.account])
+
   return (
     <ButtonBase
       ref={ref}
@@ -43,7 +48,7 @@ const ButtonAccount = React.forwardRef(function ButtonAccount(
         `}
       >
         <div css="position: relative">
-          <EthIdenticon address={wallet.account} radius={RADIUS} />
+          <EthIdenticon address={walletAccount} radius={RADIUS} />
           <div
             css={`
               position: absolute;
@@ -83,7 +88,7 @@ const ButtonAccount = React.forwardRef(function ButtonAccount(
                     {label}
                   </div>
                 ) : (
-                  <div>{shortenAddress(wallet.account)}</div>
+                  <div>{shortenAddress(walletAccount)}</div>
                 )}
               </div>
               <div
@@ -92,7 +97,7 @@ const ButtonAccount = React.forwardRef(function ButtonAccount(
                   color: ${connectionColor};
                 `}
               >
-                {hasNetworkMismatch ? 'Wrong network' : connectionMessage}
+                {isWrongNetwork ? 'Wrong network' : connectionMessage}
               </div>
             </div>
 
@@ -114,7 +119,7 @@ ButtonAccount.propTypes = {
     PropTypes.instanceOf(String),
   ]).isRequired,
   connectionMessage: PropTypes.string.isRequired,
-  hasNetworkMismatch: PropTypes.bool.isRequired,
+  isWrongNetwork: PropTypes.bool.isRequired,
   label: PropTypes.string,
   onClick: PropTypes.func.isRequired,
 }

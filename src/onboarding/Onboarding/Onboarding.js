@@ -16,28 +16,30 @@ import { log } from '../../utils'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
-import { useWallet } from '../../wallet'
+import { useWallet, KNOWN_CHAINS } from '../../wallet'
 import validateCreationRequirements from '../validate-requirements'
+import { getWeb3 } from '../../web3-utils'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
   status: TEMPLATE_LOADING,
 }))
 
-function Onboarding({ selectorNetworks, web3 }) {
+function Onboarding({ web3 }) {
   const theme = useTheme()
   const routing = useRouting()
 
   const {
+    networkType,
     account,
     balance,
+    chainId,
     isContract: isContractAccount,
     web3: walletWeb3,
   } = useWallet()
 
   const [connectModalOpened, setConnectModalOpened] = useState(false)
   const [templates, setTemplates] = useState(initialEmbeddedTemplates)
-  const [templatesResolved, setTemplatesResolved] = useState(false)
   const [connectIntent, setConnectIntent] = useState('')
   const [requirementsError, setRequirementsError] = useState([null])
 
@@ -81,7 +83,8 @@ function Onboarding({ selectorNetworks, web3 }) {
     const requirementsErrorUpdated = validateCreationRequirements(
       account,
       balance,
-      isContractAccount
+      isContractAccount,
+      KNOWN_CHAINS.get(chainId)?.nativeCurrency.symbol
     )
 
     if (
@@ -90,16 +93,17 @@ function Onboarding({ selectorNetworks, web3 }) {
     ) {
       setRequirementsError(requirementsErrorUpdated)
     }
-  }, [account, balance, isContractAccount, requirementsError])
+  }, [account, balance, chainId, isContractAccount, requirementsError])
 
   const handleCreate = useCallback(() => {
     // reset the creation state
-    saveTemplateState({})
+    saveTemplateState({ networkType })
 
     const requirementsError = validateCreationRequirements(
       account,
       balance,
-      isContractAccount
+      isContractAccount,
+      KNOWN_CHAINS.get(chainId)?.nativeCurrency.symbol
     )
     setRequirementsError(requirementsError)
 
@@ -114,7 +118,7 @@ function Onboarding({ selectorNetworks, web3 }) {
     if (requirementsError[0] === null) {
       goToCreate()
     }
-  }, [account, balance, goToCreate, isContractAccount])
+  }, [account, balance, chainId, goToCreate, isContractAccount, networkType])
 
   const closeConnectModal = useCallback(
     provider => {
@@ -151,12 +155,12 @@ function Onboarding({ selectorNetworks, web3 }) {
 
   useEffect(() => {
     let cancelled = false
-    if (status === 'create' && !templatesResolved) {
+    if (status === 'create') {
       Promise.all(
         embeddedTemplates.map(async template => {
           let repoAddress
           try {
-            repoAddress = await resolveEnsDomain(template.id)
+            repoAddress = await resolveEnsDomain(networkType, web3, template.id)
           } catch (_) {}
 
           return repoAddress
@@ -173,8 +177,10 @@ function Onboarding({ selectorNetworks, web3 }) {
       )
         .then(templatesWithRepoAddress => {
           if (!cancelled) {
-            setTemplates(templatesWithRepoAddress)
-            setTemplatesResolved(true)
+            const availableTemplates = templatesWithRepoAddress.filter(
+              item => item.status === TEMPLATE_AVAILABLE
+            )
+            setTemplates(availableTemplates)
           }
           return null
         })
@@ -185,7 +191,7 @@ function Onboarding({ selectorNetworks, web3 }) {
     return () => {
       cancelled = true
     }
-  }, [status, templatesResolved])
+  }, [status, web3, networkType])
 
   useEffect(() => {
     if (status !== 'create') {
@@ -253,16 +259,16 @@ function Onboarding({ selectorNetworks, web3 }) {
               onOpenOrg={goToOrg}
               onCreate={handleCreate}
               openMode={status === 'open'}
-              selectorNetworks={selectorNetworks}
             />
           )}
           {status === 'create' && Array.isArray(templates) && (
             <Create
               account={account}
               onOpenOrg={goToOrg}
+              goToHome={goToHome}
               templates={templates}
               walletWeb3={walletWeb3}
-              web3={web3}
+              web3={getWeb3(web3)}
             />
           )}
         </div>
@@ -279,8 +285,6 @@ function Onboarding({ selectorNetworks, web3 }) {
 }
 
 Onboarding.propTypes = {
-  selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
-    .isRequired,
   web3: PropTypes.object,
 }
 

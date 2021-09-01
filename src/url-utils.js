@@ -1,4 +1,5 @@
-import { appLocator, ipfsDefaultConf } from './environment'
+import { getParsedAppLocator } from './environment'
+import { getIpfsGateway } from './local-settings'
 import { appendTrailingSlash } from './utils'
 
 /*
@@ -28,20 +29,21 @@ function contentBaseUrl(content, gateway) {
   return ''
 }
 
-export function appBaseUrl(app, gateway = ipfsDefaultConf.gateway) {
+export function appBaseUrl(app, networkType) {
+  const appLocator = getParsedAppLocator(networkType)
   // Support overriding app URLs, see network-config.js
   if (appLocator[app.appId]) {
     return appLocator[app.appId]
   }
 
+  const gateway = getIpfsGateway()
   return contentBaseUrl(app.content, gateway)
 }
 
-export function repoBaseUrl(
-  appId,
-  repoVersion,
-  gateway = ipfsDefaultConf.gateway
-) {
+export function repoBaseUrl(appId, repoVersion, networkType) {
+  const appLocator = getParsedAppLocator(networkType)
+  const gateway = getIpfsGateway()
+
   // Support overriding app URLs, see network-config.js
   if (appLocator[appId]) {
     return appLocator[appId]

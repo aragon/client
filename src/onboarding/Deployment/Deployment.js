@@ -83,7 +83,7 @@ function BoxBase({
 
 BoxBase.propTypes = {
   children: PropTypes.node.isRequired,
-  background: PropTypes.string.isRequired,
+  background: PropTypes.string,
   boxTransform: PropTypes.object.isRequired,
   direction: PropTypes.oneOf([
     'column',
@@ -276,6 +276,7 @@ const Deployment = React.memo(function Deployment({
         TRANSACTION_STATUS_SUCCESS,
     ]
   }, [transactionsStatus])
+
   return (
     <React.Fragment>
       {above('large') && (

@@ -153,8 +153,7 @@ export default {
       },
     ],
   ],
-  prepareTransactions(createTx, data) {
-    const blockTime = getBlockTime()
+  prepareTransactions(createTx, data, networkType) {
     const {
       domain,
       optionalApps = [],
@@ -165,6 +164,7 @@ export default {
       tokenRequest,
     } = data
     const useAgentAsVault = optionalApps.includes('agent.aragonpm.eth')
+    const blockTime = getBlockTime(networkType)
 
     // Tokens app
     const { tokenName, tokenSymbol, members } = tokens

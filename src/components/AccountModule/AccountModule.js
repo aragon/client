@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useWallet } from '../../wallet'
+import { useWallet, WALLET_STATUS } from '../../wallet'
 import { useLocalIdentity } from '../../hooks'
 import {
   useNetworkConnectionData,
@@ -15,41 +15,38 @@ import ConnectingScreen from './AccountModuleConnectingScreen'
 import ConnectedScreen from './AccountModuleConnectedScreen'
 import ErrorScreen from './AccountModuleErrorScreen'
 
+const SCREEN_ID = Object.freeze({
+  providers: WALLET_STATUS.providers,
+  connecting: WALLET_STATUS.connecting,
+  connected: WALLET_STATUS.connected,
+  error: WALLET_STATUS.error,
+})
+
 const SCREENS = [
-  { id: 'providers', title: 'Use account from' },
-  { id: 'connecting', title: 'Use account from' },
-  { id: 'connected', title: 'Active account' },
-  { id: 'error', title: 'Connection error' },
+  { id: SCREEN_ID.providers, title: 'Use account from' },
+  { id: SCREEN_ID.connecting, title: 'Use account from' },
+  { id: SCREEN_ID.connected, title: 'Active account' },
+  { id: SCREEN_ID.error, title: 'Connection error' },
 ]
 
 function AccountModule() {
   const [opened, setOpened] = useState(false)
-  const [activatingDelayed, setActivatingDelayed] = useState(false)
-  const [activationError, setActivationError] = useState(null)
+  const [activatingDelayed, setActivatingDelayed] = useState(null)
   const buttonRef = useRef()
   const wallet = useWallet()
 
-  const { account, activating, providerInfo } = wallet
-
-  const clearError = useCallback(() => setActivationError(null), [])
+  const { account, error, status, providerInfo } = wallet
 
   const open = useCallback(() => setOpened(true), [])
   const toggle = useCallback(() => setOpened(opened => !opened), [])
 
-  const handleCancelConnection = useCallback(() => {
-    wallet.deactivate()
+  const handleResetConnection = useCallback(() => {
+    wallet.reset()
   }, [wallet])
 
-  const handleActivate = useCallback(
-    async providerId => {
-      try {
-        await wallet.activate(providerId)
-      } catch (error) {
-        setActivationError(error)
-      }
-    },
-    [wallet]
-  )
+  const handleActivate = useCallback(providerId => wallet.connect(providerId), [
+    wallet,
+  ])
 
   const {
     clientConnectionStatus,
@@ -58,7 +55,7 @@ function AccountModule() {
     clientSyncDelay,
     connectionColor,
     connectionMessage,
-    hasNetworkMismatch,
+    isWrongNetwork,
     label,
     walletConnectionStatus,
     walletListening,
@@ -67,37 +64,27 @@ function AccountModule() {
 
   // Always show the “connecting…” screen, even if there are no delay
   useEffect(() => {
-    if (activationError) {
+    let timer
+
+    if (status === WALLET_STATUS.error) {
       setActivatingDelayed(null)
     }
 
-    if (activating) {
-      setActivatingDelayed(activating)
-      return
+    if (status === WALLET_STATUS.connecting) {
+      setActivatingDelayed(providerInfo.id)
+      timer = setTimeout(() => {
+        setActivatingDelayed(null)
+      }, 400)
     }
-
-    const timer = setTimeout(() => {
-      setActivatingDelayed(null)
-    }, 400)
 
     return () => clearTimeout(timer)
-  }, [activating, activationError])
+  }, [providerInfo, status])
 
   const previousScreenIndex = useRef(-1)
 
   const { screenIndex, direction } = useMemo(() => {
-    const screenId = (() => {
-      if (activationError) {
-        return 'error'
-      }
-      if (activatingDelayed) {
-        return 'connecting'
-      }
-      if (account) {
-        return 'connected'
-      }
-      return 'providers'
-    })()
+    const screenId =
+      status === WALLET_STATUS.disconnected ? SCREEN_ID.providers : status
 
     const screenIndex = SCREENS.findIndex(screen => screen.id === screenId)
     const direction = previousScreenIndex.current > screenIndex ? -1 : 1
@@ -105,18 +92,17 @@ function AccountModule() {
     previousScreenIndex.current = screenIndex
 
     return { direction, screenIndex }
-  }, [account, activationError, activatingDelayed])
+  }, [status])
 
   const screen = SCREENS[screenIndex]
   const screenId = screen.id
 
   const handlePopoverClose = useCallback(() => {
-    if (screenId === 'connecting' || screenId === 'error') {
+    if (screenId === SCREEN_ID.connecting || screenId === SCREEN_ID.error) {
       // reject closing the popover
       return false
     }
     setOpened(false)
-    setActivationError(null)
   }, [screenId])
 
   return (
@@ -128,11 +114,11 @@ function AccountModule() {
         height: 100%;
       `}
     >
-      {screenId === 'connected' ? (
+      {screenId === SCREEN_ID.connected || isWrongNetwork ? (
         <ButtonAccount
           connectionColor={connectionColor}
           connectionMessage={connectionMessage}
-          hasNetworkMismatch={hasNetworkMismatch}
+          isWrongNetwork={isWrongNetwork}
           label={label}
           onClick={toggle}
         />
@@ -142,7 +128,7 @@ function AccountModule() {
       <AccountModulePopover
         direction={direction}
         heading={screen.title}
-        keys={({ screenId }) => screenId + activating + activationError.name}
+        keys={({ screenId }) => screenId + providerInfo.id + error.name}
         onClose={handlePopoverClose}
         onOpen={open}
         opener={buttonRef.current}
@@ -150,7 +136,7 @@ function AccountModule() {
         screenData={{
           account,
           activating: activatingDelayed,
-          activationError,
+          activationError: error,
           providerInfo,
           screenId,
         }}
@@ -170,15 +156,15 @@ function AccountModule() {
         visible={opened}
       >
         {({ account, screenId, activating, activationError, providerInfo }) => {
-          if (screenId === 'connecting') {
+          if (screenId === SCREEN_ID.connecting) {
             return (
               <ConnectingScreen
                 providerId={activating}
-                onCancel={handleCancelConnection}
+                onCancel={handleResetConnection}
               />
             )
           }
-          if (screenId === 'connected') {
+          if (screenId === SCREEN_ID.connected) {
             return (
               <ConnectedScreen
                 account={account}
@@ -194,8 +180,13 @@ function AccountModule() {
               />
             )
           }
-          if (screenId === 'error') {
-            return <ErrorScreen error={activationError} onBack={clearError} />
+          if (screenId === SCREEN_ID.error) {
+            return (
+              <ErrorScreen
+                error={activationError}
+                onBack={handleResetConnection}
+              />
+            )
           }
           return <ProvidersScreen onActivate={handleActivate} />
         }}
@@ -222,7 +213,7 @@ function useConnectionInfo() {
     syncDelay: clientSyncDelay,
   } = useSyncInfo()
 
-  const { walletNetworkName, hasNetworkMismatch } = useNetworkConnectionData()
+  const { walletNetworkName, isWrongNetwork } = useNetworkConnectionData()
 
   const { connectionMessage, connectionColor } = useWalletConnectionDetails(
     clientListening,
@@ -241,7 +232,7 @@ function useConnectionInfo() {
     clientSyncDelay,
     connectionColor,
     connectionMessage,
-    hasNetworkMismatch,
+    isWrongNetwork,
     label,
     walletConnectionStatus,
     walletListening,

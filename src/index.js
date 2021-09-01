@@ -15,11 +15,7 @@ import {
 } from './local-settings'
 import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
-import initializeSentryIfEnabled from './sentry'
-import { ClientBlockNumberProvider } from './components/AccountModule/useClientBlockNumber'
-
-// Initialize Sentry as early as possible, if enabled
-initializeSentryIfEnabled()
+import { ClientWeb3Provider } from './contexts/ClientWeb3Context'
 
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
@@ -60,13 +56,13 @@ function Providers() {
     <Main layout={false} scrollView={false} theme={appearance}>
       <RoutingProvider>
         <WalletProvider>
-          <ConsoleVisibleProvider>
-            <GlobalErrorHandler>
-              <ClientBlockNumberProvider>
+          <ClientWeb3Provider>
+            <ConsoleVisibleProvider>
+              <GlobalErrorHandler>
                 <App />
-              </ClientBlockNumberProvider>
-            </GlobalErrorHandler>
-          </ConsoleVisibleProvider>
+              </GlobalErrorHandler>
+            </ConsoleVisibleProvider>
+          </ClientWeb3Provider>
         </WalletProvider>
       </RoutingProvider>
     </Main>

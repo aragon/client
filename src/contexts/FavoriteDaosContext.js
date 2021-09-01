@@ -1,13 +1,18 @@
-import React, { useContext } from 'react'
+import React, {
+  useContext,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react'
 import uniqby from 'lodash.uniqby'
 import PropTypes from 'prop-types'
-import { network } from '../environment'
 import StoredList from '../StoredList'
 import { addressesEqual } from '../web3-utils'
+import { useWallet } from '../wallet'
+import { getLocalStorageKey } from '../utils'
 
 const FavoriteDaosContext = React.createContext()
-
-const storedList = new StoredList(`favorite-daos:${network.type}`)
 
 const filterFavoritesDaos = daos =>
   uniqby(
@@ -20,81 +25,90 @@ const filterFavoritesDaos = daos =>
     dao => dao.address.toLowerCase()
   )
 
-class FavoriteDaosProvider extends React.Component {
-  static propTypes = {
-    children: PropTypes.node,
-  }
+function FavoriteDaosProvider({ children }) {
+  const { networkType } = useWallet()
+  const [favoriteDaos, setFavoriteDaos] = useState([])
 
-  state = {
-    favoriteDaos: filterFavoritesDaos(storedList.loadItems()),
-  }
+  const storedList = useMemo(() => {
+    return new StoredList(getLocalStorageKey(`favorite-daos`, networkType))
+  }, [networkType])
 
-  add = dao => {
-    this.setState({
-      favoriteDaos: storedList.add(dao),
-    })
-  }
+  useEffect(() => {
+    let cancel = false
 
-  remove = index => {
-    this.setState({
-      favoriteDaos: storedList.remove(index),
-    })
-  }
-
-  isAddressFavorited = address => {
-    return (
-      this.state.favoriteDaos.findIndex(dao =>
-        addressesEqual(dao.address, address)
-      ) > -1
-    )
-  }
-
-  addFavorite = dao => {
-    const daoIndex = this.state.favoriteDaos.findIndex(({ address }) =>
-      addressesEqual(address, dao.address)
-    )
-    if (daoIndex === -1) {
-      this.setState({
-        favoriteDaos: storedList.add({ name: dao.name, address: dao.address }),
+    if (!cancel) {
+      setFavoriteDaos(() => {
+        const favs = storedList.loadItems()
+        return filterFavoritesDaos(favs)
       })
     }
-  }
 
-  removeFavoriteByAddress = address => {
-    const daoIndex = this.state.favoriteDaos.findIndex(({ address }) =>
-      addressesEqual(address, address)
-    )
-    if (daoIndex > -1) {
-      const favs = storedList.remove(daoIndex)
-      this.setState({
-        favoriteDaos: favs,
-      })
+    return () => {
+      cancel = true
     }
-  }
+  }, [networkType, storedList])
 
-  updateFavoriteDaos = favoriteDaos => {
-    this.setState({
-      favoriteDaos: storedList.update(favoriteDaos),
-    })
-  }
+  const isAddressFavorited = useCallback(
+    address => {
+      return (
+        favoriteDaos.findIndex(dao => addressesEqual(dao.address, address)) > -1
+      )
+    },
+    [favoriteDaos]
+  )
 
-  render() {
-    const { children } = this.props
-    const { favoriteDaos } = this.state
-    return (
-      <FavoriteDaosContext.Provider
-        value={{
-          favoriteDaos,
-          addFavorite: this.addFavorite,
-          isAddressFavorited: this.isAddressFavorited,
-          removeFavoriteByAddress: this.removeFavoriteByAddress,
-          updateFavoriteDaos: this.updateFavoriteDaos,
-        }}
-      >
-        {children}
-      </FavoriteDaosContext.Provider>
-    )
-  }
+  const addFavorite = useCallback(
+    dao => {
+      const daoIndex = favoriteDaos.findIndex(({ address }) =>
+        addressesEqual(address, dao.address)
+      )
+      if (daoIndex === -1) {
+        setFavoriteDaos(
+          storedList.add({ name: dao.name, address: dao.address })
+        )
+      }
+    },
+    [favoriteDaos, setFavoriteDaos, storedList]
+  )
+
+  const removeFavoriteByAddress = useCallback(
+    removeAddress => {
+      const daoIndex = favoriteDaos.findIndex(({ address }) =>
+        addressesEqual(removeAddress, address)
+      )
+      if (daoIndex > -1) {
+        setFavoriteDaos(() => {
+          return storedList.remove(daoIndex)
+        })
+      }
+    },
+    [favoriteDaos, setFavoriteDaos, storedList]
+  )
+
+  const updateFavoriteDaos = useCallback(
+    daos => {
+      setFavoriteDaos(storedList.update(daos))
+    },
+    [setFavoriteDaos, storedList]
+  )
+
+  return (
+    <FavoriteDaosContext.Provider
+      value={{
+        favoriteDaos,
+        addFavorite,
+        isAddressFavorited,
+        removeFavoriteByAddress,
+        updateFavoriteDaos,
+      }}
+    >
+      {children}
+    </FavoriteDaosContext.Provider>
+  )
+}
+
+FavoriteDaosProvider.propTypes = {
+  children: PropTypes.node,
 }
 
 function useFavoriteDaos() {

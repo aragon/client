@@ -1,7 +1,6 @@
-import React, { useCallback, useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { Link, DropDown, GU, Layout, Split, useTheme } from '@aragon/ui'
-import { network } from '../../environment'
+import { Link, GU, Layout, Split, useTheme } from '@aragon/ui'
 import { useSuggestedOrgs } from '../../suggested-orgs'
 import Header from '../Header/Header'
 import OpenOrg from './OpenOrg'
@@ -18,26 +17,8 @@ const Welcome = React.memo(function Welcome({
   onOpen,
   onOpenOrg,
   openMode,
-  selectorNetworks,
 }) {
   const theme = useTheme()
-
-  const selectorNetworksSorted = useMemo(() => {
-    return selectorNetworks
-      .map(([type, name, url]) => ({ type, name, url }))
-      .sort((a, b) => {
-        if (b.type === network.type) return 1
-        if (a.type === network.type) return -1
-        return 0
-      })
-  }, [selectorNetworks])
-
-  const changeNetwork = useCallback(
-    index => {
-      window.location = selectorNetworksSorted[index].url
-    },
-    [selectorNetworksSorted]
-  )
 
   const suggestedOrgs = useSuggestedOrgs()
 
@@ -45,12 +26,6 @@ const Welcome = React.memo(function Welcome({
     <OpenOrg onBack={onBack} onOpenOrg={onOpenOrg} />
   ) : (
     <div>
-      <DropDown
-        items={selectorNetworksSorted.map(network => network.name)}
-        placeholder={selectorNetworksSorted[0].name}
-        onChange={changeNetwork}
-        wide
-      />
       <WelcomeAction
         title="Create an organization"
         subtitle={<CreateSubtitle error={createError} />}
@@ -110,8 +85,6 @@ Welcome.propTypes = {
   onOpenOrg: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
   openMode: PropTypes.bool.isRequired,
-  selectorNetworks: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string))
-    .isRequired,
 }
 
 function CreateSubtitle({ error }) {
@@ -124,8 +97,10 @@ function CreateSubtitle({ error }) {
           color: ${theme.negative};
         `}
       >
-        You need at least {errorData.minimumBalance} ETH (
-        <strong>you have {errorData.balance} ETH</strong>
+        You need at least {errorData.minimumBalance} {errorData.tokenSymbol} (
+        <strong>
+          you have {errorData.balance} {errorData.tokenSymbol}
+        </strong>
         ).
       </span>
     )

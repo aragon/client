@@ -4,7 +4,7 @@ import { Info, Link, GU } from '@aragon/ui'
 
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
-import { getProviderString } from '../../ethereum-providers'
+import { getProviderString } from 'use-wallet'
 import { isElectron } from '../../utils'
 
 function Web3ProviderError({
