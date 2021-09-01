@@ -31,11 +31,10 @@ import {
 import { useWallet } from '../../wallet'
 import { getIpfsGateway } from '../../local-settings'
 import { web3Provider } from '../../Web3Provider'
-
-const MAX_RETRY = 5
-
 import { trackEvent, events } from '../../analytics'
 import { completeDomain } from '../../check-domain'
+
+const MAX_RETRY = 5
 
 // Used during the template selection phase, since we don’t know yet what are
 // going to be the configuration steps.
