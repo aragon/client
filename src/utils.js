@@ -24,7 +24,6 @@ export function pollEvery(fn, delay) {
     poll(request, onResult)
     return () => {
       stop = true
-      console.log('............>clear timer')
       clearTimeout(timer)
     }
   }
