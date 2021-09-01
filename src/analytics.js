@@ -5,8 +5,11 @@ const methods = {
 }
 
 export const events = {
-  TEMPLATE_SELECTED: 'template_selected',
+  DAO_CREATEBTN_CLICKED: 'dao_createBtn_clicked',
+  DAO_CREATED: 'dao_created',
+  DAO_CREATIONFAILED: 'dao_creationFailed',
   WALLET_DISCONNECTED: 'wallet_disconnected',
+  DAOCREATION_TEMPLATE_SELECTED: 'daoCreation_template_selected',
 }
 
 /**
@@ -16,7 +19,7 @@ export const events = {
  * @returns {void} the corresponding analytics method
  */
 function getAnalyticsMethod(method) {
-  var windowAnalytics = window.analytics
+  var windowAnalytics = window.rudderanalytics
   if (!windowAnalytics) {
     return
   }

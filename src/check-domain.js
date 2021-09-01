@@ -72,4 +72,5 @@ export {
   DOMAIN_LOADING,
   DOMAIN_NONE,
   useCheckDomain,
+  completeDomain,
 }
