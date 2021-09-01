@@ -100,6 +100,23 @@ export const networkConfigs = {
       live: true,
     },
   },
+  [KNOWN_CHAINS.get(137).type]: {
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x3c70a0190d09f34519e6e218364451add21b7d4b',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://ws-matic-mainnet.chainstacklabs.com',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 137,
+      ...KNOWN_CHAINS.get(137),
+      live: true,
+    },
+  },
   [KNOWN_CHAINS.get(80001).type]: {
     enableMigrateBanner: false,
     addresses: {
