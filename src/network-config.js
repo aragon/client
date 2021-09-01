@@ -108,8 +108,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth:
-        'wss://polygon-mainnet.infura.io/ws/v3/1011d31bf5b34d68b94895caa2d2da58',
+      defaultEth: 'wss://matic-mainnet-full-ws.bwarelabs.com',
     },
     connectGraphEndpoint: null,
     settings: {
