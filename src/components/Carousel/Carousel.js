@@ -69,8 +69,24 @@ function Carousel({ items, itemWidth, itemHeight, itemSpacing }) {
 
   // Get the container x position from an item index
   const xFromItem = useCallback(
-    index => sideSpace - (itemWidth + itemSpacing) * index,
-    [sideSpace, itemWidth, itemSpacing]
+    index => {
+      if (index >= 0) {
+        return sideSpace - (itemWidth + itemSpacing) * index
+      } else {
+        // center items
+        return (
+          containerWidth - visibleItemsWidth + (itemSpacing * items.length - 1)
+        )
+      }
+    },
+    [
+      sideSpace,
+      itemWidth,
+      itemSpacing,
+      containerWidth,
+      visibleItemsWidth,
+      items,
+    ]
   )
 
   // Get an item index from the container x position
