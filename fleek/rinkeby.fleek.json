@@ -1,0 +1,14 @@
+{
+  "site": {
+    "id": "3151165a-9321-4d7b-80a0-3362c67599ac",
+    "team": "aragonone-team",
+    "platform": "ipfs",
+    "source": "ipfs",
+    "name": "aragon-client-rinkeby"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "public",
+    "rootDir": ""
+  }
+}

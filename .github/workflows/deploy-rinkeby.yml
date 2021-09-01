@@ -1,0 +1,43 @@
+name: Client Rinkeby CI/CD
+on:
+  push:
+    branches:
+      - 'master'
+jobs:
+  build-deploy-develop:
+    runs-on: ubuntu-latest
+    container: fleek/create-react-app:node-15
+    environment: rinkeby
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.15.5
+      - name: Build the client
+        env:
+          REACT_APP_ANALYTICS_KEY: 1wDjIcVLxTj74yaBBAsm6pNtRQp
+          REACT_APP_DEPLOYVERSION: ${{ github.sha }}
+          REACT_APP_ENVIRONMENT: rinkeby
+          ARAGON_ETH_NETWORK_TYPE: rinkeby
+          ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY: 3000
+          ARAGON_FORTMATIC_API_KEY: pk_test_9B7704497D624913
+          ARAGON_PORTIS_DAPP_ID: 249a668b-0227-4c95-b656-520b975a2698
+          ARAGON_SENTRY_DSN: https://c9a5bf1614a0428984c01e1600afc9ed@sentry.io/1500311
+        run: yarn install --frozen-lockfile && yarn build:rinkeby
+      - name: Activate rinkeby's fleek
+        run: mv fleek/rinkeby.fleek.json .fleek.json
+      - name: Deploy fleek
+        id: deploy
+        uses: fleekhq/action-deploy@v1
+        with:
+          apiKey: ${{ secrets.FLEEK_API_KEY }}
+      - name: Get the output url
+        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+      - name: upload sourcemap to apm
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          for f in ./public/**/*.js.map ; do 
+            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="client" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/static/js/bundle.js" -F sourcemap=@$f
+          done
