@@ -8,7 +8,7 @@ const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 // connectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
   [KNOWN_CHAINS.get(1).type]: {
-    enableMigrateBanner: false,
+    enableMigrateBanner: true,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
