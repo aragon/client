@@ -136,11 +136,9 @@ export function useSyncInfo(wantedWeb3 = 'default') {
 
     let cancel = false
     const handleWebsocketDrop = () => {
-      return () => {
-        if (!cancel) {
-          setIsListening(false)
-          setConnectionStatus(STATUS_CONNECTION_ERROR)
-        }
+      if (!cancel) {
+        setIsListening(false)
+        setConnectionStatus(STATUS_CONNECTION_ERROR)
       }
     }
 
@@ -181,27 +179,48 @@ export function useSyncInfo(wantedWeb3 = 'default') {
       return
     }
 
+    let cancel = false
     const pollBlockTimestamp = pollEvery(
       () => ({
-        request: () => getLatestBlockTimestamp(selectedWeb3),
+        request: async () => {
+          if (!cancel) {
+            return getLatestBlockTimestamp(selectedWeb3).catch(err => {
+              if (!cancel) {
+                console.error('Get latest block timestamp', err)
+                setIsListening(false)
+                setConnectionStatus(STATUS_CONNECTION_ERROR)
+              }
+              return 0
+            })
+          }
+        },
         onResult: timestamp => {
-          const blockDiff = new Date() - timestamp
-          const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
-          const connectionHealth =
-            latestBlockDifference >= 30
-              ? STATUS_CONNECTION_ERROR
-              : latestBlockDifference >= 3
-              ? STATUS_CONNECTION_WARNING
-              : STATUS_CONNECTION_HEALTHY
-          setConnectionStatus(connectionHealth)
-          setSyncDelay(latestBlockDifference)
+          if (!cancel) {
+            const now = new Date()
+            const blockDiff = now - timestamp
+            const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
+            const connectionHealth =
+              latestBlockDifference >= 30
+                ? STATUS_CONNECTION_ERROR
+                : latestBlockDifference >= 3
+                ? STATUS_CONNECTION_WARNING
+                : STATUS_CONNECTION_HEALTHY
+            setConnectionStatus(connectionHealth)
+            setSyncDelay(latestBlockDifference)
+            if (connectionHealth === STATUS_CONNECTION_HEALTHY) {
+              setIsListening(true)
+            }
+          }
         },
       }),
       BLOCK_TIMESTAMP_POLL_INTERVAL
     )
     const cleanUpTimestampPoll = pollBlockTimestamp()
 
-    return () => cleanUpTimestampPoll()
+    return () => {
+      cancel = true
+      cleanUpTimestampPoll()
+    }
   }, [selectedWeb3])
 
   return {
