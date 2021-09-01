@@ -108,7 +108,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://ws-matic-mainnet.chainstacklabs.com',
+      defaultEth: 'wss://rpc-mainnet.matic.quiknode.pro',
     },
     connectGraphEndpoint: null,
     settings: {
