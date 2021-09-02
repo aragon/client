@@ -142,12 +142,6 @@
     "development": ">2%, last 1 edge versions, not ie > 0, not op_mini all",
     "production": ">2%, last 1 edge versions, not ie > 0, not op_mini all"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm test",
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "src/*.js": [
       "eslint --fix",
