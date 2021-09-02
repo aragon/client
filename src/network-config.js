@@ -5,7 +5,7 @@ const localEnsRegistryAddress = getEnsRegistryAddress()
 const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
 const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 
-// connectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
+// cconnectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
   [KNOWN_CHAINS.get(1).type]: {
     enableMigrateBanner: true,
