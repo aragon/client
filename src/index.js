@@ -16,6 +16,7 @@ import {
 import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { ClientWeb3Provider } from './contexts/ClientWeb3Context'
+import { APMProvider } from './elasticAPM'
 
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
@@ -53,13 +54,15 @@ function Providers() {
     <Main layout={false} scrollView={false} theme={appearance}>
       <RoutingProvider>
         <WalletProvider>
-          <ClientWeb3Provider>
-            <ConsoleVisibleProvider>
-              <GlobalErrorHandler>
-                <App />
-              </GlobalErrorHandler>
-            </ConsoleVisibleProvider>
-          </ClientWeb3Provider>
+          <APMProvider>
+            <ClientWeb3Provider>
+              <ConsoleVisibleProvider>
+                <GlobalErrorHandler>
+                  <App />
+                </GlobalErrorHandler>
+              </ConsoleVisibleProvider>
+            </ClientWeb3Provider>
+          </APMProvider>
         </WalletProvider>
       </RoutingProvider>
     </Main>

@@ -37,6 +37,7 @@
     "@aragon/ui": "^1.9.0",
     "@aragon/v2-migrator-script": "^0.1.4",
     "@aragon/wrapper": "^5.3.0",
+    "@elastic/apm-rum": "^5.9.1",
     "@ungap/event-target": "^0.1.0",
     "clipboard-polyfill": "^2.8.6",
     "core-js": "^3.3.2",

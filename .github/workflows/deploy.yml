@@ -16,8 +16,8 @@ jobs:
           node-version: 14.15.5
       - name: Build the client
         env:
-          REACT_APP_DEPLOYVERSION: ${{ github.sha }}
-          REACT_APP_ENVIRONMENT: production
+          REACT_APP_DEPLOY_VERSION: ${{ github.sha }}
+          REACT_APP_DEPLOY_ENVIRONMENT: production
           ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY: 5000
           ARAGON_FORTMATIC_API_KEY: ${{ secrets.FORMATIC_API_KEY }}
           ARAGON_PORTIS_DAPP_ID: ${{ secrets.PORTIS_DAPP_ID }}
