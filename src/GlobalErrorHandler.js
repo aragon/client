@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import GenericError from './components/Error/GenericError'
-import DAONotFoundError from './components/Error/DAONotFoundError'
-import { DAONotFound } from './errors'
 import ErrorScreen from './components/Error/ErrorScreen'
 
 class GlobalErrorHandler extends React.Component {
@@ -39,14 +37,10 @@ class GlobalErrorHandler extends React.Component {
 
     return error ? (
       <ErrorScreen>
-        {error instanceof DAONotFound ? (
-          <DAONotFoundError dao={error.dao} />
-        ) : (
-          <GenericError
-            detailsTitle={error.message}
-            detailsContent={errorStack}
-          />
-        )}
+        <GenericError
+          detailsTitle={error.message}
+          detailsContent={errorStack}
+        />
       </ErrorScreen>
     ) : (
       children

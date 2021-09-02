@@ -20,14 +20,11 @@ import { ClientWeb3Provider } from './contexts/ClientWeb3Context'
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()
 
-const [currentMajorVersion, currentMinorVersion] = packageVersion.split('.')
-const [lastMajorVersion, lastMinorVersion] = lastPackageVersion.split('.')
+const [currentMajorVersion] = packageVersion.split('.')
+const [lastMajorVersion] = lastPackageVersion.split('.')
 
-// Purge localstorage when upgrading between different minor versions.
-if (
-  lastMajorVersion !== currentMajorVersion ||
-  lastMinorVersion !== currentMinorVersion
-) {
+// Purge localstorage when upgrading between different major versions.
+if (lastMajorVersion !== currentMajorVersion) {
   window.localStorage.clear()
 
   // Attempt to clean up indexedDB storage as well.
