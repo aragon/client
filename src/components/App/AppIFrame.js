@@ -60,7 +60,6 @@ class AppIFrame extends React.Component {
   }
   // To be called from outside
   reloadIframe = () => {
-    this.iframe.src = this.iframe.src
     this.loadingStart()
   }
   navigateIFrame = src => {

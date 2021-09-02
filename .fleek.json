@@ -1,0 +1,14 @@
+{
+  "site": {
+    "id": "b4390593-fae4-4224-af5e-b9cfa3ef950c",
+    "team": "aragonone-team",
+    "platform": "ipfs",
+    "source": "ipfs",
+    "name": "aragon-client-mainnet"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "public",
+    "rootDir": ""
+  }
+}

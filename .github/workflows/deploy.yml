@@ -1,0 +1,38 @@
+name: Client Production CI/CD
+on:
+  push:
+    branches:
+      - 'master'
+jobs:
+  build-deploy-develop:
+    runs-on: ubuntu-latest
+    container: fleek/create-react-app:node-15
+    environment: production
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.15.5
+      - name: Build the client
+        env:
+          REACT_APP_DEPLOYVERSION: ${{ github.sha }}
+          REACT_APP_ENVIRONMENT: production
+          ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY: 5000
+          ARAGON_FORTMATIC_API_KEY: ${{ secrets.FORMATIC_API_KEY }}
+          ARAGON_PORTIS_DAPP_ID: ${{ secrets.PORTIS_DAPP_ID }}
+        run: yarn install --frozen-lockfile --network-concurrency 1 && yarn build
+      - name: Deploy fleek
+        id: deploy
+        uses: fleekhq/action-deploy@v1
+        with:
+          apiKey: ${{ secrets.FLEEK_API_KEY }}
+      - name: Get the output url
+        run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
+      - name: upload sourcemap to apm
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          for f in ./public/**/*.js.map ; do 
+            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="client" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/static/js/bundle.js" -F sourcemap=@$f
+          done
