@@ -109,7 +109,7 @@ export const networkConfigs = {
     },
     nodes: {
       defaultEth:
-        'wss://dry-old-leaf.matic.quiknode.pro/c75caa8e2d094afd7541ca6c34138cd051d13ff3/',
+        'wss://dry-old-leaf.matic.quiknode.pro/',
     },
     connectGraphEndpoint: null,
     settings: {
