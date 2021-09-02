@@ -35,6 +35,10 @@ import {
 } from './symbols'
 import { useClientWeb3 } from './contexts/ClientWeb3Context'
 
+import { DAONotFound } from './errors'
+import DAONotFoundError from './components/Error/DAONotFoundError'
+import ErrorScreen from './components/Error/ErrorScreen'
+
 const MIGRATION_BANNER_HIDE = 'MIGRATION_BANNER_HIDE&'
 export const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
   '2021-05-14T15:43:08Z'
@@ -56,6 +60,7 @@ const INITIAL_DAO_STATE = {
   permissionsLoading: true,
   repos: [],
   showMigrateBanner: false,
+  fatalError: null,
 }
 
 class App extends React.Component {
@@ -71,7 +76,6 @@ class App extends React.Component {
   state = {
     ...INITIAL_DAO_STATE,
     connected: false,
-    fatalError: null,
     identityIntent: null,
     transactionBag: null,
     signatureBag: null,
@@ -279,6 +283,7 @@ class App extends React.Component {
       })
       .catch(err => {
         log(`Wrapper init, fatal error: ${err.name}. ${err.message}.`)
+
         this.setState({
           appsStatus: APPS_STATUS_ERROR,
           daoStatus: DAO_STATUS_ERROR,
@@ -367,6 +372,13 @@ class App extends React.Component {
     }
 
     if (fatalError !== null) {
+      if (fatalError instanceof DAONotFound) {
+        return (
+          <ErrorScreen>
+            <DAONotFoundError dao={fatalError.dao} />
+          </ErrorScreen>
+        )
+      }
       throw fatalError
     }
 
