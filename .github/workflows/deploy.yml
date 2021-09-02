@@ -4,9 +4,9 @@ on:
     branches:
       - 'master'
 jobs:
-  build-deploy-develop:
+  build-deploy:
     runs-on: ubuntu-latest
-    container: fleek/create-react-app:node-15
+    container: fleek/create-react-app:node-14
     environment: production
     steps:
       - uses: actions/checkout@v2
@@ -14,6 +14,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.15.5
+      - name: Install build dependencies
+        run: apt-get update && apt-get install -y build-essential git libusb-1.0-0 libusb-1.0-0-dev libudev-dev
       - name: Build the client
         env:
           REACT_APP_DEPLOYVERSION: ${{ github.sha }}
@@ -21,7 +23,7 @@ jobs:
           ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY: 5000
           ARAGON_FORTMATIC_API_KEY: ${{ secrets.FORMATIC_API_KEY }}
           ARAGON_PORTIS_DAPP_ID: ${{ secrets.PORTIS_DAPP_ID }}
-        run: yarn install --frozen-lockfile --network-concurrency 1 && yarn build
+        run: yarn install --frozen-lockfile && yarn build
       - name: Deploy fleek
         id: deploy
         uses: fleekhq/action-deploy@v1
