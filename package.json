@@ -1,7 +1,7 @@
 {
   "name": "aragon",
   "description": "Aragon client",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "private": true,
   "license": "AGPL-3.0-or-later",
   "author": "Aragon Association <legal@aragon.org>",
