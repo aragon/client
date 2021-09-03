@@ -138,7 +138,6 @@ export function getLocalStorageKey(key, networkType) {
   return `${networkType}:${key}`
 }
 
-// https://www.regular-expressions.info/email.html
 export function validateEmail(email) {
   // eslint-disable-next-line no-useless-escape
   return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(email)
