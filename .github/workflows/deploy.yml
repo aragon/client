@@ -39,6 +39,7 @@ jobs:
         run: apt-get update && apt-get install -y build-essential git libusb-1.0-0 libusb-1.0-0-dev libudev-dev
       - name: Build the client
         env:
+          REACT_APP_ANALYTICS_KEY: ${{ secrets.REACT_APP_ANALYTICS_KEY }} 
           REACT_APP_DEPLOYVERSION: ${{ github.sha }}
           REACT_APP_ENVIRONMENT: production
           ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY: 5000
