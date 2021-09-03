@@ -108,7 +108,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://matic-mainnet-full-ws.bwarelabs.com',
+      defaultEth: 'wss://dry-old-leaf.matic.quiknode.pro/',
     },
     connectGraphEndpoint: null,
     settings: {
