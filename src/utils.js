@@ -134,6 +134,10 @@ export function shuffleArray(original) {
   return array
 }
 
+export function getLocalStorageKey(key, networkType) {
+  return `${networkType}:${key}`
+}
+
 // https://www.regular-expressions.info/email.html
 export function validateEmail(email) {
   // eslint-disable-next-line no-useless-escape
