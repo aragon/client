@@ -14355,9 +14355,10 @@ use-token@^0.2.0:
   dependencies:
     js-sha3 "^0.8.0"
 
-"use-wallet@https://github.com/aragon/use-wallet.git#multichain":
-  version "0.9.0"
-  resolved "https://github.com/aragon/use-wallet.git#6ed3bf85cc0bf49bea7a9c77ebf44e6d8c87ea9f"
+use-wallet@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.10.0.tgz#d65ca2557b196b1ac671de9a14cb2f57c5d8d71d"
+  integrity sha512-5/us1Wi6DnawIXU5Pkbytam0uG9f0QfWedGVBrWzYAgPrEphzg6mx+c6RH3jvxiEZ6jyK3kOG7S6t3FXLrZuyA==
   dependencies:
     "@aragon/provided-connector" "^6.0.8"
     "@typescript-eslint/parser" "^4.1.0"
