@@ -108,7 +108,8 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://dry-old-leaf.matic.quiknode.pro/',
+      defaultEth:
+        'wss://cool-frosty-frog.matic.quiknode.pro/bd32caa885f4bbf687a022490b1b5cce6ddab38a/',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -196,7 +197,7 @@ export function useNetworkConfig() {
 }
 
 export function isOnMainnet(networkType) {
-  return networkType === KNOWN_CHAINS.get(1)
+  return networkType === KNOWN_CHAINS.get(1).type
 }
 
 export function getDaiTokenAddress(networkType) {
