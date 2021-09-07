@@ -108,7 +108,8 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://cool-frosty-frog.matic.quiknode.pro/bd32caa885f4bbf687a022490b1b5cce6ddab38a/',
+      defaultEth:
+        'wss://cool-frosty-frog.matic.quiknode.pro/bd32caa885f4bbf687a022490b1b5cce6ddab38a/',
     },
     connectGraphEndpoint: null,
     settings: {
