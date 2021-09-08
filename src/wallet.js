@@ -93,7 +93,9 @@ function WalletContextProvider({ children }) {
   )
 
   const { apm } = useAPM()
-  updateAPMContext(apm, wallet.networkType)
+  useEffect(() => {
+    updateAPMContext(apm, wallet.networkType)
+  }, [apm, wallet.networkType])
 
   return (
     <WalletContext.Provider value={wallet}>{children}</WalletContext.Provider>
