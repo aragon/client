@@ -1,16 +1,11 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { init as initApm, ApmBase } from '@elastic/apm-rum'
-// import { useWallet } from './wallet'
-// import { useRouting } from './routing'
 import { afterFrame } from '@elastic/apm-rum-core'
 
 const UseAPMContext = React.createContext()
 
 function APMProvider({ children }) {
-  // const routing = useRouting()
-  // const { networkType } = useWallet()
-
   const [apm, setApm] = useState(() => {
     if (
       process.env.REACT_APP_DEPLOY_VERSION &&
@@ -29,32 +24,6 @@ function APMProvider({ children }) {
       return null
     }
   })
-
-  // useEffect(() => {
-  //   if (apm && networkType) {
-  //     const context = { networkType: networkType }
-  //     apm.addLabels(context)
-  //     apm.setCustomContext(context)
-  //   }
-  // }, [apm, networkType])
-
-  // useEffect(() => {
-  //   if (apm && routing && routing.mode) {
-  //     const { instanceId, instancePath, name, status } = routing.mode
-  //     const path = status
-  //       ? `${name}/${status}`
-  //       : `${name}/${instanceId}${instancePath}`
-
-  //     const tx = apm.startTransaction(path, 'route-change', {
-  //       managed: false,
-  //       canReuse: false,
-  //     })
-
-  //     afterFrame(() => {
-  //       tx && tx.detectFinish()
-  //     })
-  //   }
-  // }, [apm, routing])
 
   const contextValue = useMemo(() => {
     return { apm, setApm }
