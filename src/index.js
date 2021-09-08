@@ -52,9 +52,9 @@ function Providers() {
   const { appearance } = useClientTheme()
   return (
     <Main layout={false} scrollView={false} theme={appearance}>
-      <RoutingProvider>
+      <APMProvider>
         <WalletProvider>
-          <APMProvider>
+          <RoutingProvider>
             <ClientWeb3Provider>
               <ConsoleVisibleProvider>
                 <GlobalErrorHandler>
@@ -62,9 +62,9 @@ function Providers() {
                 </GlobalErrorHandler>
               </ConsoleVisibleProvider>
             </ClientWeb3Provider>
-          </APMProvider>
+          </RoutingProvider>
         </WalletProvider>
-      </RoutingProvider>
+      </APMProvider>
     </Main>
   )
 }

@@ -9,6 +9,7 @@ import {
 } from 'use-wallet'
 import { getWeb3, filterBalanceValue } from './web3-utils'
 import { useWalletConnectors } from './ethereum-providers/connectors'
+import { useAPM, updateAPMContext } from './elasticAPM'
 
 export const WALLET_STATUS = Object.freeze({
   providers: 'providers',
@@ -90,6 +91,9 @@ function WalletContextProvider({ children }) {
       connected,
     ]
   )
+
+  const { apm } = useAPM()
+  updateAPMContext(apm, wallet.networkType)
 
   return (
     <WalletContext.Provider value={wallet}>{children}</WalletContext.Provider>

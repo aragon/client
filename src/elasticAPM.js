@@ -1,44 +1,64 @@
 import React, { useMemo, useContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { init as initApm, ApmBase, AgentConfigOptions } from '@elastic/apm-rum'
-import { useWallet } from './wallet'
+import { init as initApm, ApmBase } from '@elastic/apm-rum'
+// import { useWallet } from './wallet'
+// import { useRouting } from './routing'
+import { afterFrame } from '@elastic/apm-rum-core'
 
 const UseAPMContext = React.createContext()
 
 function APMProvider({ children }) {
-  const { networkType } = useWallet()
-  const [apm, setApm] = useState(null)
+  // const routing = useRouting()
+  // const { networkType } = useWallet()
 
-  useEffect(() => {
+  const [apm, setApm] = useState(() => {
     if (
       process.env.REACT_APP_DEPLOY_VERSION &&
-      process.env.REACT_APP_DEPLOY_ENVIRONMENT &&
-      !apm
+      process.env.REACT_APP_DEPLOY_ENVIRONMENT
     ) {
-      setApm(
-        initApm({
-          serviceName: 'client',
-          serverUrl: 'https://apm-monitoring.aragon.org',
-          serviceVersion: process.env.REACT_APP_DEPLOY_VERSION,
-          environment: process.env.REACT_APP_DEPLOY_ENVIRONMENT,
-        })
-      )
+      return initApm({
+        serviceName: 'govern',
+        serverUrl: 'https://apm-monitoring.aragon.org',
+        serviceVersion: process.env.REACT_APP_DEPLOY_VERSION,
+        environment: process.env.REACT_APP_DEPLOY_ENVIRONMENT,
+      })
     } else {
       console.warn(
-        'REACT_APP_DEPLOY_VERSION or REACT_APP_DEPLOY_ENVIRONMENT not provided.'
+        'REACT_APP_DEPLOY_VERSION or REACT_APP_DEPLOY_ENVIRONMENT is not provided.'
       )
+      return null
     }
-  }, [])
+  })
 
-  useEffect(() => {
-    if (apm && networkType) {
-      const context = { networkType: networkType }
-      apm.addLabels(context)
-      apm.setCustomContext(context)
-    }
-  }, [apm, networkType])
+  // useEffect(() => {
+  //   if (apm && networkType) {
+  //     const context = { networkType: networkType }
+  //     apm.addLabels(context)
+  //     apm.setCustomContext(context)
+  //   }
+  // }, [apm, networkType])
 
-  const contextValue = useMemo(() => apm, [apm])
+  // useEffect(() => {
+  //   if (apm && routing && routing.mode) {
+  //     const { instanceId, instancePath, name, status } = routing.mode
+  //     const path = status
+  //       ? `${name}/${status}`
+  //       : `${name}/${instanceId}${instancePath}`
+
+  //     const tx = apm.startTransaction(path, 'route-change', {
+  //       managed: false,
+  //       canReuse: false,
+  //     })
+
+  //     afterFrame(() => {
+  //       tx && tx.detectFinish()
+  //     })
+  //   }
+  // }, [apm, routing])
+
+  const contextValue = useMemo(() => {
+    return { apm, setApm }
+  }, [apm, setApm])
 
   return (
     <UseAPMContext.Provider value={contextValue}>
@@ -55,4 +75,40 @@ function useAPM() {
   return useContext(UseAPMContext)
 }
 
-export { useAPM, APMProvider }
+function updateAPMContext(apm, networkType) {
+  if (apm && networkType) {
+    const context = { networkType: networkType }
+    apm.addLabels(context)
+    apm.setCustomContext(context)
+  }
+}
+
+updateAPMContext.propTypes = {
+  apm: PropTypes.any,
+  networkType: PropTypes.string,
+}
+
+function instrumentAPMRouts(apm, routing) {
+  if (apm && routing && routing.mode) {
+    const { instanceId, instancePath, name, status } = routing.mode
+    const path = status
+      ? `${name}/${status}`
+      : `${name}/${instanceId}${instancePath}`
+
+    const tx = apm.startTransaction(path, 'route-change', {
+      managed: false,
+      canReuse: false,
+    })
+
+    afterFrame(() => {
+      tx && tx.detectFinish()
+    })
+  }
+}
+
+instrumentAPMRouts.propTypes = {
+  apm: PropTypes.any,
+  routing: PropTypes.any,
+}
+
+export { useAPM, APMProvider, updateAPMContext, instrumentAPMRouts }
