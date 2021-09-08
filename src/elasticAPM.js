@@ -12,7 +12,7 @@ function APMProvider({ children }) {
       process.env.REACT_APP_DEPLOY_ENVIRONMENT
     ) {
       return initApm({
-        serviceName: 'govern',
+        serviceName: 'client',
         serverUrl: 'https://apm-monitoring.aragon.org',
         serviceVersion: process.env.REACT_APP_DEPLOY_VERSION,
         environment: process.env.REACT_APP_DEPLOY_ENVIRONMENT,
