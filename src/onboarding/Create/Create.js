@@ -4,7 +4,6 @@ import { Button } from '@aragon/ui'
 import {
   fetchApmArtifact,
   getRecommendedGasLimit,
-  resolveEnsDomain,
 } from '../../aragonjs-wrapper'
 import { EthereumAddressType } from '../../prop-types'
 import {
