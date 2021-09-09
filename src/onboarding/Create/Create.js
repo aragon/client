@@ -358,13 +358,11 @@ function useDeploymentState(
                   transactionProgress.signed === 0
                 ) {
                   const daoEns = completeDomain(templateData.domain)
-                  const daoAddress = (await resolveEnsDomain(daoEns)) || daoEns
 
                   trackEvent(events.DAO_CREATED, {
                     network: networkName,
                     template: template.name,
-                    dao_identifier: templateData.domain,
-                    dao_address: daoAddress,
+                    dao_identifier: daoEns,
                   })
                 }
 
