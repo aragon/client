@@ -315,7 +315,7 @@ export function RoutingProvider({ children }) {
 
   const { apm } = useAPM()
   useEffect(() => {
-    instrumentAPMRouts(apm, routing)
+    instrumentAPMRouts(apm, routing.mode)
   }, [apm, routing.mode])
 
   return (

@@ -57,9 +57,9 @@ updateAPMContext.propTypes = {
   networkType: PropTypes.string,
 }
 
-function instrumentAPMRouts(apm, routing) {
-  if (apm && routing && routing.mode) {
-    const { instanceId, instancePath, name, status } = routing.mode
+function instrumentAPMRouts(apm, routingMod) {
+  if (apm && routingMod) {
+    const { instanceId, instancePath, name, status } = routingMod
     const path = status
       ? `${name}/${status}`
       : `${name}/${instanceId}${instancePath}`
