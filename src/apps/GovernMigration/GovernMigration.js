@@ -33,7 +33,7 @@ import { InvalidAddress, RequiredField } from '../../errors'
 import { performTransactionPaths } from '../../aragonjs-wrapper'
 import { useRouting } from '../../routing'
 
-const GOVERN_REWARD_URL = 'https://upgrade.aragon.org/governReward'
+const GOVERN_REWARD_URL = 'https://upgrade.aragon.org/#/governReward'
 const MIGRATE_REWARD_URL =
   'https://help.aragon.org/article/99-aragon-govern-migration-reward-program'
 
@@ -346,7 +346,7 @@ const GovernMigration = React.memo(function GovernMigration({
               within 10 days from the migration. You can consult the amount of
               the option in{' '}
               <StyledLink href={GOVERN_REWARD_URL}>
-                upgrade.aragon.org/governReward
+                upgrade.aragon.org/#/governReward
               </StyledLink>
             </Info>
             {networkType && (
