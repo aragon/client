@@ -7,19 +7,19 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Install node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14
-    - name: Install dependencies
-      run: yarn install --frozen-lockfile
-    - name: Build Aragon
-      run: yarn build
-    - name: Run BundleWatch
-      run: yarn bundlewatch
-    - name: Run tests
-      run: yarn test
+      - uses: actions/checkout@v1
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build Aragon
+        run: yarn build
+      - name: Run BundleWatch
+        run: yarn bundlewatch
+      - name: Run tests
+        run: yarn test
     env:
       CI: true
       BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
@@ -38,9 +38,9 @@ jobs:
         run: apt-get update && apt-get install -y build-essential git libusb-1.0-0 libusb-1.0-0-dev libudev-dev
       - name: Build the client
         env:
-          REACT_APP_ANALYTICS_KEY: ${{ secrets.REACT_APP_ANALYTICS_KEY }} 
-          REACT_APP_DEPLOYVERSION: ${{ github.sha }}
-          REACT_APP_ENVIRONMENT: production
+          REACT_APP_DEPLOY_VERSION: ${{ github.sha }}
+          REACT_APP_DEPLOY_ENVIRONMENT: production
+          REACT_APP_ANALYTICS_KEY: ${{ secrets.REACT_APP_ANALYTICS_KEY }}
           ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY: 5000
           ARAGON_FORTMATIC_API_KEY: ${{ secrets.FORMATIC_API_KEY }}
           ARAGON_PORTIS_DAPP_ID: ${{ secrets.PORTIS_DAPP_ID }}

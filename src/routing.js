@@ -13,6 +13,7 @@ import { staticApps } from './static-apps'
 import { isAddress, isValidEnsName } from './web3-utils'
 
 import { trackPage } from './analytics'
+import { useAPM, instrumentAPMRouts } from './elasticAPM'
 
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 
@@ -311,6 +312,11 @@ export function RoutingProvider({ children }) {
     }),
     [back, getPathFromLocator, locator, updatePathFromLocator]
   )
+
+  const { apm } = useAPM()
+  useEffect(() => {
+    instrumentAPMRouts(apm, routing.mode)
+  }, [apm, routing.mode])
 
   return (
     <RoutingContext.Provider value={routing}>
