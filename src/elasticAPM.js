@@ -1,6 +1,6 @@
-import React, { useMemo, useContext, useState, useEffect } from 'react'
+import React, { useMemo, useContext, useState } from 'react'
 import PropTypes from 'prop-types'
-import { init as initApm, ApmBase } from '@elastic/apm-rum'
+import { init as initApm } from '@elastic/apm-rum'
 import { afterFrame } from '@elastic/apm-rum-core'
 
 const UseAPMContext = React.createContext()
