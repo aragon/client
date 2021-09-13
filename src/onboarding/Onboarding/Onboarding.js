@@ -159,8 +159,8 @@ function Onboarding({ web3 }) {
       Promise.all(
         embeddedTemplates.map(async template => {
           let repoAddress
-          try {            
-            repoAddress = await resolveEnsDomain(networkType, web3, template.id);            
+          try {
+            repoAddress = await resolveEnsDomain(networkType, web3, template.id)
           } catch (_) {}
 
           return repoAddress
@@ -176,7 +176,7 @@ function Onboarding({ web3 }) {
         })
       )
         .then(templatesWithRepoAddress => {
-          if (!cancelled) {            
+          if (!cancelled) {
             const availableTemplates = templatesWithRepoAddress.filter(
               item => item.status === TEMPLATE_AVAILABLE
             )

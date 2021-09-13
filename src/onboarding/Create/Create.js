@@ -357,7 +357,12 @@ function useDeploymentState(
                   transactionProgress.signed === 0
                 ) {
                   const daoEns = completeDomain(templateData.domain)
-                  const daoAddress = (await resolveEnsDomain(networkType, web3.currentProvider, daoEns)) || daoEns
+                  const daoAddress =
+                    (await resolveEnsDomain(
+                      networkType,
+                      web3.currentProvider,
+                      daoEns
+                    )) || daoEns
 
                   trackEvent(events.DAO_CREATED, {
                     network: networkName,
@@ -505,7 +510,7 @@ const Create = React.memo(function Create({
         estimatedGas,
         { gasFuzzFactor: 1.1 }
       )
-      const recommendedPrice = await getGasPrice(networkType)      
+      const recommendedPrice = await getGasPrice(networkType)
       return {
         ...transaction,
         gas: recommendedLimit,
