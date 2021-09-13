@@ -213,14 +213,14 @@ function useConnectionInfo() {
     syncDelay: clientSyncDelay,
   } = useSyncInfo()
 
-  const { walletNetworkName, isWrongNetwork } = useNetworkConnectionData()
+  const { walletNetworkName, isWrongNetwork } = useNetworkConnectionData();
 
   const { connectionMessage, connectionColor } = useWalletConnectionDetails(
     clientListening,
     walletListening,
     clientOnline,
     walletOnline,
-    clientSyncDelay,
+    0,
     walletSyncDelay,
     walletNetworkName
   )

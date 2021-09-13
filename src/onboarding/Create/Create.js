@@ -279,7 +279,7 @@ function useDeploymentState(
   templateData,
   walletWeb3
 ) {
-  const { networkName } = useWallet()
+  const { networkName, web3 } = useWallet()
 
   const [transactionProgress, setTransactionProgress] = useState({
     signing: 0,
@@ -348,7 +348,6 @@ function useDeploymentState(
           if (!cancelled) {
             try {
               await walletWeb3.eth.sendTransaction(transaction)
-
               if (!cancelled) {
                 // analytics
                 // we are only interested in the first tx of creating a DAO
@@ -358,7 +357,7 @@ function useDeploymentState(
                   transactionProgress.signed === 0
                 ) {
                   const daoEns = completeDomain(templateData.domain)
-                  const daoAddress = (await resolveEnsDomain(daoEns)) || daoEns
+                  const daoAddress = (await resolveEnsDomain(networkType, web3.currentProvider, daoEns)) || daoEns
 
                   trackEvent(events.DAO_CREATED, {
                     network: networkName,
@@ -506,7 +505,7 @@ const Create = React.memo(function Create({
         estimatedGas,
         { gasFuzzFactor: 1.1 }
       )
-      const recommendedPrice = await getGasPrice(networkType)
+      const recommendedPrice = await getGasPrice(networkType)      
       return {
         ...transaction,
         gas: recommendedLimit,

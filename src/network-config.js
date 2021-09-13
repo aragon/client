@@ -134,6 +134,41 @@ export const networkConfigs = {
       live: true,
     },
   },
+  // [KNOWN_CHAINS.get(1666600000).type]: {
+  //   enableMigrateBanner: false,
+  //   addresses: {
+  //     ensRegistry:
+  //       localEnsRegistryAddress,
+  //     governExecutorProxy: null,
+  //   },
+  //   nodes: {
+  //     defaultEth: 'wss://dry-old-leaf.matic.quiknode.pro/',
+  //   },
+  //   connectGraphEndpoint: null,
+  //   settings: {
+  //     chainId: 1666600000,
+  //     ...KNOWN_CHAINS.get(1666600000),
+  //     live: true,
+  //   }
+  // },
+
+  [KNOWN_CHAINS.get(1666700000).type]: {
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry: localEnsRegistryAddress,
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://dry-old-leaf.matic.quiknode.pro/',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 1666700000,
+      ...KNOWN_CHAINS.get(1666700000),
+      live: true,
+    },
+  },
+
   unknown: {
     enableMigrateBanner: false,
     addresses: {

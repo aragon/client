@@ -1,9 +1,19 @@
 {
   "environments": {
     "default": {
-      "registry": "0x5f6f7e8cc7346a11ca2def8f827b7a0b612c56a1",
+      "registry": "0xaac811c23aea92a373de0df71da1eda61af0587b",
       "appName": "aragon.aragonpm.eth",
       "network": "rpc"
+    },
+    "harmony": {
+      "registry": "0x3c682c41409e18af890545ab17ab0dc8a90777f1",
+      "appName": "aragon.aragonpm.eth",
+      "network": "harmony"
+    },
+    "harmonyTest": {
+      "registry": "0x3c682c41409e18af890545ab17ab0dc8a90777f1",
+      "appName": "aragon.aragonpm.eth",
+      "network": "harmonyTest"
     },
     "rinkeby": {
       "registry": "0x98df287b6c145399aaa709692c8d308357bc085d",

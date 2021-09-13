@@ -120,7 +120,7 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   const walletWeb3 = wallet.web3
   const selectedWeb3 =
     wantedWeb3 === 'wallet' ? walletWeb3 : getWeb3(clientWeb3)
-
+  
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
   const [connectionStatus, setConnectionStatus] = useState(
@@ -135,14 +135,14 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     }
 
     let cancel = false
-    const handleWebsocketDrop = () => {
+    const handleWebsocketDrop = () => {      
       if (!cancel) {
         setIsListening(false)
         setConnectionStatus(STATUS_CONNECTION_ERROR)
       }
     }
 
-    if (selectedWeb3.currentProvider.on) {
+    if (selectedWeb3.currentProvider.on) {      
       selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
     }
 
@@ -181,12 +181,11 @@ export function useSyncInfo(wantedWeb3 = 'default') {
 
     let cancel = false
     const pollBlockTimestamp = pollEvery(
-      () => ({
+      () => ({        
         request: async () => {
           if (!cancel) {
-            return getLatestBlockTimestamp(selectedWeb3).catch(err => {
-              if (!cancel) {
-                console.error('Get latest block timestamp', err)
+            return getLatestBlockTimestamp(selectedWeb3).catch(err => {              
+              if (!cancel) {                
                 setIsListening(false)
                 setConnectionStatus(STATUS_CONNECTION_ERROR)
               }
@@ -194,17 +193,17 @@ export function useSyncInfo(wantedWeb3 = 'default') {
             })
           }
         },
-        onResult: timestamp => {
+        onResult: timestamp => {          
           if (!cancel) {
-            const now = new Date()
+            const now = new Date()            
             const blockDiff = now - timestamp
             const latestBlockDifference = Math.floor(blockDiff / 1000 / 60)
             const connectionHealth =
-              latestBlockDifference >= 30
-                ? STATUS_CONNECTION_ERROR
-                : latestBlockDifference >= 3
-                ? STATUS_CONNECTION_WARNING
-                : STATUS_CONNECTION_HEALTHY
+            latestBlockDifference >= 30
+            ? STATUS_CONNECTION_ERROR
+            : latestBlockDifference >= 3
+            ? STATUS_CONNECTION_WARNING
+            : STATUS_CONNECTION_HEALTHY            
             setConnectionStatus(connectionHealth)
             setSyncDelay(latestBlockDifference)
             if (connectionHealth === STATUS_CONNECTION_HEALTHY) {
@@ -238,6 +237,7 @@ export function useSyncState(
   clientSyncDelay,
   walletSyncDelay
 ) {
+  
   const { balance, getBlockNumber, networkType } = useWallet()
   const currentBlock = getBlockNumber()
 
@@ -248,6 +248,8 @@ export function useSyncState(
     info: currentBlock ? `: current block ${currentBlock}` : '',
     status: STATUS_CONNECTION_OK,
   }
+
+  
 
   const networkSettings = getNetworkSettings(networkType)
 
@@ -278,6 +280,8 @@ export function useSyncState(
       status: STATUS_MAJOR_NETWORK_SLOWDOWN,
     }
   }
+
+  
 
   if (clientSyncDelay >= 3 || walletSyncDelay >= 3) {
     return {

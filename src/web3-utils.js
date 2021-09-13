@@ -75,6 +75,7 @@ export async function checkValidEthNode(uri, expectedNetworkType) {
       throw new InvalidNetworkType()
     }
   } catch (err) {
+    console.log(err)
     if (err instanceof InvalidNetworkType) {
       throw err
     }
