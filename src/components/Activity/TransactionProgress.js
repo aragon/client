@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { ProgressBar, GU } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import { ActivityStatusType } from '../../prop-types'
-import { norm } from '../../math-utils'
+import { norm } from '../../util/math'
 import { useNow } from '../../hooks'
 import TimeTag from './TimeTag'
 import {

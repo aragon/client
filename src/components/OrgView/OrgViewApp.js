@@ -16,7 +16,7 @@ import AppLoader from '../App/AppLoader'
 import { useIdentity } from '../IdentityManager/IdentityManager'
 import { useRouting } from '../../routing'
 
-import { addressesEqual } from '../../web3-utils'
+import { addressesEqual } from '../../util/web3'
 
 import {
   AppInstanceGroupType,

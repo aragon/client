@@ -10,7 +10,7 @@ import {
   ACTIVITY_STATUS_TIMED_OUT,
   ACTIVITY_TYPE_TRANSACTION,
 } from '../symbols'
-import { getLocalStorageKey } from '../utils'
+import { getLocalStorageKey } from '../util/utils'
 
 const ActivityContext = React.createContext()
 

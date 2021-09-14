@@ -5,10 +5,10 @@
 import Web3 from 'web3'
 import { toWei } from 'web3-utils'
 import BN from 'bn.js'
-import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
+import { InvalidNetworkType, InvalidURI, NoConnection } from '../errors'
 import { log } from './utils'
-import { getEthNode } from './environment'
-import { isOnMainnet } from './network-config'
+import { getEthNode } from '../environment'
+import { isOnMainnet } from '../network-config'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g

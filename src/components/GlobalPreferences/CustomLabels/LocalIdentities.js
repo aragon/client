@@ -24,7 +24,7 @@ import Search from './Search'
 import Import from './Import'
 import LocalIdentityBadge from '../../IdentityBadge/LocalIdentityBadge'
 import { ASC, DESC } from './useSort'
-import { iOS } from '../../../utils'
+import { iOS } from '../../../util/utils'
 
 const LocalIdentities = React.memo(function LocalIdentities({
   allSelected,

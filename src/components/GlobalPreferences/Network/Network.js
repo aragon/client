@@ -20,7 +20,7 @@ import {
 } from '../../../local-settings'
 import keycodes from '../../../keycodes'
 import { sanitizeNetworkType } from '../../../network-config'
-import { checkValidEthNode } from '../../../web3-utils'
+import { checkValidEthNode } from '../../../util/web3'
 import { useWallet } from '../../../wallet'
 
 function Network({ wrapper }) {

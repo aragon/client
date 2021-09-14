@@ -25,7 +25,7 @@ import {
   toChecksumAddress,
   isAddress,
   isEmptyAddress,
-} from '../../web3-utils'
+} from '../../util/web3'
 import styled from 'styled-components'
 import { useWallet } from '../../wallet'
 import AddressField from '../../components/AddressField/AddressField'

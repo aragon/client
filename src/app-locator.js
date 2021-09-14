@@ -1,6 +1,6 @@
 import { hash as namehash } from 'eth-ens-namehash'
 import appIds from './known-app-ids'
-import { appendTrailingSlash } from './utils'
+import { appendTrailingSlash } from './util/utils'
 
 // Known apps and their assigned ports
 const DEFAULT_LOCAL_URLS = {

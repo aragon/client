@@ -12,7 +12,7 @@ import {
   getDefaultAcceptedTokens,
   ETHER_TOKEN_FAKE_ADDRESS,
 } from '../helpers/tokens'
-import { shortenAddress } from '../../../../web3-utils'
+import { shortenAddress } from '../../../../util/web3'
 import { useWallet } from '../../../../wallet'
 
 function validationError(acceptedTokens) {

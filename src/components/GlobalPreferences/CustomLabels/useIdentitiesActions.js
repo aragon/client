@@ -4,10 +4,10 @@ import {
   identityEventTypes,
   useIdentity,
 } from '../../IdentityManager/IdentityManager'
-import { dateFormat } from '../../../date-utils'
-import { log } from '../../../utils'
+import { dateFormat } from '../../../util/date'
+import { log } from '../../../util/utils'
 import { useRouting } from '../../../routing'
-import { utoa } from '../../../string-utils'
+import { utoa } from '../../../util/string'
 
 function useIdentitiesActions({
   filteredIdentities,

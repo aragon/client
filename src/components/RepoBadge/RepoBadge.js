@@ -1,7 +1,7 @@
 import React from 'react'
 import { LinkBase, GU, RADIUS, blockExplorerUrl, useTheme } from '@aragon/ui'
 import AppIcon from '../../components/AppIcon/AppIcon'
-import { repoBaseUrl } from '../../url-utils'
+import { repoBaseUrl } from '../../util/url'
 import { RepoVersionType } from '../../prop-types'
 import { useWallet } from '../../wallet'
 

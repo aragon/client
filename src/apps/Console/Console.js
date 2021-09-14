@@ -17,7 +17,7 @@ import { buildCommand, parseCommand } from './console-utils'
 import handlers from './handlers'
 import IconPrompt from './IconPrompt'
 import KEYCODES from '../../keycodes'
-import { clamp } from '../../math-utils'
+import { clamp } from '../../util/math'
 import { AragonType, AppType } from '../../prop-types'
 import { CONSOLE_COMMAND_HISTORY_KEY } from './useConsole'
 

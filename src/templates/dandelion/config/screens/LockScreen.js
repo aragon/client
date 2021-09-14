@@ -10,7 +10,7 @@ import {
 } from '../../../kit'
 import TokenSelector from '../../components/TokenSelector/TokenSelector'
 import { getDefaultLockTokenByNetwork } from '../helpers/tokens'
-import { shortenAddress } from '../../../../web3-utils'
+import { shortenAddress } from '../../../../util/web3'
 import {
   formatDuration,
   DAY_IN_SECONDS,

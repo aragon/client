@@ -15,7 +15,7 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { TEMPLATE_LOADING, TEMPLATE_UNAVAILABLE } from '../symbols'
-import { stripUrlProtocol, sanitizeCodeRepositoryUrl } from '../../url-utils'
+import { stripUrlProtocol, sanitizeCodeRepositoryUrl } from '../../util/url'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import KnownAppBadge from '../../templates/kit/KnownAppBadge'
 import { trackEvent, events } from '../../analytics'

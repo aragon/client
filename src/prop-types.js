@@ -18,7 +18,7 @@ import {
   TRANSACTION_STATUS_SUCCESS,
   TRANSACTION_STATUS_UPCOMING,
 } from './symbols'
-import { isAddress } from './web3-utils'
+import { isAddress } from './util/web3'
 
 const validatorCreator = nonRequiredFunction => {
   const validator = nonRequiredFunction

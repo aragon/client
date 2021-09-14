@@ -18,10 +18,10 @@ import {
   ReposListType,
   RepoVersionType,
 } from '../../prop-types'
-import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
-import { isKnownRepo } from '../../repo-utils'
+import { KERNEL_APP_BASE_NAMESPACE } from '../../util/aragonos'
+import { isKnownRepo } from '../../util/repo'
 import RepoBadge from '../../components/RepoBadge/RepoBadge'
-import { sanitizeCodeRepositoryUrl } from '../../url-utils'
+import { sanitizeCodeRepositoryUrl } from '../../util/url'
 
 const VERSION = '0.8 Camino'
 const SOURCE = [

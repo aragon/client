@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
-import { isAddress } from '../../web3-utils'
+import { isAddress } from '../../util/web3'
 import { useWallet } from '../../wallet'
 import { getNetworkName } from '../../network-config'
 

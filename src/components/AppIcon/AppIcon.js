@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { useImageExists, RADIUS } from '@aragon/ui'
-import { appIconUrl, legacyAppIconUrl } from '../../utils'
+import { appIconUrl, legacyAppIconUrl } from '../../util/utils'
 
 import iconSvgAcl from './assets/app-acl.svg'
 import iconSvgApps from './assets/app-apps.svg'

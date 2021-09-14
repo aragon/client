@@ -1,5 +1,5 @@
 import BN from 'bn.js'
-import { fromWei, toWei, formatBalance } from '../web3-utils'
+import { fromWei, toWei, formatBalance } from '../util/web3'
 
 const MINIMUM_BALANCE = new BN(toWei('0.2'))
 const BALANCE_DECIMALS = 3

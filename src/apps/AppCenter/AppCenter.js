@@ -7,9 +7,9 @@ import {
   DaoAddressType,
   RepoType,
 } from '../../prop-types'
-import { log, removeStartingSlash } from '../../utils'
-import { repoBaseUrl } from '../../url-utils'
-import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
+import { log, removeStartingSlash } from '../../util/utils'
+import { repoBaseUrl } from '../../util/url'
+import { KERNEL_APP_BASE_NAMESPACE } from '../../util/aragonos'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'

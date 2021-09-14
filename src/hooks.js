@@ -12,8 +12,8 @@ import {
   identityEventTypes,
 } from './components/IdentityManager/IdentityManager'
 import keycodes from './keycodes'
-import { log, removeStartingSlash } from './utils'
-import { addressesEqual } from './web3-utils'
+import { log, removeStartingSlash } from './util/utils'
+import { addressesEqual } from './util/web3'
 
 // Update `now` at a given interval.
 export function useNow(updateEvery = 1000) {

@@ -10,7 +10,7 @@ import {
   useTheme,
   useViewport,
 } from '@aragon/ui'
-import { shortenAddress, getEmptyAddress } from '../../web3-utils'
+import { shortenAddress, getEmptyAddress } from '../../util/web3'
 import { useWallet } from '../../wallet'
 
 const ButtonAccount = React.forwardRef(function ButtonAccount(

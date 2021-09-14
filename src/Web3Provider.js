@@ -1,4 +1,4 @@
-import { getWeb3Provider } from './web3-utils'
+import { getWeb3Provider } from './util/web3'
 
 class Web3Provider {
   getProvider(networkType) {

@@ -12,13 +12,13 @@ import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
 import Welcome from '../Welcome/Welcome'
 import embeddedTemplates from '../../templates'
-import { log } from '../../utils'
+import { log } from '../../util/utils'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
 import { useWallet, KNOWN_CHAINS } from '../../wallet'
 import validateCreationRequirements from '../validate-requirements'
-import { getWeb3 } from '../../web3-utils'
+import { getWeb3 } from '../../util/web3'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,

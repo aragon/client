@@ -12,8 +12,8 @@ import {
   TRANSACTION_STATUS_SUCCESS,
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
-import { log } from '../../utils'
-import { getGasPrice } from '../../web3-utils'
+import { log } from '../../util/utils'
+import { getGasPrice } from '../../util/web3'
 import {
   loadTemplateState,
   saveTemplateState,

@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useDropzone } from 'react-dropzone'
 import { Button, useToast } from '@aragon/ui'
-import { isString } from '../../../utils'
-import { isAddress } from '../../../web3-utils'
+import { isString } from '../../../util/utils'
+import { isAddress } from '../../../util/web3'
 
 // What is the answer to the ultimate question of Life, the Universe, and Everything?
 const MAX_LENGTH = 42

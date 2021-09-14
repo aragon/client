@@ -1,5 +1,5 @@
 import memoize from 'lodash.memoize'
-import { addressesEqual } from './web3-utils'
+import { addressesEqual } from './util/web3'
 
 // Note that these two terms are slightly confusing artifacts of the ACL:
 //   Any entity: If a permission is granted to "any entity", then any address can be seen as holding
