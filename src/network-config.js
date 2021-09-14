@@ -159,7 +159,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://dry-old-leaf.matic.quiknode.pro/',
+      defaultEth: 'wss://ws.s0.pops.one/',
     },
     connectGraphEndpoint: null,
     settings: {
