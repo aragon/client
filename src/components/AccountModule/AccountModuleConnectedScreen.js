@@ -15,7 +15,7 @@ import {
 } from '@aragon/ui'
 import { EthereumAddressType, EthereumProviderType } from '../../prop-types'
 import { useCopyToClipboard } from '../../copy-to-clipboard'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import {
   useNetworkConnectionData,
   useSyncState,

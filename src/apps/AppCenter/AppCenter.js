@@ -14,7 +14,7 @@ import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 function getLocation(localPath, extendedRepos) {
   const defaultScreen = { screen: 'installed' }

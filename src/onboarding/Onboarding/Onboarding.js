@@ -16,7 +16,7 @@ import { log } from '../../util/utils'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
-import { useWallet, KNOWN_CHAINS } from '../../wallet'
+import { useWallet, KNOWN_CHAINS } from '../../contexts/wallet'
 import validateCreationRequirements from '../validate-requirements'
 import { getWeb3 } from '../../util/web3'
 

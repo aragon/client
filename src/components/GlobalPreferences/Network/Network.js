@@ -21,7 +21,7 @@ import {
 import keycodes from '../../../keycodes'
 import { sanitizeNetworkType } from '../../../network-config'
 import { checkValidEthNode } from '../../../util/web3'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 function Network({ wrapper }) {
   const {

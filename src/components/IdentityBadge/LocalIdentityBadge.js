@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { IconLabel, GU } from '@aragon/ui'
 import { LocalIdentityModalContext } from '../LocalIdentityModal/LocalIdentityModalManager'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import { useLocalIdentity } from '../../hooks'
 import { addressesEqual, isAddress } from '../../util/web3'
 import {

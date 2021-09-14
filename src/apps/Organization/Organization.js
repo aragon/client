@@ -26,7 +26,7 @@ import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
 import { toChecksumAddress } from '../../util/web3'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 const Organization = React.memo(function Organization({
   apps,

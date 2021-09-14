@@ -10,7 +10,7 @@ import {
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import { getNetworkName, isOnMainnet } from '../../network-config'
 
 function WalletSyncedInfo({ header, info, status }) {

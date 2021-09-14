@@ -7,7 +7,7 @@ import { addressesEqual } from '../../../util/web3'
 import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
 import FavoritesMenuItemButton from '../../FavoritesMenu/FavoritesMenuItemButton'
 import OrgIcon from '../../OrgIcon/OrgIcon'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 class Favorites extends React.Component {
   static propTypes = {

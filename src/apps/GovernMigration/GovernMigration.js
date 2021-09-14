@@ -27,7 +27,7 @@ import {
   isEmptyAddress,
 } from '../../util/web3'
 import styled from 'styled-components'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import AddressField from '../../components/AddressField/AddressField'
 import { InvalidAddress, RequiredField } from '../../errors'
 import { performTransactionPaths } from '../../aragonjs-wrapper'

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { keyframes } from 'styled-components'
 import { GU, useTheme, textStyle, Link } from '@aragon/ui'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 import loadingRing from './assets/loading-ring.svg'
 

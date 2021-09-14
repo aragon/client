@@ -11,7 +11,7 @@ import {
   useViewport,
 } from '@aragon/ui'
 import { shortenAddress, getEmptyAddress } from '../../util/web3'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 const ButtonAccount = React.forwardRef(function ButtonAccount(
   { connectionColor, connectionMessage, isWrongNetwork, label, onClick },

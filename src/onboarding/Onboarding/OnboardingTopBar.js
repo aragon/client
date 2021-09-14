@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import { isOnMainnet } from '../../network-config'
 
 function OnboardingTopBar({ status, solid }) {

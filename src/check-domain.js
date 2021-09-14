@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { isEnsDomainAvailable } from './aragonjs-wrapper'
 import { useClientWeb3 } from './contexts/ClientWeb3Context'
-import { useWallet } from './wallet'
+import { useWallet } from './contexts/wallet'
 
 const DOMAIN_CHECK = Symbol('DOMAIN_CHECK')
 const DOMAIN_LOADING = Symbol('DOMAIN_LOADING')

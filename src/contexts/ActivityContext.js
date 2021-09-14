@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useWallet } from '../wallet'
+import { useWallet } from '../contexts/wallet'
 import StoredList from '../StoredList'
 import { EthereumAddressType } from '../prop-types'
 import {

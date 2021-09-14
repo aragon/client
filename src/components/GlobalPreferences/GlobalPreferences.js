@@ -22,7 +22,7 @@ import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import { isOnMainnet } from '../../network-config'
 
 const CUSTOM_LABELS_KEY = 'custom-labels'

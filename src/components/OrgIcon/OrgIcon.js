@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { GU, EthIdenticon } from '@aragon/ui'
 import { getKnownOrganization } from '../../known-organizations'
 import { EthereumAddressType } from '../../prop-types'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 function OrgIcon({ orgAddress, size }) {
   const { networkType } = useWallet()

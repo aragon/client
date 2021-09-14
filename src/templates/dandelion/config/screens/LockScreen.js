@@ -16,7 +16,7 @@ import {
   DAY_IN_SECONDS,
   MINUTE_IN_SECONDS,
 } from '../../../kit/kit-utils'
-import { useWallet } from '../../../../wallet'
+import { useWallet } from '../../../../contexts/wallet'
 
 const DEFAULT_SPAM_PENALTY = 50
 const DEFAULT_DURATION = DAY_IN_SECONDS

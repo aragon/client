@@ -21,7 +21,7 @@ import { RepoType } from '../../../prop-types'
 import { useRepoDetails } from '../../../hooks'
 import Screenshots from '../Screenshots'
 import { sanitizeCodeRepositoryUrl } from '../../../util/url'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 const AppContent = React.memo(
   ({ repo, repoVersions, onRequestUpgrade, onClose }) => {

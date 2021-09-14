@@ -22,7 +22,7 @@ import {
   ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_TIMED_OUT,
 } from '../../symbols'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 const ActivityItem = ({ activity }) => {
   const theme = useTheme()

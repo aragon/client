@@ -18,7 +18,11 @@ import {
   OK_PROVIDER_SYNC_DELAY,
 } from './utils'
 import { pollEvery } from '../../util/utils'
-import { useWallet, ChainUnsupportedError, WALLET_STATUS } from '../../wallet'
+import {
+  useWallet,
+  ChainUnsupportedError,
+  WALLET_STATUS,
+} from '../../contexts/wallet'
 import { getWeb3, getLatestBlockTimestamp } from '../../util/web3'
 import {
   getNetworkSettings,

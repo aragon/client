@@ -19,7 +19,7 @@ import { stripUrlProtocol, sanitizeCodeRepositoryUrl } from '../../util/url'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import KnownAppBadge from '../../templates/kit/KnownAppBadge'
 import { trackEvent, events } from '../../analytics'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 function TemplateDetails({ template, visible, onUse, onClose }) {
   const theme = useTheme()
