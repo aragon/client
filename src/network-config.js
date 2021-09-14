@@ -173,7 +173,7 @@ export function normalizeNetworkName(networkType) {
 export function sanitizeNetworkType(networkType) {
   if (networkType === 'private') {
     return 'localhost'
-  } else if (isOnMainnet(networkType)) {
+  } else if (isOnEthMainnet(networkType)) {
     return 'mainnet'
   }
   return networkType
@@ -196,8 +196,22 @@ export function useNetworkConfig() {
   return getNetworkConfig(networkType)
 }
 
-export function isOnMainnet(networkType) {
+export function isOnEthMainnet(networkType) {
   return networkType === KNOWN_CHAINS.get(1).type
+}
+
+export function isOnMainnet(networkType) {
+  return (
+    networkType === KNOWN_CHAINS.get(1).type ||
+    networkType === KNOWN_CHAINS.get(137)
+  )
+}
+
+export function isOnTestnet(networkType) {
+  return (
+    networkType === KNOWN_CHAINS.get(4).type ||
+    networkType === KNOWN_CHAINS.get(80001)
+  )
 }
 
 export function getDaiTokenAddress(networkType) {

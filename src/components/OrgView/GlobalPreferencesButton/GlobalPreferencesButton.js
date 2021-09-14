@@ -19,7 +19,7 @@ import iconNetwork from '../../../assets/global-preferences-network.svg'
 import iconCustomLabels from '../../../assets/global-preferences-custom-labels.svg'
 import iconNotifications from '../../../assets/global-preferences-notifications.svg'
 import { useWallet } from '../../../contexts/wallet'
-import { isOnMainnet } from '../../../network-config'
+import { isOnEthMainnet } from '../../../network-config'
 
 function GlobalPreferencesButton() {
   const theme = useTheme()
@@ -31,7 +31,7 @@ function GlobalPreferencesButton() {
   const containerRef = useRef()
 
   const { networkType } = useWallet()
-  const isMainnet = isOnMainnet(networkType)
+  const isMainnet = isOnEthMainnet(networkType)
 
   const handleToggle = useCallback(() => setOpened(opened => !opened), [])
   const handleClose = useCallback(() => setOpened(false), [])

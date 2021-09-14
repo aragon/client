@@ -20,7 +20,7 @@ import { getProviderString } from 'use-wallet'
 import {
   sanitizeNetworkType,
   getNetworkConfig,
-  isOnMainnet,
+  isOnEthMainnet,
 } from '../../network-config'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
@@ -110,7 +110,7 @@ const Organization = React.memo(function Organization({
   const checksummedDaoAddr =
     daoAddress.address && toChecksumAddress(daoAddress.address)
   const enableTransactions = wallet.connected && wallet.account
-  const isMainnet = isOnMainnet(network.type)
+  const isMainnet = isOnEthMainnet(network.type)
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (

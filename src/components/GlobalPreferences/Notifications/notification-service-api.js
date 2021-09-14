@@ -1,4 +1,4 @@
-import { isOnMainnet } from '../../../network-config'
+import { isOnEthMainnet } from '../../../network-config'
 import {
   NOTIFICATION_SERVICE_ACCOUNT,
   NOTIFICATION_SERVICE_LOGIN,
@@ -12,7 +12,7 @@ import {
 // The notifications API expects mainnet for Ethereum mainnet. This deviates from deviates
 // from networkType returned from use-wallet that returns main instead of mainnet
 const sanitizeNetworkType = networkType =>
-  isOnMainnet(networkType) ? 'mainnet' : networkType
+  isOnEthMainnet(networkType) ? 'mainnet' : networkType
 
 const isAuthTokenExpired = response =>
   response.statusCode === 401 && response.message === API_MESSAGE_EXPIRED_TOKEN
