@@ -51,7 +51,7 @@ If you find an issue, or would like to add a feature, ask yourself these followi
 
 ## Starting frontend development
 
-Refer to the [frontend development setup](./FRONTEND_SETUP.md) to set up everything you need to start local development on the Client or an app in `aragon-app`!
+Refer to the [frontend development setup](./FRONTEND_SETUP.md) to set up everything you need to start local development on the Client or an app in [`aragon/aragon-apps`](https://github.com/aragon/aragon-apps)!
 
 ## Your own Aragon app
 
