@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Link, textStyle, GU, LoadingRing } from '@aragon/ui'
 import { AppType } from '../../prop-types'
-import { shortenAddress } from '../../web3-utils'
+import { shortenAddress } from '../../util/web3'
 
 // Tuple of [display name, app name]
 const INSTALLABLE_APPS = [

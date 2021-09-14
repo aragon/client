@@ -8,12 +8,12 @@ import React, {
   useRef,
 } from 'react'
 import { createHashHistory as createHistory } from 'history'
-import { log, addStartingSlash } from './utils'
+import { log, addStartingSlash } from './util/utils'
 import { staticApps } from './static-apps'
-import { isAddress, isValidEnsName } from './web3-utils'
+import { isAddress, isValidEnsName } from './util/web3'
 
 import { trackPage } from './analytics'
-import { useAPM, instrumentAPMRouts } from './elasticAPM'
+import { useAPM, instrumentAPMRouts } from './contexts/elasticAPM'
 
 export const ARAGONID_ENS_DOMAIN = 'aragonid.eth'
 

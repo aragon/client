@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { AppType } from '../../prop-types'
 import { appIframeSandbox } from '../../security/configuration'
-import { noop } from '../../utils'
+import { noop } from '../../util/utils'
 
 class AppIFrame extends React.Component {
   static propTypes = {

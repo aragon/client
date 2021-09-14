@@ -1,4 +1,4 @@
-import { iOS, isSafari } from '../utils'
+import { iOS, isSafari } from '../util/utils'
 
 // See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe for details about sandbox
 // `sandbox` works like a whitelist: by default, almost every functionality is restricted.

@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import { IconPlus, GU, RADIUS, useTheme } from '@aragon/ui'
 import { getKnownOrganization } from '../../../known-organizations'
 import { FavoriteDaoType, DaoItemType } from '../../../prop-types'
-import { addressesEqual } from '../../../web3-utils'
+import { addressesEqual } from '../../../util/web3'
 import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
 import FavoritesMenuItemButton from '../../FavoritesMenu/FavoritesMenuItemButton'
 import OrgIcon from '../../OrgIcon/OrgIcon'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 class Favorites extends React.Component {
   static propTypes = {

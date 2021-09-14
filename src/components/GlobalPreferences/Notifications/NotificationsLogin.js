@@ -13,10 +13,10 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { login } from './notification-service-api'
-import { validateEmail } from '../../../utils'
+import { validateEmail } from '../../../util/utils'
 import { useRouting } from '../../../routing'
 import notificationPng from './notifications.png'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 export default function NotificationsLogin({ onEmailChange, hasLoggedOut }) {
   const [inputEmail, setInputEmail] = useState('')

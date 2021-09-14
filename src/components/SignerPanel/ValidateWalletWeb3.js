@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import { NoWeb3Provider, AccountLocked } from './Web3Errors'
 
 function ValidateWalletWeb3({

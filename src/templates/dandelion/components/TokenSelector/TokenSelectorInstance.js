@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { addressesEqual, GU, tokenIconUrl } from '@aragon/ui'
-import { shortenAddress } from '../../../../web3-utils'
+import { shortenAddress } from '../../../../util/web3'
 import { ETHER_TOKEN_FAKE_ADDRESS } from '../../config/helpers/tokens'
 
 /* eslint-disable react/prop-types */

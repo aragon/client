@@ -12,8 +12,8 @@ import {
   TRANSACTION_STATUS_SUCCESS,
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
-import { log } from '../../utils'
-import { getGasPrice } from '../../web3-utils'
+import { log } from '../../util/utils'
+import { getGasPrice } from '../../util/web3'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -27,7 +27,7 @@ import {
   STATUS_TEMPLATE_SCREENS,
   STATUS_DEPLOYMENT,
 } from './create-statuses'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import { getIpfsGateway } from '../../local-settings'
 import { web3Provider } from '../../Web3Provider'
 import { trackEvent, events } from '../../analytics'

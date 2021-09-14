@@ -20,7 +20,7 @@ import {
 import SubscriptionsForm from './SubscriptionsForm'
 import SubscriptionsTable from './SubscriptionsTable'
 import { DeleteAccountConfirmationModal } from './NotificationModals'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 export default function ManageNotifications({
   apps,

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Box, GU, IdentityBadge, Info, useTheme } from '@aragon/ui'
-import { getEmptyAddress } from '../../../web3-utils'
+import { getEmptyAddress } from '../../../util/web3'
 import Import from './Import'
 
 function EmptyIdentities({ onImport }) {

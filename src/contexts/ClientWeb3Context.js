@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react'
-import { useWallet } from '../wallet'
+import { useWallet } from '../contexts/wallet'
 import { web3Provider } from '../Web3Provider'
 
 const ClientWeb3Context = React.createContext()

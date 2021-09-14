@@ -6,7 +6,7 @@ import ToggleContent from './ToggleContent'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import AppInstanceLabel from '../AppInstanceLabel'
 import { AppType, EthereumAddressType } from '../../prop-types'
-import { isHumanReadable } from '../../utils'
+import { isHumanReadable } from '../../util/utils'
 
 const SignMsgContent = ({ apps, account, intent, onSign, signingEnabled }) => {
   const { message, requestingApp: requestingAppAddress } = intent

@@ -5,7 +5,7 @@ import {
 } from '../../IdentityManager/IdentityManager'
 import { useSelected } from '../../../hooks'
 import { useRouting } from '../../../routing'
-import { atou } from '../../../string-utils'
+import { atou } from '../../../util/string'
 
 function useSharedLink({ wrapper, toast }) {
   const { identityEvents$ } = useIdentity()

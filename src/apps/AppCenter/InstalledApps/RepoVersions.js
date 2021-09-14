@@ -12,7 +12,7 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { RepoType } from '../../../prop-types'
-import { dateFormat } from '../../../date-utils'
+import { dateFormat } from '../../../util/date'
 
 const { tr: AnimTr } = animated
 

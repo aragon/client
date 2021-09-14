@@ -5,8 +5,8 @@ import FavoritesMenu from '../../components/FavoritesMenu/FavoritesMenu'
 import OrgIcon from '../../components/OrgIcon/OrgIcon'
 import { useFavoriteDaos } from '../../contexts/FavoriteDaosContext'
 import { getKnownOrganization } from '../../known-organizations'
-import { addressesEqual } from '../../web3-utils'
-import { useWallet } from '../../wallet'
+import { addressesEqual } from '../../util/web3'
+import { useWallet } from '../../contexts/wallet'
 
 function Suggestions({ suggestedOrgs }) {
   const {

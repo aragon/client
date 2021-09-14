@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom'
 import { Main } from '@aragon/ui'
 import App from './App'
 import GlobalErrorHandler from './GlobalErrorHandler'
-import { WalletProvider } from './wallet'
+import { WalletProvider } from './contexts/wallet'
 import { ClientThemeProvider, useClientTheme } from './client-theme'
 import {
   getLastPackageVersion,
@@ -16,7 +16,7 @@ import {
 import { RoutingProvider } from './routing'
 import { ConsoleVisibleProvider } from './apps/Console/useConsole'
 import { ClientWeb3Provider } from './contexts/ClientWeb3Context'
-import { APMProvider } from './elasticAPM'
+import { APMProvider } from './contexts/elasticAPM'
 
 const packageVersion = getPackageVersion()
 const lastPackageVersion = getLastPackageVersion()

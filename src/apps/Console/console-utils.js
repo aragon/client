@@ -1,4 +1,4 @@
-import { appendTrailingSlash } from '../../utils'
+import { appendTrailingSlash } from '../../util/utils'
 
 const SEPARATOR = '/'
 

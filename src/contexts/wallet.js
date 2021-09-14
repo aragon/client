@@ -7,8 +7,8 @@ import {
   ChainUnsupportedError,
   KNOWN_CHAINS,
 } from 'use-wallet'
-import { getWeb3, filterBalanceValue } from './web3-utils'
-import { useWalletConnectors } from './ethereum-providers/connectors'
+import { getWeb3, filterBalanceValue } from '../util/web3'
+import { useWalletConnectors } from '../ethereum-providers/connectors'
 import { useAPM, updateAPMContext } from './elasticAPM'
 
 export const WALLET_STATUS = Object.freeze({

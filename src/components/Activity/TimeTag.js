@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { GU, textStyle, useTheme } from '@aragon/ui'
 import { useNow } from '../../hooks'
-import { getRelativeTime } from '../../date-utils'
+import { getRelativeTime } from '../../util/date'
 
 function TimeTag({ date, label, ...props }) {
   const theme = useTheme()

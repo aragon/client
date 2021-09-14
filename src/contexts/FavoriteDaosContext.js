@@ -8,9 +8,9 @@ import React, {
 import uniqby from 'lodash.uniqby'
 import PropTypes from 'prop-types'
 import StoredList from '../StoredList'
-import { addressesEqual } from '../web3-utils'
-import { useWallet } from '../wallet'
-import { getLocalStorageKey } from '../utils'
+import { addressesEqual } from '../util/web3'
+import { useWallet } from '../contexts/wallet'
+import { getLocalStorageKey } from '../util/utils'
 
 const FavoriteDaosContext = React.createContext()
 

@@ -21,6 +21,7 @@ public/
 # misc
 .DS_Store
 .cache
+.vscode
 
 npm-debug.log*
 yarn-debug.log*

@@ -1,5 +1,5 @@
 import { getEnsRegistryAddress } from './local-settings'
-import { useWallet, KNOWN_CHAINS } from './wallet'
+import { useWallet, KNOWN_CHAINS } from './contexts/wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'

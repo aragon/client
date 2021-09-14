@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Card, Tag, textStyle, unselectable, GU } from '@aragon/ui'
 import { AppType } from '../../prop-types'
-import { shortenAddress } from '../../web3-utils'
+import { shortenAddress } from '../../util/web3'
 import AppIcon from '../AppIcon/AppIcon'
 
 const AppCard = React.memo(function AppCard({ onOpen, app }) {

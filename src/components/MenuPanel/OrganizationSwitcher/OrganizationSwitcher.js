@@ -12,7 +12,7 @@ import { DaoItemType } from '../../../prop-types'
 import { useFavoriteDaos } from '../../../contexts/FavoriteDaosContext'
 import OrganizationItem from './OrganizationItem'
 import Favorites from './Favorites'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 const OrganizationSwitcher = React.memo(function OrganizationSwitcher({
   currentDao,

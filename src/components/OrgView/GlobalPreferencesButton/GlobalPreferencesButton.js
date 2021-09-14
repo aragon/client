@@ -18,7 +18,7 @@ import { useRouting } from '../../../routing'
 import iconNetwork from '../../../assets/global-preferences-network.svg'
 import iconCustomLabels from '../../../assets/global-preferences-custom-labels.svg'
 import iconNotifications from '../../../assets/global-preferences-notifications.svg'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 import { isOnMainnet } from '../../../network-config'
 
 function GlobalPreferencesButton() {

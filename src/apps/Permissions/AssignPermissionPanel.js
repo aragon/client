@@ -4,7 +4,7 @@ import { Button, DropDown, Info, Field, SidePanel, GU } from '@aragon/ui'
 import { ANY_ENTITY } from '../../permissions'
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { AppType, AragonType } from '../../prop-types'
-import { isAddress, isEmptyAddress } from '../../web3-utils'
+import { isAddress, isEmptyAddress } from '../../util/web3'
 import AppInstanceLabel from '../../components/AppInstanceLabel'
 import EntitySelector from './EntitySelector'
 

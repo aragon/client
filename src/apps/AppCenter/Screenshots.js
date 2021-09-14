@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link, GU, RADIUS } from '@aragon/ui'
 import { RepoType } from '../../prop-types'
-import { imgSrcFromBase } from '../../utils'
+import { imgSrcFromBase } from '../../util/utils'
 
 const Screenshots = React.memo(function Screenshots({
   screenshots,

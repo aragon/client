@@ -19,7 +19,7 @@ import {
 } from '../../prop-types'
 
 import { DAO_STATUS_LOADING } from '../../symbols'
-import { iOS, isSafari } from '../../utils'
+import { iOS, isSafari } from '../../util/utils'
 import { useClientTheme } from '../../client-theme'
 import { useRouting } from '../../routing'
 import ActivityButton from './ActivityButton/ActivityButton'

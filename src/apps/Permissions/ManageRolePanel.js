@@ -13,7 +13,7 @@ import {
 import { PermissionsConsumer } from '../../contexts/PermissionsContext'
 import { ANY_ENTITY, isBurnEntity } from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
-import { isAddress, isEmptyAddress } from '../../web3-utils'
+import { isAddress, isEmptyAddress } from '../../util/web3'
 import LocalLabelAppBadge from '../../components/LocalLabelAppBadge/LocalLabelAppBadge'
 import EntitySelector from './EntitySelector'
 import PermissionsIdentityBadge from './PermissionsIdentityBadge'
