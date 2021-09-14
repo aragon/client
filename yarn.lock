@@ -164,10 +164,9 @@
     graphql "^15.5.0"
     graphql-request "^3.4.0"
 
-"@aragon/wrapper@^5.4.0":
+"@aragon/wrapper@github:victaphu/aragon-wrapper.git":
   version "5.4.0"
-  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-5.4.0.tgz#c96556fdb3f360fe44e9f5c9d14bb47acc0e24f5"
-  integrity sha512-IKq5o+3VL/paAvEGjkH6nwp8XnDAZIjCIIFohvjULAPpWc+2hxs6xvTBDyjGQd6Kr2zJcS9/vSzx3ZijMQI/ew==
+  resolved "https://codeload.github.com/victaphu/aragon-wrapper/tar.gz/045a59e3786ec775d828ae8f6af33188ed74250e"
   dependencies:
     "@aragon/os" "^4.2.1"
     "@aragon/rpc-messenger" "^2.0.0"
@@ -11227,7 +11226,7 @@ secp256k1@^3.0.1, secp256k1@^3.8.0:
     nan "^2.14.0"
     safe-buffer "^5.1.2"
 
-secp256k1@^4.0.1:
+secp256k1@^4.0.1, secp256k1@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.2.tgz#15dd57d0f0b9fdb54ac1fa1694f40e5e9a54f4a1"
   dependencies:
