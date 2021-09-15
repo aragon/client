@@ -42,7 +42,7 @@ export function NetworkSwitchModal({ account, onClose, onConnect, visible }) {
             <ButtonsRow networkNames={mainNetworks} />
           </div>
           <div>
-            <NetworkTitle>Mainnets</NetworkTitle>
+            <NetworkTitle>Testnets</NetworkTitle>
             <ButtonsRow networkNames={testNetworks} />
           </div>
         </Body>

@@ -7,7 +7,6 @@ import {
   TEMPLATE_LOADING,
   TEMPLATE_UNAVAILABLE,
 } from '../symbols'
-import ConnectModal from '../../components/Modals/ConnectModal/ConnectModal'
 import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
 import Welcome from '../Welcome/Welcome'
@@ -20,7 +19,7 @@ import { useWallet, KNOWN_CHAINS } from '../../contexts/wallet'
 import validateCreationRequirements from '../validate-requirements'
 import { getWeb3 } from '../../util/web3'
 import styled from 'styled-components'
-import { NetworkSwitchModal } from '../../components/Modals'
+import { NetworkSwitchModal, ConnectModal } from '../../components/Modals'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
