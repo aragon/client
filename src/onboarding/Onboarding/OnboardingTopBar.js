@@ -1,17 +1,17 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
-import { Button, GU, IconSettings, useTheme, Info } from '@aragon/ui'
+import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
 import { useWallet } from '../../contexts/wallet'
-import { isOnEthMainnet, isOnTestnet } from '../../network-config'
+import { isOnEthMainnet } from '../../network-config'
 import styled from 'styled-components'
+import { NetworkIndicator } from '../../components/NetworkIndicator/NetworkIndicator'
 
 function OnboardingTopBar({ status, solid }) {
   const theme = useTheme()
   const { networkType } = useWallet()
   const isMainnet = isOnEthMainnet(networkType)
-  const isTestnet = isOnTestnet(networkType)
 
   const handleSettingsClick = useCallback(() => {
     let path = '/'
@@ -30,8 +30,7 @@ function OnboardingTopBar({ status, solid }) {
         <BlueLine color={theme.accent} />
         <HomeButton />
         <ButtonContainer>
-          {isTestnet && <Info mode="warning">{networkType}</Info>}
-          {isMainnet && <Info>{networkType}</Info>}
+          <NetworkIndicator />
           <AccountModule />
           {isMainnet && (
             <Button

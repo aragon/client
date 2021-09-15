@@ -7,7 +7,6 @@ import {
   springs,
   useTheme,
   useViewport,
-  Info,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import {
@@ -34,8 +33,7 @@ import UpgradeBanner from '../Upgrade/UpgradeBanner'
 import UpgradeModal from '../Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from '../Upgrade/UpgradeOrganizationPanel'
 import MigrateBanner from '../Migrate/MigrateBanner'
-import { useWallet } from '../../contexts/wallet'
-import { isOnMainnet, isOnTestnet } from '../../network-config'
+import { NetworkIndicator } from '../NetworkIndicator/NetworkIndicator'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -64,9 +62,6 @@ function OrgView({
   const { appearance } = useClientTheme()
   const { width, below } = useViewport()
   const autoClosingPanel = below('medium')
-  const { networkType } = useWallet()
-  const isMainnet = isOnMainnet(networkType)
-  const isTestnet = isOnTestnet(networkType)
 
   const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
   const [orgUpgradePanelOpened, setOrgUpgradePanelOpened] = useState(false)
@@ -274,8 +269,7 @@ function OrgView({
               />
             )}
             <div css="display: flex">
-              {isTestnet && <Info mode="warning">{networkType}</Info>}
-              {isMainnet && <Info>{networkType}</Info>}
+              <NetworkIndicator />
               <AccountModule />
               <GlobalPreferencesButton />
               <ActivityButton apps={apps} />

@@ -19,6 +19,7 @@ import { useRouting } from '../../routing'
 import { useWallet, KNOWN_CHAINS } from '../../contexts/wallet'
 import validateCreationRequirements from '../validate-requirements'
 import { getWeb3 } from '../../util/web3'
+import styled from 'styled-components'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
@@ -233,45 +234,31 @@ function Onboarding({ web3 }) {
   return (
     <div css="position: relative; z-index: 1">
       <OnboardingTopBar status={status} solid={solidTopBar} />
-      <div
+      <OnboardingMain
+        backgroundColor={theme.background}
         onScroll={handleOnBoardingScroll}
-        css={`
-          position: relative;
-          z-index: 1;
-          background: ${theme.background};
-          height: 100vh;
-          min-width: ${BREAKPOINTS.min}px;
-          overflow-y: auto;
-        `}
       >
-        <div
-          css={`
-            position: relative;
-            z-index: 1;
-            height: 100%;
-          `}
-        >
-          {(status === 'welcome' || status === 'open') && (
-            <Welcome
-              createError={requirementsError}
-              onBack={goToHome}
-              onOpen={goToOpen}
-              onOpenOrg={goToOrg}
-              onCreate={handleCreate}
-              openMode={status === 'open'}
-            />
-          )}
-          {status === 'create' && Array.isArray(templates) && (
-            <Create
-              account={account}
-              onOpenOrg={goToOrg}
-              goToHome={goToHome}
-              templates={templates}
-              walletWeb3={walletWeb3}
-              web3={getWeb3(web3)}
-            />
-          )}
-        </div>
+        {(status === 'welcome' || status === 'open') && (
+          <Welcome
+            createError={requirementsError}
+            onBack={goToHome}
+            onOpen={goToOpen}
+            onOpenOrg={goToOrg}
+            onCreate={handleCreate}
+            openMode={status === 'open'}
+          />
+        )}
+        {status === 'create' && Array.isArray(templates) && (
+          <Create
+            account={account}
+            onOpenOrg={goToOrg}
+            goToHome={goToHome}
+            templates={templates}
+            walletWeb3={walletWeb3}
+            web3={getWeb3(web3)}
+          />
+        )}
+
         <ConnectModal
           account={account}
           onClose={closeConnectModal}
@@ -279,10 +266,19 @@ function Onboarding({ web3 }) {
           onConnect={handleProviderConnect}
           onConnectError={connectProviderError}
         />
-      </div>
+      </OnboardingMain>
     </div>
   )
 }
+
+const OnboardingMain = styled.div`
+  position: relative;
+  z-index: 1;
+  background: ${props => props.backgroundColor};
+  height: 100vh;
+  min-width: ${BREAKPOINTS.min}px;
+  overflow-y: auto;
+`
 
 Onboarding.propTypes = {
   web3: PropTypes.object,
