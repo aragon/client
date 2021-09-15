@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { GU, Modal, textStyle, useTheme, useViewport } from '@aragon/ui'
-import CheckDisc from '../CheckDisc/CheckDisc'
+import CheckDisc from '../../CheckDisc/CheckDisc'
 
 function ErrorModal({ action, content, header, onClose, visible }) {
   const theme = useTheme()

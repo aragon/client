@@ -7,7 +7,7 @@ import {
   TEMPLATE_LOADING,
   TEMPLATE_UNAVAILABLE,
 } from '../symbols'
-import ConnectModal from '../../components/ConnectModal/ConnectModal'
+import ConnectModal from '../../components/Modals/ConnectModal/ConnectModal'
 import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
 import Welcome from '../Welcome/Welcome'

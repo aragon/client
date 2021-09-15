@@ -21,7 +21,7 @@ import {
 } from '../create-utils'
 import Setup, { SETUP_MODE_CONFIGURE, SETUP_MODE_SELECT } from '../Setup/Setup'
 import Deployment from '../Deployment/Deployment'
-import ErrorModal from '../../components/ErrorModal/ErrorModal'
+import ErrorModal from '../../components/Modals/ErrorModal/ErrorModal'
 import {
   STATUS_SELECT_TEMPLATE,
   STATUS_TEMPLATE_SCREENS,
