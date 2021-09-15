@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { GU, Modal, textStyle, useTheme, useViewport } from '@aragon/ui'
+
+import { GU, Modal, useTheme, useViewport, textStyle, Button } from '@aragon/ui'
 import styled from 'styled-components'
 
 NetworkSwitchModal.propTypes = {
@@ -10,13 +11,13 @@ NetworkSwitchModal.propTypes = {
   account: PropTypes.string,
 }
 
-function NetworkSwitchModal({ account, onClose, onConnect, visible }) {
+export function NetworkSwitchModal({ account, onClose, onConnect, visible }) {
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
 
   const modalWidth = useCallback(
-    ({ width }) => Math.min(55 * GU, width - 4 * GU),
+    ({ width }) => Math.min(72 * GU, width - 4 * GU),
     []
   )
 
@@ -35,8 +36,36 @@ function NetworkSwitchModal({ account, onClose, onConnect, visible }) {
             You are currently connected to the <b>Rinkeby</b> network
           </Subtitle>
         </Header>
+        <Body>
+          <div>
+            <NetworkTitle>Mainnets</NetworkTitle>
+            <ButtonsRow networkNames={mainNetworks} />
+          </div>
+          <div>
+            <NetworkTitle>Mainnets</NetworkTitle>
+            <ButtonsRow networkNames={testNetworks} />
+          </div>
+        </Body>
       </Content>
     </Modal>
+  )
+}
+
+//add new networks here
+const mainNetworks = ['Ethereum', 'Polygon']
+const testNetworks = ['Rinkeby', 'Mumbai']
+
+ButtonsRow.propTypes = {
+  networkNames: PropTypes.arrayOf(PropTypes.string),
+}
+
+function ButtonsRow({ networkNames }) {
+  return (
+    <Row>
+      {networkNames.map(n => (
+        <FixWidthButton>{n}</FixWidthButton>
+      ))}
+    </Row>
   )
 }
 
@@ -51,17 +80,46 @@ const Content = styled.section`
 
 const Header = styled.header`
   text-align: center;
+  padding-bottom: ${2 * GU}px;
 `
 
-const Title = styled.h1`
+const Title = styled.h2`
   max-width: ${35 * GU}px;
-  margin: 0 auto ${1 * GU}px;
-  ${textStyle('title1')};
-  font-weight: 600;
+  margin: 0 auto ${GU}px;
+  ${textStyle('title2')};
 `
+
 const Subtitle = styled.p`
-  max-width: ${35 * GU}px;
-  ${textStyle('body1')};
+  ${textStyle('body2')};
   color: ${props => props.color};
 `
-export default NetworkSwitchModal
+
+const Body = styled.div`
+  width: 100%;
+  padding-top: ${2 * GU}px;
+  padding-bottom: ${6 * GU}px;
+
+  & > div:not(:first-child) {
+    margin-top: ${6 * GU}px;
+  }
+`
+
+const NetworkTitle = styled(Subtitle)`
+  max-width: unset;
+  font-weight: 700;
+  text-align: center;
+`
+
+const Row = styled.div`
+  padding-top: ${GU}px;
+  justify-content: center;
+  display: flex;
+
+  & > :not(:first-child) {
+    margin-left: ${3 * GU}px;
+  }
+`
+
+const FixWidthButton = styled(Button)`
+  width: ${18 * GU}px;
+`

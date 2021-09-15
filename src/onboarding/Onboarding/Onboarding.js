@@ -20,7 +20,7 @@ import { useWallet, KNOWN_CHAINS } from '../../contexts/wallet'
 import validateCreationRequirements from '../validate-requirements'
 import { getWeb3 } from '../../util/web3'
 import styled from 'styled-components'
-import NetworkSwitchModal from '../../components/Modals/NetworkSwitchModal/NetworkSwitchModal'
+import { NetworkSwitchModal } from '../../components/Modals'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
