@@ -20,6 +20,7 @@ import { useWallet, KNOWN_CHAINS } from '../../contexts/wallet'
 import validateCreationRequirements from '../validate-requirements'
 import { getWeb3 } from '../../util/web3'
 import styled from 'styled-components'
+import NetworkSwitchModal from '../../components/Modals/NetworkSwitchModal/NetworkSwitchModal'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
@@ -259,7 +260,14 @@ function Onboarding({ web3 }) {
           />
         )}
 
-        <ConnectModal
+        {/* <ConnectModal
+          account={account}
+          onClose={closeConnectModal}
+          visible={connectModalOpened}
+          onConnect={handleProviderConnect}
+          onConnectError={connectProviderError}
+        /> */}
+        <NetworkSwitchModal
           account={account}
           onClose={closeConnectModal}
           visible={connectModalOpened}
