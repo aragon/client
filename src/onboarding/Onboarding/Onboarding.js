@@ -11,7 +11,7 @@ import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
 import Welcome from '../Welcome/Welcome'
 import embeddedTemplates from '../../templates'
-import { log, noop } from '../../util/utils'
+import { log } from '../../util/utils'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
@@ -282,7 +282,6 @@ function Onboarding({ web3 }) {
         />
         <NetworkSwitchModal
           network={networkType}
-          onChange={noop}
           visible={networkModalOpened}
           onClose={closeNetworkSwitchModal}
         />

@@ -203,14 +203,14 @@ export function isOnEthMainnet(networkType) {
 export function isOnMainnet(networkType) {
   return (
     networkType === KNOWN_CHAINS.get(1).type ||
-    networkType === KNOWN_CHAINS.get(137)
+    networkType === KNOWN_CHAINS.get(137).type
   )
 }
 
 export function isOnTestnet(networkType) {
   return (
     networkType === KNOWN_CHAINS.get(4).type ||
-    networkType === KNOWN_CHAINS.get(80001)
+    networkType === KNOWN_CHAINS.get(80001).type
   )
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useWallet } from '../../contexts/wallet'
 import { Info, ButtonBase } from '@aragon/ui'
-import { isOnMainnet, isOnTestnet } from '../../network-config'
+import { isOnMainnet, isOnTestnet, networkConfigs } from '../../network-config'
 import PropTypes from 'prop-types'
 
 import styled from 'styled-components'
@@ -9,17 +9,19 @@ import styled from 'styled-components'
 NetworkIndicator.propTypes = {
   clickHandler: PropTypes.func.isRequired,
 }
-
+// TODO try adding Modal from here
 export function NetworkIndicator({ clickHandler }) {
   const { networkType } = useWallet()
+  const networkName = networkConfigs[networkType].settings.fullName
+
   const isMainnet = isOnMainnet(networkType)
   const isTestnet = isOnTestnet(networkType)
 
   return (
     <div>
       <ButtonBase onClick={clickHandler}>
-        {isMainnet && <StyledInfo>{networkType}</StyledInfo>}
-        {isTestnet && <StyledInfo mode="warning">{networkType}</StyledInfo>}
+        {isMainnet && <StyledInfo>{networkName}</StyledInfo>}
+        {isTestnet && <StyledInfo mode="warning">{networkName}</StyledInfo>}
       </ButtonBase>
     </div>
   )

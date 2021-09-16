@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import BN from 'bn.js'
 import {
@@ -39,11 +45,23 @@ function WalletContextProvider({ children }) {
   } = useWalletBase()
 
   const [walletWeb3, setWalletWeb3] = useState(null)
+  const [disconnectedNetworkType, setDisconnectedNetworkType] = useState(
+    NETWORK_TYPE_DEFAULT
+  )
 
   const connected = useMemo(() => status === 'connected', [status])
   const networkType = useMemo(
-    () => (status === 'connected' ? networkName : NETWORK_TYPE_DEFAULT),
-    [status, networkName]
+    () => (status === 'connected' ? networkName : disconnectedNetworkType),
+    [status, networkName, disconnectedNetworkType]
+  )
+
+  const changeNetworkTypeDisconnected = useCallback(
+    newNetworkType => {
+      if (status === 'disconnected') {
+        setDisconnectedNetworkType(newNetworkType)
+      }
+    },
+    [status]
   )
 
   // get web3 and set local storage prefix whenever networkType changes
@@ -76,6 +94,7 @@ function WalletContextProvider({ children }) {
       status,
       chainId: connected ? chainId : 1, // connect to mainnet if wallet is not connected
       connected,
+      changeNetworkTypeDisconnected: changeNetworkTypeDisconnected,
       ...walletBaseRest,
     }),
     [
@@ -89,6 +108,7 @@ function WalletContextProvider({ children }) {
       walletBaseRest,
       walletWeb3,
       connected,
+      changeNetworkTypeDisconnected,
     ]
   )
 

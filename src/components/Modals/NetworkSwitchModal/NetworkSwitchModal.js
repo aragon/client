@@ -4,17 +4,20 @@ import PropTypes from 'prop-types'
 import { GU, Modal, useTheme, useViewport, textStyle, Button } from '@aragon/ui'
 import styled from 'styled-components'
 
+import { useWallet } from '../../../contexts/wallet'
+import { networkConfigs } from '../../../network-config'
+
 NetworkSwitchModal.propTypes = {
   visible: PropTypes.bool.isRequired,
-  onChange: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  network: PropTypes.string.isRequired,
 }
 
-export function NetworkSwitchModal({ network, onChange, onClose, visible }) {
+export function NetworkSwitchModal({ onClose, visible }) {
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
+  const { networkType } = useWallet()
+  const networkName = networkConfigs[networkType].settings.fullName
 
   const modalWidth = useCallback(
     ({ width }) => Math.min(72 * GU, width - 4 * GU),
@@ -27,17 +30,17 @@ export function NetworkSwitchModal({ network, onChange, onClose, visible }) {
         <Header>
           <Title>Select a Network</Title>
           <Subtitle color={theme.contentSecondary}>
-            You are currently connected to the <b>{network}</b> network
+            You are currently connected to the <b>{networkName}</b> network
           </Subtitle>
         </Header>
         <Body>
           <div>
             <NetworkTitle>Mainnets</NetworkTitle>
-            <ButtonsRow networkNames={mainNetworks} />
+            <ButtonsRow networkNames={mainNetworks} onClose={onClose} />
           </div>
           <div>
             <NetworkTitle>Testnets</NetworkTitle>
-            <ButtonsRow networkNames={testNetworks} />
+            <ButtonsRow networkNames={testNetworks} onClose={onClose} />
           </div>
         </Body>
       </Content>
@@ -51,13 +54,24 @@ const testNetworks = ['Rinkeby', 'Mumbai']
 
 ButtonsRow.propTypes = {
   networkNames: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onClose: PropTypes.func.isRequired,
 }
 
-function ButtonsRow({ networkNames }) {
+function ButtonsRow({ networkNames, onClose }) {
+  // const { changeNetworkTypeDisconnected } = useWallet()
+
   return (
     <Row>
       {networkNames.map(n => (
-        <FixWidthButton>{n}</FixWidthButton>
+        <FixWidthButton
+          onClick={() => {
+            // TODO fix issue with network names
+            // changeNetworkTypeDisconnected(n)
+            onClose()
+          }}
+        >
+          {n}
+        </FixWidthButton>
       ))}
     </Row>
   )
