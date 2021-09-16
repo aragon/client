@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { addressesEqual, GU, tokenIconUrl } from '@aragon/ui'
 import { shortenAddress } from '../../../../util/web3'
-import { ETHER_TOKEN_FAKE_ADDRESS } from '../../config/helpers/tokens'
+import { TOKEN_FAKE_ADDRESS } from '../../config/helpers/tokens'
 
 /* eslint-disable react/prop-types */
 const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
@@ -11,6 +11,9 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
   symbol,
   showIcon = true,
 }) {
+  const hasDescription = useMemo(() => {
+    return name || !addressesEqual(address, TOKEN_FAKE_ADDRESS)
+  })
   return (
     <div
       css={`
@@ -38,7 +41,7 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
         </span>
       )}
       <div>
-        (
+        {hasDescription && <>(</>}
         {name && (
           <span
             css={`
@@ -50,7 +53,7 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
             {name}
           </span>
         )}
-        {!addressesEqual(address, ETHER_TOKEN_FAKE_ADDRESS) && (
+        {!addressesEqual(address, TOKEN_FAKE_ADDRESS) && (
           <span
             css={`
               margin-left: ${1 * GU}px;
@@ -59,7 +62,7 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
             {shortenAddress(address)}
           </span>
         )}
-        )
+        {hasDescription && <>)</>}
       </div>
     </div>
   )

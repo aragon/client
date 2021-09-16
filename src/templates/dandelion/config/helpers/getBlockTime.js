@@ -6,6 +6,8 @@ const NETWORK_TIMES = new Map([
   ['ropsten', 11],
   ['goerli', 15],
   ['private', 2],
+  ['matic', 2],
+  ['mumbai', 2],
 ])
 export default function getBlockTime(networkType) {
   return NETWORK_TIMES.get(networkType) || null
