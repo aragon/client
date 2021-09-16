@@ -13,7 +13,8 @@ const TokenSelectorInstance = React.memo(function TokenSelectorInstance({
 }) {
   const hasDescription = useMemo(() => {
     return name || !addressesEqual(address, TOKEN_FAKE_ADDRESS)
-  })
+  }, [name, address])
+
   return (
     <div
       css={`

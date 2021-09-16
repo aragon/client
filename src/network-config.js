@@ -106,7 +106,7 @@ export const networkConfigs = {
       ensRegistry:
         localEnsRegistryAddress || '0x3c70a0190d09f34519e6e218364451add21b7d4b',
       governExecutorProxy: null,
-      dai: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      dai: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
     },
     nodes: {
       defaultEth:
