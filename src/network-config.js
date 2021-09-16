@@ -106,6 +106,7 @@ export const networkConfigs = {
       ensRegistry:
         localEnsRegistryAddress || '0x3c70a0190d09f34519e6e218364451add21b7d4b',
       governExecutorProxy: null,
+      dai: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
     },
     nodes: {
       defaultEth:
@@ -124,6 +125,7 @@ export const networkConfigs = {
       ensRegistry:
         localEnsRegistryAddress || '0x431f0eed904590b176f9ff8c36a1c4ff0ee9b982',
       governExecutorProxy: null,
+      dai: '0x94f417C155bB3fF7365828Bb7aCD26E84C17e830',
     },
     nodes: {
       defaultEth: 'wss://matic-testnet-archive-ws.bwarelabs.com',
