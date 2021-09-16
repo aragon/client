@@ -136,7 +136,14 @@ function Onboarding({ web3 }) {
     [account, goToHome, status]
   )
 
-  const closeNetworkSwitchModal = () => setNetworkModalOpened(false)
+  const closeNetworkSwitchModal = useCallback(
+    () => setNetworkModalOpened(false),
+    []
+  )
+  const openNetworkSwitchModal = useCallback(
+    () => setNetworkModalOpened(true),
+    []
+  )
 
   const handleProviderConnect = useCallback(
     provider => {
@@ -236,7 +243,11 @@ function Onboarding({ web3 }) {
 
   return (
     <div css="position: relative; z-index: 1">
-      <OnboardingTopBar status={status} solid={solidTopBar} />
+      <OnboardingTopBar
+        status={status}
+        solid={solidTopBar}
+        modalOpener={openNetworkSwitchModal}
+      />
       <OnboardingMain
         backgroundColor={theme.background}
         onScroll={handleOnBoardingScroll}

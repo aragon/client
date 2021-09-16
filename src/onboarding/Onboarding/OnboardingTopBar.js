@@ -8,7 +8,7 @@ import { isOnEthMainnet } from '../../network-config'
 import styled from 'styled-components'
 import { NetworkIndicator } from '../../components/NetworkIndicator/NetworkIndicator'
 
-function OnboardingTopBar({ status, solid }) {
+function OnboardingTopBar({ status, solid, modalOpener }) {
   const theme = useTheme()
   const { networkType } = useWallet()
   const isMainnet = isOnEthMainnet(networkType)
@@ -30,7 +30,7 @@ function OnboardingTopBar({ status, solid }) {
         <BlueLine color={theme.accent} />
         <HomeButton />
         <ButtonContainer>
-          <NetworkIndicator />
+          <NetworkIndicator clickHandler={modalOpener} />
           <AccountModule />
           {isMainnet && (
             <Button
@@ -79,6 +79,7 @@ const TopBarDiv = styled.div`
 OnboardingTopBar.propTypes = {
   status: PropTypes.string.isRequired,
   solid: PropTypes.bool,
+  modalOpener: PropTypes.func.isRequired,
 }
 
 export default OnboardingTopBar

@@ -137,6 +137,8 @@ function OrgView({
     [autoClosingPanel, handleCloseMenuPanel, openApp]
   )
 
+  const openNetworkModal = useCallback(() => setNetworkModalOpened(true), [])
+
   const closeNetworkSwitchModal = () => setNetworkModalOpened(false)
 
   const handleUpgradeModalOpen = useCallback(() => {
@@ -274,8 +276,7 @@ function OrgView({
               />
             )}
             <div css="display: flex">
-              <Button onClick={() => setNetworkModalOpened(true)}>Modal</Button>
-              <NetworkIndicator />
+              <NetworkIndicator clickHandler={openNetworkModal} />
               <AccountModule />
               <GlobalPreferencesButton />
               <ActivityButton apps={apps} />
