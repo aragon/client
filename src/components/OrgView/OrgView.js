@@ -7,7 +7,6 @@ import {
   springs,
   useTheme,
   useViewport,
-  Button,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import {
@@ -18,6 +17,7 @@ import {
   DaoStatusType,
   RepoType,
 } from '../../prop-types'
+import styled from 'styled-components'
 
 import { DAO_STATUS_LOADING } from '../../symbols'
 import { iOS, isSafari, noop } from '../../util/utils'
@@ -221,38 +221,9 @@ function OrgView({
             background: ${theme.background};
           `}
         >
-          <div
-            css={`
-              flex-shrink: 0;
-              position: relative;
-              z-index: 2;
-              height: ${8 * GU}px;
-              display: flex;
-              justify-content: space-between;
-              background: ${theme.surface};
-              box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
-
-              ${menuPanelOpen && iOS
-                ? `
-                /* behaviour only in iOS:
-                 * with the nested div->div->div structure
-                 * the 3rd div has positioned absolute
-                 * Chrome, Firefox and Safari uch div gets rendered
-                 * aboe the rest of the content (up the tree till a
-                 * position relative is found) but in iOS it gets
-                 * rendered below the sibling of the element with
-                 * position relative (and z-index did not work)
-                 * this fix gives the element an absolute (z-index
-                 * layers are then respected);
-                 * this also adds the appropriate value to recover the
-                 * elements height
-                 * */
-                position: absolute;
-                width: 100%;
-                z-index: 0;
-              `
-                : ''}
-            `}
+          <TopbarContainer
+            iosMenuPane={menuPanelOpen && iOS}
+            bgColor={theme.surface}
           >
             {autoClosingPanel ? (
               <ButtonIcon
@@ -281,7 +252,7 @@ function OrgView({
               <GlobalPreferencesButton />
               <ActivityButton apps={apps} />
             </div>
-          </div>
+          </TopbarContainer>
           <div
             css={`
               flex-grow: 1;
@@ -410,6 +381,36 @@ function OrgView({
     </div>
   )
 }
+
+// TODO extract top par into proper component [vr 16-09-2021]
+/* NOTE: Behaviour only in iOS:
+ * With the nested div->div->div structure the 3rd div has absolute position in
+ * Chrome, Firefox and Safari. Such div gets rendered above the rest of the
+ * content (up the tree till a position relative is found) but in iOS it gets
+ * rendered below the sibling of the element with position relative (and z-index
+ * did not work) this fix gives the element an absolute position (z-index layers
+ * are then respected); this also adds the appropriate value to recover the
+ * elements height.
+ * */
+const TopbarContainer = styled.div`
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  height: ${8 * GU}px;
+  display: flex;
+  justify-content: space-between;
+  background: ${props => props.bgColor};
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+
+  ${props =>
+    props.iosMenuPanel
+      ? `
+          position: absolute;
+          width: 100%;
+          z-index: 0;
+        `
+      : ''}
+`
 
 OrgView.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
