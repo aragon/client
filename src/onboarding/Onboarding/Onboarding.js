@@ -267,11 +267,10 @@ function Onboarding({ web3 }) {
           onConnectError={connectProviderError}
         /> */}
         <NetworkSwitchModal
-          account={account}
+          network={account}
+          onChange={handleProviderConnect}
           onClose={closeConnectModal}
           visible={connectModalOpened}
-          onConnect={handleProviderConnect}
-          onConnectError={connectProviderError}
         />
       </OnboardingMain>
     </div>

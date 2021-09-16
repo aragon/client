@@ -6,12 +6,12 @@ import styled from 'styled-components'
 
 NetworkSwitchModal.propTypes = {
   visible: PropTypes.bool.isRequired,
-  onConnect: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
-  account: PropTypes.string,
+  network: PropTypes.string.isRequired,
 }
 
-export function NetworkSwitchModal({ account, onClose, onConnect, visible }) {
+export function NetworkSwitchModal({ network, onChange, onClose, visible }) {
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
@@ -21,19 +21,13 @@ export function NetworkSwitchModal({ account, onClose, onConnect, visible }) {
     []
   )
 
-  useEffect(() => {
-    if (account) {
-      onConnect()
-    }
-  }, [account, onConnect])
-
   return (
     <Modal visible={visible} width={modalWidth} onClose={onClose}>
       <Content smallMode={smallMode}>
         <Header>
           <Title>Select a Network</Title>
           <Subtitle color={theme.contentSecondary}>
-            You are currently connected to the <b>Rinkeby</b> network
+            You are currently connected to the <b>{network}</b> network
           </Subtitle>
         </Header>
         <Body>
@@ -56,7 +50,7 @@ const mainNetworks = ['Ethereum', 'Polygon']
 const testNetworks = ['Rinkeby', 'Mumbai']
 
 ButtonsRow.propTypes = {
-  networkNames: PropTypes.arrayOf(PropTypes.string),
+  networkNames: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
 
 function ButtonsRow({ networkNames }) {
