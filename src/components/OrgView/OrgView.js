@@ -246,12 +246,12 @@ function OrgView({
                 }}
               />
             )}
-            <div css="display: flex">
+            <RightButtonContainer>
               <NetworkIndicator clickHandler={openNetworkModal} />
               <AccountModule />
               <GlobalPreferencesButton />
               <ActivityButton apps={apps} />
-            </div>
+            </RightButtonContainer>
           </TopbarContainer>
           <div
             css={`
@@ -382,7 +382,7 @@ function OrgView({
   )
 }
 
-// TODO extract top par into proper component [vr 16-09-2021]
+// TODO extract topbar into proper component [vr 16-09-2021]
 /* NOTE: Behaviour only in iOS:
  * With the nested div->div->div structure the 3rd div has absolute position in
  * Chrome, Firefox and Safari. Such div gets rendered above the rest of the
@@ -412,6 +412,14 @@ const TopbarContainer = styled.div`
       : ''}
 `
 
+const RightButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 16px;
+  height: 100%;"
+`
 OrgView.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsStatus: AppsStatusType.isRequired,
