@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 
 import { GU, Modal, useTheme, useViewport, textStyle, Button } from '@aragon/ui'
@@ -45,7 +45,7 @@ export function NetworkSwitchModal({ network, onChange, onClose, visible }) {
   )
 }
 
-//add new networks here
+// add new networks here
 const mainNetworks = ['Ethereum', 'Polygon']
 const testNetworks = ['Rinkeby', 'Mumbai']
 

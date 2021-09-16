@@ -7,6 +7,7 @@ import {
   springs,
   useTheme,
   useViewport,
+  Button,
 } from '@aragon/ui'
 import { Transition, animated } from 'react-spring'
 import {
@@ -19,7 +20,7 @@ import {
 } from '../../prop-types'
 
 import { DAO_STATUS_LOADING } from '../../symbols'
-import { iOS, isSafari } from '../../util/utils'
+import { iOS, isSafari, noop } from '../../util/utils'
 import { useClientTheme } from '../../client-theme'
 import { useRouting } from '../../routing'
 import ActivityButton from './ActivityButton/ActivityButton'
@@ -34,6 +35,7 @@ import UpgradeModal from '../Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from '../Upgrade/UpgradeOrganizationPanel'
 import MigrateBanner from '../Migrate/MigrateBanner'
 import { NetworkIndicator } from '../NetworkIndicator/NetworkIndicator'
+import { NetworkSwitchModal } from '../Modals'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -65,6 +67,7 @@ function OrgView({
 
   const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
   const [orgUpgradePanelOpened, setOrgUpgradePanelOpened] = useState(false)
+  const [networkModalOpened, setNetworkModalOpened] = useState(false)
   const [upgradeModalOpened, setUpgradeModalOpened] = useState(false)
 
   const appInstanceGroups = useMemo(
@@ -133,6 +136,8 @@ function OrgView({
     },
     [autoClosingPanel, handleCloseMenuPanel, openApp]
   )
+
+  const closeNetworkSwitchModal = () => setNetworkModalOpened(false)
 
   const handleUpgradeModalOpen = useCallback(() => {
     setUpgradeModalOpened(true)
@@ -269,6 +274,7 @@ function OrgView({
               />
             )}
             <div css="display: flex">
+              <Button onClick={() => setNetworkModalOpened(true)}>Modal</Button>
               <NetworkIndicator />
               <AccountModule />
               <GlobalPreferencesButton />
@@ -388,7 +394,12 @@ function OrgView({
           </div>
         </div>
       </AppWidthContext.Provider>
-
+      <NetworkSwitchModal
+        network={'mainnet'}
+        onChange={noop}
+        visible={networkModalOpened}
+        onClose={closeNetworkSwitchModal}
+      />
       <UpgradeModal
         visible={upgradeModalOpened}
         onClose={handleUpgradeModalClose}

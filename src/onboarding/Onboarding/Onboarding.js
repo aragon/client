@@ -11,7 +11,7 @@ import Create from '../Create/Create'
 import OnboardingTopBar from './OnboardingTopBar'
 import Welcome from '../Welcome/Welcome'
 import embeddedTemplates from '../../templates'
-import { log } from '../../util/utils'
+import { log, noop } from '../../util/utils'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
@@ -40,6 +40,7 @@ function Onboarding({ web3 }) {
   } = useWallet()
 
   const [connectModalOpened, setConnectModalOpened] = useState(false)
+  const [networkModalOpened, setNetworkModalOpened] = useState(false)
   const [templates, setTemplates] = useState(initialEmbeddedTemplates)
   const [connectIntent, setConnectIntent] = useState('')
   const [requirementsError, setRequirementsError] = useState([null])
@@ -134,6 +135,8 @@ function Onboarding({ web3 }) {
     },
     [account, goToHome, status]
   )
+
+  const closeNetworkSwitchModal = () => setNetworkModalOpened(false)
 
   const handleProviderConnect = useCallback(
     provider => {
@@ -259,18 +262,18 @@ function Onboarding({ web3 }) {
           />
         )}
 
-        {/* <ConnectModal
+        <ConnectModal
           account={account}
           onClose={closeConnectModal}
           visible={connectModalOpened}
           onConnect={handleProviderConnect}
           onConnectError={connectProviderError}
-        /> */}
+        />
         <NetworkSwitchModal
-          network={account}
-          onChange={handleProviderConnect}
-          onClose={closeConnectModal}
-          visible={connectModalOpened}
+          network={networkType}
+          onChange={noop}
+          visible={networkModalOpened}
+          onClose={closeNetworkSwitchModal}
         />
       </OnboardingMain>
     </div>
