@@ -20,7 +20,7 @@ import {
 import styled from 'styled-components'
 
 import { DAO_STATUS_LOADING } from '../../symbols'
-import { iOS, isSafari, noop } from '../../util/utils'
+import { iOS, isSafari } from '../../util/utils'
 import { useClientTheme } from '../../client-theme'
 import { useRouting } from '../../routing'
 import ActivityButton from './ActivityButton/ActivityButton'
@@ -368,7 +368,6 @@ function OrgView({
       </AppWidthContext.Provider>
       <NetworkSwitchModal
         network={'mainnet'}
-        onChange={noop}
         visible={networkModalOpened}
         onClose={closeNetworkSwitchModal}
       />
