@@ -29,15 +29,15 @@ function DAONotFoundError({ dao }) {
           ${textStyle('body2')};
         `}
       >
-        It looks like there’s no organization associated with{' '}
+        There’s no organization associated with{' '}
         {isAddress(dao) ? (
           <span css="font-weight: bold;">“{dao}”</span>
         ) : (
           <React.Fragment>
-            the <strong>“{dao}”</strong> ENS domain
+            <strong>“{dao}”</strong>
           </React.Fragment>
         )}{' '}
-        on the Ethereum {getNetworkFullName(networkType)}.
+        on the {getNetworkFullName(networkType)}.
       </div>
       <Info>
         If you arrived here through a link, please double check that you were
