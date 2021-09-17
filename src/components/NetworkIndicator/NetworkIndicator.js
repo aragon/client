@@ -1,7 +1,7 @@
 import React from 'react'
 import { useWallet } from '../../contexts/wallet'
 import { Info, ButtonBase } from '@aragon/ui'
-import { isMainnet, isTestnet, getNetworkName } from '../../util/network'
+import { isMainnet, isTestnet, getNetworkFullName } from '../../util/network'
 import PropTypes from 'prop-types'
 
 import styled from 'styled-components'
@@ -12,7 +12,7 @@ NetworkIndicator.propTypes = {
 // TODO try adding Modal from here
 export function NetworkIndicator({ clickHandler }) {
   const { networkType } = useWallet()
-  const networkName = getNetworkName(networkType)
+  const networkName = getNetworkFullName(networkType)
 
   return (
     <div>

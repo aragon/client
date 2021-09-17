@@ -36,8 +36,11 @@ export function sanitizeNetworkType(networkType) {
   return networkType
 }
 
-export function getNetworkName(networkType) {
+export function getNetworkFullName(networkType) {
   return getNetworkConfig(networkType).settings?.fullName || 'uknown'
+}
+export function getNetworkShortName(networkType) {
+  return getNetworkConfig(networkType).settings?.shortName || 'uknown'
 }
 
 export function getNetworkSettings(networkType) {

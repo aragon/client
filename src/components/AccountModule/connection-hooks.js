@@ -27,7 +27,7 @@ import { getWeb3, getLatestBlockTimestamp } from '../../util/web3'
 import {
   getNetworkSettings,
   normalizeNetworkName,
-  getNetworkName,
+  getNetworkFullName,
 } from '../../util/network'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
@@ -44,7 +44,7 @@ export function useNetworkConnectionData() {
 
   return {
     walletNetworkName: normalizeNetworkName(networkType),
-    walletNetworkFullName: getNetworkName(networkType),
+    walletNetworkFullName: getNetworkFullName(networkType),
     isWrongNetwork,
   }
 }
