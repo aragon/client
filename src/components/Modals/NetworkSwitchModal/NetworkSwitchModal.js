@@ -5,7 +5,7 @@ import { GU, Modal, useTheme, useViewport, textStyle, Button } from '@aragon/ui'
 import styled from 'styled-components'
 
 import { useWallet } from '../../../contexts/wallet'
-import { networkConfigs } from '../../../network-config'
+import { getNetworkName } from '../../../network-config'
 
 NetworkSwitchModal.propTypes = {
   visible: PropTypes.bool.isRequired,
@@ -17,7 +17,7 @@ export function NetworkSwitchModal({ onClose, visible }) {
   const { below } = useViewport()
   const smallMode = below('medium')
   const { networkType } = useWallet()
-  const networkName = networkConfigs[networkType].settings.fullName
+  const networkName = getNetworkName(networkType)
 
   const modalWidth = useCallback(
     ({ width }) => Math.min(72 * GU, width - 4 * GU),

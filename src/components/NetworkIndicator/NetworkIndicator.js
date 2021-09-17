@@ -12,7 +12,7 @@ NetworkIndicator.propTypes = {
 // TODO try adding Modal from here
 export function NetworkIndicator({ clickHandler }) {
   const { networkType } = useWallet()
-  const networkName = networkConfigs[networkType].settings.fullName
+  const networkName = getNetworkName(networkType)
 
   const isMainnet = isOnMainnet(networkType)
   const isTestnet = isOnTestnet(networkType)
