@@ -58,5 +58,6 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           for f in $(find ./public/ -name "*.js.map") ; do 
-            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="client" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${${f%.*}#./public/}" -F sourcemap=@$f
+            export filename=${f%.*}
+            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="client" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${filename#./public/}" -F sourcemap=@$f
           done
