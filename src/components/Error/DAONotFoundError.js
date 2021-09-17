@@ -5,9 +5,12 @@ import { isAddress } from '../../util/web3'
 import { useWallet } from '../../contexts/wallet'
 import { getNetworkFullName } from '../../util/network'
 
+DAONotFoundError.propTypes = {
+  dao: PropTypes.string,
+}
+
 function DAONotFoundError({ dao }) {
   const theme = useTheme()
-  const { networkType } = useWallet()
 
   return (
     <React.Fragment>
@@ -21,24 +24,7 @@ function DAONotFoundError({ dao }) {
       >
         Organization not found
       </h1>
-      <div
-        css={`
-          margin-bottom: ${6 * GU}px;
-          text-align: center;
-          color: ${theme.surfaceContentSecondary};
-          ${textStyle('body2')};
-        `}
-      >
-        There’s no organization associated with{' '}
-        {isAddress(dao) ? (
-          <span css="font-weight: bold;">“{dao}”</span>
-        ) : (
-          <React.Fragment>
-            <strong>“{dao}”</strong>
-          </React.Fragment>
-        )}{' '}
-        on the {getNetworkFullName(networkType)}.
-      </div>
+      <NotFoundAtAllMessage dao={dao} />
       <Info>
         If you arrived here through a link, please double check that you were
         given the correct link. Alternatively, you may{' '}
@@ -54,8 +40,34 @@ function DAONotFoundError({ dao }) {
   )
 }
 
-DAONotFoundError.propTypes = {
+NotFoundAtAllMessage.propTypes = {
   dao: PropTypes.string,
+}
+
+function NotFoundAtAllMessage({ dao }) {
+  const theme = useTheme()
+  const { networkType } = useWallet()
+
+  return (
+    <div
+      css={`
+        margin-bottom: ${6 * GU}px;
+        text-align: center;
+        color: ${theme.surfaceContentSecondary};
+        ${textStyle('body2')};
+      `}
+    >
+      There’s no organization associated with{' '}
+      {isAddress(dao) ? (
+        <span css="font-weight: bold;">“{dao}”</span>
+      ) : (
+        <React.Fragment>
+          <strong>“{dao}”</strong>
+        </React.Fragment>
+      )}{' '}
+      on the {getNetworkFullName(networkType)}.
+    </div>
+  )
 }
 
 export default DAONotFoundError
