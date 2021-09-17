@@ -36,11 +36,11 @@ export function NetworkSwitchModal({ onClose, visible }) {
         <Body>
           <div>
             <NetworkTitle>Mainnets</NetworkTitle>
-            <ButtonsRow networkNames={mainNetworks} onClose={onClose} />
+            <ButtonsRow networkNames={mainNetworksTypes} onClose={onClose} />
           </div>
           <div>
             <NetworkTitle>Testnets</NetworkTitle>
-            <ButtonsRow networkNames={testNetworks} onClose={onClose} />
+            <ButtonsRow networkNames={testNetworksTypes} onClose={onClose} />
           </div>
         </Body>
       </Content>
@@ -49,8 +49,8 @@ export function NetworkSwitchModal({ onClose, visible }) {
 }
 
 // add new networks here
-const mainNetworks = ['Ethereum', 'Polygon']
-const testNetworks = ['Rinkeby', 'Mumbai']
+const mainNetworksTypes = ['main', 'matic']
+const testNetworksTypes = ['rinkeby', 'mumbai']
 
 ButtonsRow.propTypes = {
   networkNames: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -58,19 +58,18 @@ ButtonsRow.propTypes = {
 }
 
 function ButtonsRow({ networkNames, onClose }) {
-  // const { changeNetworkTypeDisconnected } = useWallet()
+  const { changeNetworkTypeDisconnected } = useWallet()
 
   return (
     <Row>
       {networkNames.map(n => (
         <FixWidthButton
           onClick={() => {
-            // TODO fix issue with network names
-            // changeNetworkTypeDisconnected(n)
+            changeNetworkTypeDisconnected(n)
             onClose()
           }}
         >
-          {n}
+          {getNetworkName(n)}
         </FixWidthButton>
       ))}
     </Row>
