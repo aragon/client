@@ -28,7 +28,7 @@ import {
   getNetworkSettings,
   normalizeNetworkName,
   getNetworkName,
-} from '../../network-config'
+} from '../../util/network'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000

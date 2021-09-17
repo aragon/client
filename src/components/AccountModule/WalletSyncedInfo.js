@@ -11,7 +11,7 @@ import {
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
 import { useWallet } from '../../contexts/wallet'
-import { getNetworkName, isOnEthMainnet } from '../../network-config'
+import { getNetworkName, isOnEthMainnet } from '../../util/network'
 
 function WalletSyncedInfo({ header, info, status }) {
   return (

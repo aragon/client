@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
 import { isAddress } from '../../util/web3'
 import { useWallet } from '../../contexts/wallet'
-import { getNetworkName } from '../../network-config'
+import { getNetworkName } from '../../util/network'
 
 function DAONotFoundError({ dao }) {
   const theme = useTheme()

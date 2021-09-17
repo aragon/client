@@ -5,7 +5,7 @@ import { GU, Modal, useTheme, useViewport, textStyle, Button } from '@aragon/ui'
 import styled from 'styled-components'
 
 import { useWallet } from '../../../contexts/wallet'
-import { getNetworkName } from '../../../network-config'
+import { getNetworkName } from '../../../util/network'
 
 NetworkSwitchModal.propTypes = {
   visible: PropTypes.bool.isRequired,

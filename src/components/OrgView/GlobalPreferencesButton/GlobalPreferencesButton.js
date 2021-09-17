@@ -19,7 +19,7 @@ import iconNetwork from '../../../assets/global-preferences-network.svg'
 import iconCustomLabels from '../../../assets/global-preferences-custom-labels.svg'
 import iconNotifications from '../../../assets/global-preferences-notifications.svg'
 import { useWallet } from '../../../contexts/wallet'
-import { isOnEthMainnet } from '../../../network-config'
+import { isOnEthMainnet } from '../../../util/network'
 
 function GlobalPreferencesButton() {
   const theme = useTheme()

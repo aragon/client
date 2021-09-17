@@ -5,6 +5,7 @@ const localEnsRegistryAddress = getEnsRegistryAddress()
 const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
 const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 
+// TODO stop exposing data object [vr 17-09-2021]
 // cconnectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
   [KNOWN_CHAINS.get(1).type]: {
@@ -166,54 +167,7 @@ export function getNetworkConfig(type) {
   )
 }
 
-export function normalizeNetworkName(networkType) {
-  return getNetworkConfig(networkType).settings?.shortName || 'unknown'
-}
-
-export function sanitizeNetworkType(networkType) {
-  if (networkType === 'private') {
-    return 'localhost'
-  } else if (isOnEthMainnet(networkType)) {
-    return 'mainnet'
-  }
-  return networkType
-}
-
-export function getNetworkName(networkType) {
-  return getNetworkConfig(networkType).settings?.fullName || 'uknown'
-}
-
-export function getNetworkSettings(networkType) {
-  return getNetworkConfig(networkType).settings
-}
-
-export function getChainId(networkType) {
-  return getNetworkSettings(networkType).chainId
-}
-
 export function useNetworkConfig() {
   const { networkType } = useWallet()
   return getNetworkConfig(networkType)
-}
-
-export function isOnEthMainnet(networkType) {
-  return networkType === KNOWN_CHAINS.get(1).type
-}
-
-export function isOnMainnet(networkType) {
-  return (
-    networkType === KNOWN_CHAINS.get(1).type ||
-    networkType === KNOWN_CHAINS.get(137).type
-  )
-}
-
-export function isOnTestnet(networkType) {
-  return (
-    networkType === KNOWN_CHAINS.get(4).type ||
-    networkType === KNOWN_CHAINS.get(80001).type
-  )
-}
-
-export function getDaiTokenAddress(networkType) {
-  return getNetworkConfig(networkType).addresses.dai || ''
 }

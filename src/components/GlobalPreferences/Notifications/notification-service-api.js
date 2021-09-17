@@ -1,4 +1,4 @@
-import { isOnEthMainnet } from '../../../network-config'
+import { isOnEthMainnet } from '../../../util/network'
 import {
   NOTIFICATION_SERVICE_ACCOUNT,
   NOTIFICATION_SERVICE_LOGIN,

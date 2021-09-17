@@ -1,7 +1,7 @@
 import React from 'react'
 import { useWallet } from '../../contexts/wallet'
 import { Info, ButtonBase } from '@aragon/ui'
-import { isOnMainnet, isOnTestnet, networkConfigs } from '../../network-config'
+import { isMainnet, isTestnet, getNetworkName } from '../../util/network'
 import PropTypes from 'prop-types'
 
 import styled from 'styled-components'
@@ -14,14 +14,13 @@ export function NetworkIndicator({ clickHandler }) {
   const { networkType } = useWallet()
   const networkName = getNetworkName(networkType)
 
-  const isMainnet = isOnMainnet(networkType)
-  const isTestnet = isOnTestnet(networkType)
-
   return (
     <div>
       <ButtonBase onClick={clickHandler}>
-        {isMainnet && <StyledInfo>{networkName}</StyledInfo>}
-        {isTestnet && <StyledInfo mode="warning">{networkName}</StyledInfo>}
+        {isMainnet(networkType) && <StyledInfo>{networkName}</StyledInfo>}
+        {isTestnet(networkType) && (
+          <StyledInfo mode="warning">{networkName}</StyledInfo>
+        )}
       </ButtonBase>
     </div>
   )

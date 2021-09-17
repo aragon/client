@@ -4,7 +4,7 @@ import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
 import { useWallet } from '../../contexts/wallet'
-import { isOnEthMainnet } from '../../network-config'
+import { isOnEthMainnet } from '../../util/network'
 import styled from 'styled-components'
 import { NetworkIndicator } from '../../components/NetworkIndicator/NetworkIndicator'
 

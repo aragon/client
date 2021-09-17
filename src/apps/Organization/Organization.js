@@ -17,11 +17,8 @@ import {
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import appIds from '../../known-app-ids'
 import { getProviderString } from 'use-wallet'
-import {
-  sanitizeNetworkType,
-  getNetworkConfig,
-  isOnEthMainnet,
-} from '../../network-config'
+import { getNetworkConfig } from '../../network-config'
+import { sanitizeNetworkType, isOnEthMainnet } from '../../util/network'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'

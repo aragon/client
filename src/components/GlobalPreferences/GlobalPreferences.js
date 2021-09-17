@@ -23,7 +23,7 @@ import CustomLabels from './CustomLabels/CustomLabels'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
 import { useWallet } from '../../contexts/wallet'
-import { isOnEthMainnet } from '../../network-config'
+import { isOnEthMainnet } from '../../util/network'
 
 const CUSTOM_LABELS_KEY = 'custom-labels'
 const NETWORK_KEY = 'network'

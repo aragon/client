@@ -8,7 +8,7 @@ import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../errors'
 import { log } from './utils'
 import { getEthNode } from '../environment'
-import { isOnEthMainnet } from '../network-config'
+import { isOnEthMainnet } from '../util/network'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g

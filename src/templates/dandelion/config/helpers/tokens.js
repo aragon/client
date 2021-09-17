@@ -1,4 +1,4 @@
-import { getDaiTokenAddress } from '../../../../network-config'
+import { getDaiTokenAddress } from '../../../../util/network'
 
 export const ETHER_TOKEN_FAKE_ADDRESS =
   '0x0000000000000000000000000000000000000000'
