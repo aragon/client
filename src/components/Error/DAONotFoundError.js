@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
+import styled from 'styled-components'
+
 import { isAddress } from '../../util/web3'
 import { useWallet } from '../../contexts/wallet'
 import { getNetworkFullName } from '../../util/network'
@@ -11,6 +13,7 @@ DAONotFoundError.propTypes = {
 
 function DAONotFoundError({ dao }) {
   const theme = useTheme()
+  const alternativeNetworks = ['polygon', 'ropsten']
 
   return (
     <React.Fragment>
@@ -24,7 +27,16 @@ function DAONotFoundError({ dao }) {
       >
         Organization not found
       </h1>
-      <NotFoundAtAllMessage dao={dao} />
+      <MessageContainer>
+        {alternativeNetworks.length ? (
+          <NotFoundOnNetworkMessage
+            dao={dao}
+            alternatives={alternativeNetworks}
+          />
+        ) : (
+          <NotFoundAtAllMessage dao={dao} />
+        )}
+      </MessageContainer>
       <Info>
         If you arrived here through a link, please double check that you were
         given the correct link. Alternatively, you may{' '}
@@ -49,25 +61,65 @@ function NotFoundAtAllMessage({ dao }) {
   const { networkType } = useWallet()
 
   return (
-    <div
-      css={`
-        margin-bottom: ${6 * GU}px;
-        text-align: center;
-        color: ${theme.surfaceContentSecondary};
-        ${textStyle('body2')};
-      `}
-    >
+    <Message color={theme.surfaceContentSecondary}>
       There’s no organization associated with{' '}
       {isAddress(dao) ? (
-        <span css="font-weight: bold;">“{dao}”</span>
+        <span css="font-weight: bold;">'{dao}'</span>
       ) : (
-        <React.Fragment>
-          <strong>“{dao}”</strong>
-        </React.Fragment>
+        <span css="font-weight: bold;">'{dao}'</span>
       )}{' '}
       on the {getNetworkFullName(networkType)}.
-    </div>
+    </Message>
   )
 }
+
+NotFoundOnNetworkMessage.propTypes = {
+  dao: PropTypes.string,
+  alternatives: PropTypes.string,
+}
+
+function NotFoundOnNetworkMessage({ dao, alternatives }) {
+  const theme = useTheme()
+  const { networkType } = useWallet()
+
+  return (
+    <React.Fragment>
+      <Message color={theme.surfaceContentSecondary}>
+        There’s no organization associated with{' '}
+        {isAddress(dao) ? (
+          <span css="font-weight: bold;">'{dao}'</span>
+        ) : (
+          <span css="font-weight: bold;">'{dao}'</span>
+        )}{' '}
+        on the {getNetworkFullName(networkType)}, but it does exist on another
+        chain. You may switch the application to another chain to see it.
+      </Message>
+      <LinksList>
+        {alternatives.map(a => (
+          <li>
+            <Link>
+              Open {dao} on {a}
+            </Link>
+          </li>
+        ))}
+      </LinksList>
+    </React.Fragment>
+  )
+}
+
+const MessageContainer = styled.div`
+  margin-bottom: ${6 * GU}px;
+  text-align: center;
+`
+
+const Message = styled.p`
+  ${textStyle('body2')};
+  color: ${props => props.color};
+`
+
+const LinksList = styled.ul`
+  list-style: none;
+  padding-top: ${2 * GU}px;
+`
 
 export default DAONotFoundError
