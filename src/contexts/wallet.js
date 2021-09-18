@@ -94,7 +94,7 @@ function WalletContextProvider({ children }) {
       status,
       chainId: connected ? chainId : 1, // connect to mainnet if wallet is not connected
       connected,
-      changeNetworkTypeDisconnected: changeNetworkTypeDisconnected,
+      changeNetworkTypeDisconnected,
       ...walletBaseRest,
     }),
     [

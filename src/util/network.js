@@ -6,17 +6,11 @@ export function isOnEthMainnet(networkType) {
 }
 
 export function isMainnet(networkType) {
-  return (
-    networkType === KNOWN_CHAINS.get(1).type ||
-    networkType === KNOWN_CHAINS.get(137).type
-  )
+  return getNetworkConfig(networkType).settings?.networkType === 'main'
 }
 
 export function isTestnet(networkType) {
-  return (
-    networkType === KNOWN_CHAINS.get(4).type ||
-    networkType === KNOWN_CHAINS.get(80001).type
-  )
+  return getNetworkConfig(networkType).settings?.networkType === 'test'
 }
 
 export function getDaiTokenAddress(networkType) {
