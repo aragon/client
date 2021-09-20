@@ -10,7 +10,7 @@ export function isMainnet(networkType) {
 }
 
 export function isTestnet(networkType) {
-  return !getNetworkConfig(networkType).settings?.testnet
+  return getNetworkConfig(networkType).settings?.testnet
 }
 
 export function getDaiTokenAddress(networkType) {
