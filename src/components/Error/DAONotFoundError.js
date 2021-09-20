@@ -13,6 +13,7 @@ DAONotFoundError.propTypes = {
 
 function DAONotFoundError({ dao }) {
   const theme = useTheme()
+  // mock object, to be determined dynamically as specified in DAO-269
   const alternativeNetworks = ['polygon', 'ropsten']
 
   return (
@@ -62,12 +63,8 @@ function NotFoundAtAllMessage({ dao }) {
 
   return (
     <Message color={theme.surfaceContentSecondary}>
-      There’s no organization associated with{' '}
-      {isAddress(dao) ? (
-        <span css="font-weight: bold;">'{dao}'</span>
-      ) : (
-        <span css="font-weight: bold;">'{dao}'</span>
-      )}{' '}
+      There’s no organization associated with
+      <span css="font-weight: bold;">'{dao}'</span>
       on the {getNetworkFullName(networkType)}.
     </Message>
   )
@@ -85,20 +82,16 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
   return (
     <React.Fragment>
       <Message color={theme.surfaceContentSecondary}>
-        There’s no organization associated with{' '}
-        {isAddress(dao) ? (
-          <span css="font-weight: bold;">'{dao}'</span>
-        ) : (
-          <span css="font-weight: bold;">'{dao}'</span>
-        )}{' '}
-        on the {getNetworkFullName(networkType)}, but it does exist on another
-        chain. You may switch the application to another chain to see it.
+        There’s no organization associated with
+        <span css="font-weight: bold;">'{dao}'</span> on the
+        {getNetworkFullName(networkType)}, but it does exist on another chain.
+        You may switch the application to another chain to see it.
       </Message>
       <LinksList>
         {alternatives.map(a => (
           <li>
             <Link>
-              Open {dao} on {a}
+              Open {!isAddress(dao) ? dao : 'it'} on {a}
             </Link>
           </li>
         ))}
