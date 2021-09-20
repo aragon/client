@@ -83,7 +83,7 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
     <React.Fragment>
       <Message color={theme.surfaceContentSecondary}>
         There’s no organization associated with
-        <span css="font-weight: bold;">'{dao}'</span> on the
+        <span css="font-weight: bold;">'{dao}'</span> on the{' '}
         {getNetworkFullName(networkType)}, but it does exist on another chain.
         You may switch the application to another chain to see it.
       </Message>
