@@ -34,6 +34,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14
+      - name: Activate fleek
+        run: cp .github/fleek/prod.fleek.json ./.fleek.json
       - name: Install build dependencies
         run: apt-get update && apt-get install -y build-essential git libusb-1.0-0 libusb-1.0-0-dev libudev-dev
       - name: Build the client

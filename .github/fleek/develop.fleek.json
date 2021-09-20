@@ -1,0 +1,14 @@
+{
+  "site": {
+    "id": "c3c92407-31c8-42fc-9234-84382e0439e8",
+    "team": "aragonone-team",
+    "platform": "ipfs",
+    "source": "ipfs",
+    "name": "mute-sky-5930"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "public",
+    "rootDir": ""
+  }
+}
