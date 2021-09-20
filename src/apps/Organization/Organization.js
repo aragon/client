@@ -17,11 +17,8 @@ import {
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import appIds from '../../known-app-ids'
 import { getProviderString } from 'use-wallet'
-import {
-  sanitizeNetworkType,
-  getNetworkConfig,
-  isOnMainnet,
-} from '../../network-config'
+import { getNetworkConfig } from '../../network-config'
+import { sanitizeNetworkType, isOnEthMainnet } from '../../util/network'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
@@ -110,7 +107,7 @@ const Organization = React.memo(function Organization({
   const checksummedDaoAddr =
     daoAddress.address && toChecksumAddress(daoAddress.address)
   const enableTransactions = wallet.connected && wallet.account
-  const isMainnet = isOnMainnet(network.type)
+  const isMainnet = isOnEthMainnet(network.type)
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (

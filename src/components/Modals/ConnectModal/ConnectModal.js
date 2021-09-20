@@ -11,7 +11,7 @@ import {
 } from '@aragon/ui'
 import providersImage from './assets/providers.png'
 
-function ConnectModal({ account, onClose, onConnect, visible }) {
+export function ConnectModal({ account, onClose, onConnect, visible }) {
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
@@ -101,5 +101,3 @@ ConnectModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   account: PropTypes.string,
 }
-
-export default ConnectModal

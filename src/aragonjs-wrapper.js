@@ -20,7 +20,8 @@ import {
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 import { getOrganizationByAddress } from './services/gql'
-import { getNetworkConfig, getChainId } from './network-config'
+import { getNetworkConfig } from './network-config'
+import { getChainId } from './util/network'
 import { KNOWN_CHAINS } from './contexts/wallet'
 
 const POLL_DELAY_CONNECTIVITY = 2000

@@ -1,5 +1,5 @@
 import { KNOWN_CHAINS } from '../../../../contexts/wallet'
-import { getDaiTokenAddress, getChainId } from '../../../../network-config'
+import { getDaiTokenAddress, getChainId } from '../../../../util/network'
 
 export const TOKEN_FAKE_ADDRESS = '0x0000000000000000000000000000000000000000'
 

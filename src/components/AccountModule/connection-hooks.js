@@ -27,8 +27,8 @@ import { getWeb3, getLatestBlockTimestamp } from '../../util/web3'
 import {
   getNetworkSettings,
   normalizeNetworkName,
-  getNetworkName,
-} from '../../network-config'
+  getNetworkFullName,
+} from '../../util/network'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
@@ -44,7 +44,7 @@ export function useNetworkConnectionData() {
 
   return {
     walletNetworkName: normalizeNetworkName(networkType),
-    walletNetworkFullName: getNetworkName(networkType),
+    walletNetworkFullName: getNetworkFullName(networkType),
     isWrongNetwork,
   }
 }
