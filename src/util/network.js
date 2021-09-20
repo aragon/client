@@ -6,11 +6,11 @@ export function isOnEthMainnet(networkType) {
 }
 
 export function isMainnet(networkType) {
-  return getNetworkConfig(networkType).settings?.networkType === 'main'
+  return !getNetworkConfig(networkType).settings?.testnet
 }
 
 export function isTestnet(networkType) {
-  return getNetworkConfig(networkType).settings?.networkType === 'test'
+  return !getNetworkConfig(networkType).settings?.testnet
 }
 
 export function getDaiTokenAddress(networkType) {

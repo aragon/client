@@ -23,7 +23,7 @@ export const networkConfigs = {
       'https://api.thegraph.com/subgraphs/name/aragon/aragon-mainnet',
     settings: {
       chainId: 1,
-      networkType: 'main',
+      testnet: false,
       ...KNOWN_CHAINS.get(1),
       live: true,
     },
@@ -43,7 +43,7 @@ export const networkConfigs = {
       'https://api.thegraph.com/subgraphs/name/aragon/aragon-rinkeby',
     settings: {
       chainId: 4,
-      networkType: 'test',
+      testnet: true,
       ...KNOWN_CHAINS.get(4), // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
@@ -61,7 +61,7 @@ export const networkConfigs = {
     connectGraphEndpoint: null,
     settings: {
       chainId: 3,
-      networkType: 'test',
+      testnet: true,
       ...KNOWN_CHAINS.get(3),
       live: true,
     },
@@ -81,7 +81,7 @@ export const networkConfigs = {
       // a chainId of value 1337, but for the sake of configuration
       // we expose a way to change this value.
       chainId: 1337,
-      networkType: 'test',
+      testnet: true,
 
       ...KNOWN_CHAINS.get(1337),
       live: false,
@@ -102,7 +102,7 @@ export const networkConfigs = {
     connectGraphEndpoint: null,
     settings: {
       chainId: 100,
-      networkType: 'main',
+      testnet: false,
       ...KNOWN_CHAINS.get(100),
       live: true,
     },
@@ -121,7 +121,7 @@ export const networkConfigs = {
     connectGraphEndpoint: null,
     settings: {
       chainId: 137,
-      networkType: 'main',
+      testnet: false,
       ...KNOWN_CHAINS.get(137),
       live: true,
     },
@@ -139,7 +139,7 @@ export const networkConfigs = {
     connectGraphEndpoint: null,
     settings: {
       chainId: 80001,
-      networkType: 'test',
+      testnet: true,
       ...KNOWN_CHAINS.get(80001),
       live: true,
     },
