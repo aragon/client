@@ -19,7 +19,7 @@ import {
   getIpfsGateway,
 } from '../../../local-settings'
 import keycodes from '../../../keycodes'
-import { sanitizeNetworkType } from '../../../network-config'
+import { sanitizeNetworkType } from '../../../util/network'
 import { checkValidEthNode } from '../../../util/web3'
 import { useWallet } from '../../../contexts/wallet'
 

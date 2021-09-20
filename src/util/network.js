@@ -1,0 +1,46 @@
+import { KNOWN_CHAINS } from 'use-wallet'
+import { getNetworkConfig } from '../network-config'
+
+export function isOnEthMainnet(networkType) {
+  return networkType === KNOWN_CHAINS.get(1).type
+}
+
+export function isMainnet(networkType) {
+  return !getNetworkConfig(networkType).settings?.testnet
+}
+
+export function isTestnet(networkType) {
+  return getNetworkConfig(networkType).settings?.testnet
+}
+
+export function getDaiTokenAddress(networkType) {
+  return getNetworkConfig(networkType).addresses.dai || ''
+}
+
+export function normalizeNetworkName(networkType) {
+  return getNetworkConfig(networkType).settings?.shortName || 'unknown'
+}
+
+export function sanitizeNetworkType(networkType) {
+  if (networkType === 'private') {
+    return 'localhost'
+  } else if (isOnEthMainnet(networkType)) {
+    return 'mainnet'
+  }
+  return networkType
+}
+
+export function getNetworkFullName(networkType) {
+  return getNetworkConfig(networkType).settings?.fullName || 'uknown'
+}
+export function getNetworkShortName(networkType) {
+  return getNetworkConfig(networkType).settings?.shortName || 'uknown'
+}
+
+export function getNetworkSettings(networkType) {
+  return getNetworkConfig(networkType).settings
+}
+
+export function getChainId(networkType) {
+  return getNetworkSettings(networkType).chainId
+}

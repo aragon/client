@@ -4,12 +4,14 @@ import { Button, GU, IconSettings, useTheme } from '@aragon/ui'
 import AccountModule from '../../components/AccountModule/AccountModule'
 import HomeButton from '../../components/HomeButton/HomeButton'
 import { useWallet } from '../../contexts/wallet'
-import { isOnMainnet } from '../../network-config'
+import { isOnEthMainnet } from '../../util/network'
+import styled from 'styled-components'
+import { NetworkIndicator } from '../../components/NetworkIndicator/NetworkIndicator'
 
-function OnboardingTopBar({ status, solid }) {
+function OnboardingTopBar({ status, solid, modalOpener }) {
   const theme = useTheme()
   const { networkType } = useWallet()
-  const isMainnet = isOnMainnet(networkType)
+  const isMainnet = isOnEthMainnet(networkType)
 
   const handleSettingsClick = useCallback(() => {
     let path = '/'
@@ -24,57 +26,12 @@ function OnboardingTopBar({ status, solid }) {
 
   return (
     <React.Fragment>
-      <div
-        css={`
-          position: absolute;
-          z-index: 2;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: ${7.5 * GU}px;
-          background: ${theme.surface.alpha(solid ? 0.8 : 0)};
-          transition: background 150ms ease-in-out;
-          backdrop-filter: blur(6px);
-        `}
-      >
-        <div
-          css={`
-            position: absolute;
-            top: 0;
-            z-index: 1;
-            width: 100%;
-            border-top: 2px solid ${theme.accent};
-          `}
-        />
-
-        <HomeButton
-          css={`
-            position: absolute;
-            top: ${1 * GU}px;
-            left: ${1 * GU}px;
-          `}
-        />
-
-        <div
-          css={`
-            display: flex;
-            align-items: center;
-            position: absolute;
-            top: 0;
-            right: ${2 * GU}px;
-            height: 100%;
-          `}
-        >
-          <div
-            css={`
-              display: flex;
-              align-items: center;
-              margin-right: ${1 * GU}px;
-              height: 100%;
-            `}
-          >
-            <AccountModule />
-          </div>
+      <TopBarDiv surface={theme.surface.alpha(solid ? 0.8 : 0)}>
+        <BlueLine color={theme.accent} />
+        <HomeButton />
+        <ButtonContainer>
+          <NetworkIndicator clickHandler={modalOpener} />
+          <AccountModule />
           {isMainnet && (
             <Button
               display="icon"
@@ -84,15 +41,45 @@ function OnboardingTopBar({ status, solid }) {
               onClick={handleSettingsClick}
             />
           )}
-        </div>
-      </div>
+        </ButtonContainer>
+      </TopBarDiv>
     </React.Fragment>
   )
 }
 
+const BlueLine = styled.div`
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  border-top: 2px solid ${props => props.color};
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: ${2 * GU}px;
+  height: 100%;
+`
+
+const TopBarDiv = styled.div`
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: ${7.5 * GU}px;
+  background: ${props => props.surfaceColor};
+  transition: background 150ms ease-in-out;
+  backdrop-filter: blur(6px);
+`
+
 OnboardingTopBar.propTypes = {
   status: PropTypes.string.isRequired,
   solid: PropTypes.bool,
+  modalOpener: PropTypes.func.isRequired,
 }
 
 export default OnboardingTopBar
