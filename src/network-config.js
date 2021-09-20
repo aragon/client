@@ -155,7 +155,7 @@ export const networkConfigs = {
     },
     connectGraphEndpoint: null,
     settings: {
-      networkType: 'Unknown',
+      testnet: true,
       name: `Unknown network`,
       shortName: 'Unknown',
       type: 'unknown',
