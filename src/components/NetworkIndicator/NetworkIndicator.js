@@ -15,16 +15,20 @@ export function NetworkIndicator({ clickHandler }) {
   const networkName = getNetworkFullName(networkType)
 
   return (
-    <div>
+    <DisplacedDiv>
       <ButtonBase onClick={clickHandler}>
         {isMainnet(networkType) && <StyledInfo>{networkName}</StyledInfo>}
         {isTestnet(networkType) && (
           <StyledInfo mode="warning">{networkName}</StyledInfo>
         )}
       </ButtonBase>
-    </div>
+    </DisplacedDiv>
   )
 }
+
+const DisplacedDiv = styled.div`
+  margin-right: -24px;
+`
 
 const StyledInfo = styled(Info)`
   height: 40px;
