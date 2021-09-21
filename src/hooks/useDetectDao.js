@@ -12,47 +12,44 @@ import { completeDomain } from '../check-domain'
  * the domain was found
  */
 export function useDetectDao(domain) {
-  const [networks, setNetowrks] = useState([])
+  const [networks, setNetworks] = useState([])
   const [loading, setLoading] = useState(true)
   const { web3 } = useClientWeb3()
 
   useEffect(() => {
-    setNetowrks(false)
     setLoading(true)
 
     let cancelled = false
 
     const check = async () => {
       // TODO define active networks as field in network-config
-      const networksToCheck = ['main', 'matic', 'rinkeby', 'mumbai']
+      console.log(domain)
+      const networksToCheck = ['main']
       const awalabilityPromise = networksToCheck.map(n =>
         isEnsDomainAvailable(n, web3, completeDomain(domain))
       )
 
       try {
         const availableNetworks = await Promise.all(awalabilityPromise)
-        networksToCheck.filter((_, i) => availableNetworks[i])
+        const filteredNetworks = networksToCheck.filter(
+          (_, i) => availableNetworks[i]
+        )
+
         if (!cancelled) {
           setLoading(false)
-          setNetowrks(availableNetworks)
+          setNetworks(filteredNetworks)
         }
       } catch (err) {
-        // retry every second
-        setTimeout(check, 1000)
+        console.error(err)
       }
     }
 
-    // Only start checking after 300ms
-    setTimeout(() => {
-      if (!cancelled) {
-        check(networks)
-      }
-    }, 300)
-
+    check()
     return () => {
+      console.log('GOT CANCELED')
       cancelled = true
     }
-  }, [domain, web3, networks])
+  }, [domain, web3])
 
   const data = useMemo(() => {
     return { loading, networks }
