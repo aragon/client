@@ -22,7 +22,8 @@ export function useDetectDao(domain) {
 
     const checkWithProvider = async () => {
       // TODO define active networks as field in network-config
-      const networksToCheck = ['main', 'rinkeby']
+      // NOTE matic fails for some reason [VR 22-09-2021]
+      const networksToCheck = ['main', 'rinkeby', 'mumbai', 'matic']
       try {
         const providers = networksToCheck.map(n => ({
           network: n,

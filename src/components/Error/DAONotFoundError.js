@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
 import styled from 'styled-components'
@@ -7,6 +7,7 @@ import { isAddress } from '../../util/web3'
 import { useWallet } from '../../contexts/wallet'
 import { getNetworkFullName } from '../../util/network'
 import { useDetectDao } from '../../hooks/useDetectDao'
+import { useRouting } from '../../routing'
 
 DAONotFoundError.propTypes = {
   dao: PropTypes.string,
@@ -69,7 +70,19 @@ NotFoundOnNetworkMessage.propTypes = {
 
 function NotFoundOnNetworkMessage({ dao, alternatives }) {
   const theme = useTheme()
-  const { networkType } = useWallet()
+  const routing = useRouting()
+  const { networkType, changeNetworkTypeDisconnected } = useWallet()
+
+  const goToOrg = useCallback(
+    (orgAddress, networType) => {
+      changeNetworkTypeDisconnected(networType)
+      routing.update(locator => ({
+        ...locator,
+        mode: { name: 'org', orgAddress },
+      }))
+    },
+    [routing]
+  )
 
   return (
     <React.Fragment>
@@ -82,7 +95,7 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
       <LinksList>
         {alternatives.map(a => (
           <li key={a}>
-            <Link>
+            <Link onClick={() => goToOrg(dao, a)}>
               Open {!isAddress(dao) ? dao : 'it'} on {a}
             </Link>
           </li>
