@@ -63,7 +63,7 @@ function NotFoundAtAllMessage({ dao }) {
 
   return (
     <Message color={theme.surfaceContentSecondary}>
-      There’s no organization associated with
+      There’s no organization associated with{' '}
       <span css="font-weight: bold;">'{dao}'</span>
       on the {getNetworkFullName(networkType)}.
     </Message>
@@ -82,7 +82,7 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
   return (
     <React.Fragment>
       <Message color={theme.surfaceContentSecondary}>
-        There’s no organization associated with
+        There’s no organization associated with{' '}
         <span css="font-weight: bold;">'{dao}'</span> on the{' '}
         {getNetworkFullName(networkType)}, but it does exist on another chain.
         You may switch the application to another chain to see it.

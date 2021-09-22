@@ -34,4 +34,5 @@ const StyledInfo = styled(Info)`
   height: 40px;
   display: flex;
   align-items: center;
+  padding-right: ${3 * GU}px;
 `
