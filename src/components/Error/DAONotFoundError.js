@@ -64,7 +64,7 @@ function NotFoundAtAllMessage({ dao }) {
 
 NotFoundOnNetworkMessage.propTypes = {
   dao: PropTypes.string,
-  alternatives: PropTypes.string,
+  alternatives: PropTypes.arrayOf(PropTypes.string),
 }
 
 function NotFoundOnNetworkMessage({ dao, alternatives }) {
@@ -81,7 +81,7 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
       </Message>
       <LinksList>
         {alternatives.map(a => (
-          <li>
+          <li key={a}>
             <Link>
               Open {!isAddress(dao) ? dao : 'it'} on {a}
             </Link>

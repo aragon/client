@@ -64,6 +64,7 @@ function ButtonsRow({ networkNames, onClose }) {
     <Row>
       {networkNames.map(n => (
         <FixWidthButton
+          key={n}
           onClick={() => {
             changeNetworkTypeDisconnected(n)
             onClose()
