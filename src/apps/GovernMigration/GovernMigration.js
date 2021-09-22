@@ -201,7 +201,8 @@ const GovernMigration = React.memo(function GovernMigration({
     // checks if the funds exist on vault and if it does
     // generates the calldata
     if (orgsByName.vault) {
-      calldata = await GenerateMigration(networkType, {
+      const network = networkType === 'main' ? 'mainnet' : networkType
+      calldata = await GenerateMigration(network, {
         ...migrationParams,
         vault: orgsByName.vault,
       })
@@ -214,7 +215,8 @@ const GovernMigration = React.memo(function GovernMigration({
     // if the agent is installed, checks if the funds exist on it
     // and generates the calldata if it does.
     if (orgsByName.agent) {
-      calldata = await GenerateMigration(networkType, {
+      const network = networkType === 'main' ? 'mainnet' : networkType
+      calldata = await GenerateMigration(network, {
         ...migrationParams,
         vault: orgsByName.agent,
       })
