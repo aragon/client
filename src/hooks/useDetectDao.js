@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { isEnsDomainAvailable } from '../aragonjs-wrapper'
-import { useClientWeb3 } from '../contexts/ClientWeb3Context'
 import { completeDomain } from '../check-domain'
+import { getWeb3Provider } from '../util/web3'
 
 /**
  * This hook checks a list of networks for an ens domain. It returns all
@@ -14,42 +14,59 @@ import { completeDomain } from '../check-domain'
 export function useDetectDao(domain) {
   const [networks, setNetworks] = useState([])
   const [loading, setLoading] = useState(true)
-  const { web3 } = useClientWeb3()
 
   useEffect(() => {
     setLoading(true)
 
     let cancelled = false
 
-    const check = async () => {
+    const checkWithProvider = async () => {
       // TODO define active networks as field in network-config
-      console.log(domain)
-      const networksToCheck = ['main']
-      const awalabilityPromise = networksToCheck.map(n =>
-        isEnsDomainAvailable(n, web3, completeDomain(domain))
-      )
-
+      const networksToCheck = ['main', 'rinkeby']
       try {
-        const availableNetworks = await Promise.all(awalabilityPromise)
-        const filteredNetworks = networksToCheck.filter(
-          (_, i) => availableNetworks[i]
+        const providers = networksToCheck.map(n => ({
+          network: n,
+          provider: getWeb3Provider(n),
+        }))
+        const availabilityPromise = providers.map(p => {
+          return isEnsDomainAvailable(
+            p.network,
+            p.provider,
+            completeDomain(domain)
+          )
+        })
+
+        const availableNetworks = await Promise.all(availabilityPromise)
+        const daoExists = availableNetworks.map(a => !a)
+        const daoExistsOnNetworks = networksToCheck.filter(
+          (_, i) => daoExists[i]
         )
+
+        // NOTE I can't seem to get the hook life cycle right, so I'm tearing
+        // the connections down immediately. [VR 22-09-2021]
+        providers.forEach(p => {
+          if (p.provider.disconnect) {
+            p.provider.disconnect()
+          } else {
+            // Older versions of web3's providers didn't expose a generic interface for disconnecting
+            p.provider.connection.close()
+          }
+        })
 
         if (!cancelled) {
           setLoading(false)
-          setNetworks(filteredNetworks)
+          setNetworks(daoExistsOnNetworks)
         }
       } catch (err) {
         console.error(err)
       }
     }
 
-    check()
+    checkWithProvider()
     return () => {
-      console.log('GOT CANCELED')
       cancelled = true
     }
-  }, [domain, web3])
+  }, [domain])
 
   const data = useMemo(() => {
     return { loading, networks }
