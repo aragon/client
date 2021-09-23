@@ -11,8 +11,12 @@ NetworkIndicator.propTypes = {
 }
 // TODO try adding Modal from here
 export function NetworkIndicator({ clickHandler }) {
-  const { networkType } = useWallet()
+  const { networkType, status } = useWallet()
   const networkName = getNetworkShortName(networkType)
+
+  if (status === 'connected') {
+    return null
+  }
 
   return (
     <DisplacedDiv>
