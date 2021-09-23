@@ -81,7 +81,7 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
         mode: { name: 'org', orgAddress },
       }))
     },
-    [routing]
+    [routing, changeNetworkTypeDisconnected]
   )
 
   return (

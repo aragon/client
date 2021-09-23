@@ -1,5 +1,15 @@
 import { KNOWN_CHAINS } from 'use-wallet'
-import { getNetworkConfig } from '../network-config'
+import { getNetworkConfig, networkConfigs } from '../network-config'
+
+export const isActiveNetwork = networkType => {
+  return getNetworkConfig(networkType).isActive
+}
+
+export const getActiveNetworks = () => {
+  return Object.values(networkConfigs)
+    .filter(v => v.isActive)
+    .map(n => n.settings.type)
+}
 
 export function isOnEthMainnet(networkType) {
   return networkType === KNOWN_CHAINS.get(1).type

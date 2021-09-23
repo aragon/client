@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { isEnsDomainAvailable } from '../aragonjs-wrapper'
 import { completeDomain } from '../check-domain'
+import { getActiveNetworks } from '../util/network'
 import { getWeb3Provider } from '../util/web3'
 
 /**
@@ -21,9 +22,8 @@ export function useDetectDao(domain) {
     let cancelled = false
 
     const checkWithProvider = async () => {
-      // TODO define active networks as field in network-config
-      // NOTE matic fails for some reason [VR 22-09-2021]
-      const networksToCheck = ['main', 'rinkeby', 'mumbai', 'matic']
+      // TODO looku-up on matic fails for some reason. [VR 22-09-2021]
+      const networksToCheck = getActiveNetworks().filter(n => n !== 'matic')
       try {
         const providers = networksToCheck.map(n => ({
           network: n,
