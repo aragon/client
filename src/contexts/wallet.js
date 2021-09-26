@@ -16,6 +16,7 @@ import {
 import { getWeb3, filterBalanceValue } from '../util/web3'
 import { useWalletConnectors } from '../ethereum-providers/connectors'
 import { useAPM, updateAPMContext } from './elasticAPM'
+import { LocalStorageWrapper } from '../local-storage-wrapper'
 
 export const WALLET_STATUS = Object.freeze({
   providers: 'providers',
@@ -44,16 +45,23 @@ function WalletContextProvider({ children }) {
     ...walletBaseRest
   } = useWalletBase()
 
+  const initialNetwork = useMemo(() => {
+    const lastNetwork = LocalStorageWrapper.get('last-network', false)
+    if (!lastNetwork) return NETWORK_TYPE_DEFAULT
+    return lastNetwork
+  }, [])
+
   const [walletWeb3, setWalletWeb3] = useState(null)
   const [disconnectedNetworkType, setDisconnectedNetworkType] = useState(
-    NETWORK_TYPE_DEFAULT
+    initialNetwork
   )
 
   const connected = useMemo(() => status === 'connected', [status])
-  const networkType = useMemo(
-    () => (status === 'connected' ? networkName : disconnectedNetworkType),
-    [status, networkName, disconnectedNetworkType]
-  )
+  const networkType = useMemo(() => {
+    const newNetwork = connected ? networkName : disconnectedNetworkType
+    LocalStorageWrapper.set('last-network', newNetwork, false)
+    return newNetwork
+  }, [connected, networkName, disconnectedNetworkType])
 
   const changeNetworkTypeDisconnected = useCallback(
     newNetworkType => {
