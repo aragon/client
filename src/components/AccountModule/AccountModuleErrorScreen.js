@@ -19,7 +19,7 @@ function AccountModuleErrorScreen({ error, onBack }) {
     }
     return [
       'Failed to enable your account',
-      'You can try another Ethereum wallet.',
+      'You can try another wallet.',
     ]
   }, [error, network])
 

@@ -62,7 +62,7 @@ export function trackPage(pathName) {
  * Sends analytics informations about the connected wallets.
  *
  * @param {String} account Wallet address
- * @param {String} networkType The ethereum network the wallet is connected to
+ * @param {String} networkType The network the wallet is connected to
  * @param {String} connector Wallet connector used by use-wallet library
  * @returns {void}
  */

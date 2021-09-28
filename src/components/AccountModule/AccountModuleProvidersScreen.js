@@ -89,7 +89,7 @@ function AccountModuleProvidersScreen({ onActivate }) {
         `}
       >
         <Link href="https://ethereum.org/wallets/" css="text-decoration: none">
-          Don’t have an Ethereum account?
+          Don’t have an account?
         </Link>
       </div>
     </div>

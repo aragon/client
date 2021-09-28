@@ -52,7 +52,7 @@ export function ConnectModal({ account, onClose, onConnect, visible }) {
               font-weight: 600;
             `}
           >
-            Connect your Ethereum account
+            Connect your account
           </h1>
           <p
             css={`
@@ -61,7 +61,7 @@ export function ConnectModal({ account, onClose, onConnect, visible }) {
               color: ${theme.contentSecondary};
             `}
           >
-            You need to connect your Ethereum account to create an organization
+            You need to connect your account to create an organization
           </p>
           <p
             css={`
@@ -71,7 +71,7 @@ export function ConnectModal({ account, onClose, onConnect, visible }) {
             `}
           >
             <Link href="https://www.ethereum.org/use/#_3-what-is-a-wallet-and-which-one-should-i-use">
-              What is an Ethereum wallet?
+              What is a wallet?
             </Link>
           </p>
         </header>
