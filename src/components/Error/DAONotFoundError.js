@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import { isAddress } from '../../util/web3'
 import { useWallet } from '../../contexts/wallet'
-import { getNetworkFullName } from '../../util/network'
+import { getNetworkFullName, getNetworkShortName } from '../../util/network'
 import { useDetectDao } from '../../hooks/useDetectDao'
 import { useRouting } from '../../routing'
 
@@ -96,7 +96,7 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
         {alternatives.map(a => (
           <li key={a}>
             <Link onClick={() => goToOrg(dao, a)}>
-              Open {!isAddress(dao) ? dao : 'it'} on {a}
+              Open {!isAddress(dao) ? dao : 'it'} on {getNetworkShortName(a)}
             </Link>
           </li>
         ))}
