@@ -311,7 +311,7 @@ const initWrapper = async (
       throw new DAONotFound(dao)
     }
     if (err.message === 'connection not open') {
-      throw new NoConnection('No Ethereum connection detected')
+      throw new NoConnection('No blockchain connection detected')
     }
 
     throw err

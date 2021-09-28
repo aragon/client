@@ -17,10 +17,7 @@ function AccountModuleErrorScreen({ error, onBack }) {
         `Please select the ${network.shortName} network in your wallet and try again.`,
       ]
     }
-    return [
-      'Failed to enable your account',
-      'You can try another Ethereum wallet.',
-    ]
+    return ['Failed to enable your account', 'You can try another wallet.']
   }, [error, network])
 
   return (

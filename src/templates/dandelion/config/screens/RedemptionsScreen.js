@@ -10,7 +10,7 @@ import {
 import MultiTokenSelector from '../../components/TokenSelector/MultiTokenSelector'
 import {
   getDefaultRedeemableTokens,
-  ETHER_TOKEN_FAKE_ADDRESS,
+  TOKEN_FAKE_ADDRESS,
 } from '../helpers/tokens'
 import { shortenAddress } from '../../../../util/web3'
 import { useWallet } from '../../../../contexts/wallet'
@@ -231,7 +231,7 @@ function formatReviewFields(screenData) {
             `}
           >
             <span>{token.symbol || 'Custom token'}</span>
-            {!addressesEqual(token.address, ETHER_TOKEN_FAKE_ADDRESS) && (
+            {!addressesEqual(token.address, TOKEN_FAKE_ADDRESS) && (
               <span> {shortenAddress(token.address)}</span>
             )}
           </div>

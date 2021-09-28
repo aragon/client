@@ -1,44 +1,36 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
+import styled from 'styled-components'
+
 import { isAddress } from '../../util/web3'
 import { useWallet } from '../../contexts/wallet'
-import { getNetworkFullName } from '../../util/network'
+import { getNetworkFullName, getNetworkShortName } from '../../util/network'
+import { useDetectDao } from '../../hooks/useDetectDao'
+import { useRouting } from '../../routing'
+
+DAONotFoundError.propTypes = {
+  dao: PropTypes.string,
+}
 
 function DAONotFoundError({ dao }) {
   const theme = useTheme()
-  const { networkType } = useWallet()
+  const { loading, networks } = useDetectDao(dao)
 
   return (
     <React.Fragment>
-      <h1
-        css={`
-          color: ${theme.surfaceContent};
-          ${textStyle('title2')};
-          margin-bottom: ${1.5 * GU}px;
-          text-align: center;
-        `}
-      >
+      <ModalTitle color={theme.surfaceContent}>
         Organization not found
-      </h1>
-      <div
-        css={`
-          margin-bottom: ${6 * GU}px;
-          text-align: center;
-          color: ${theme.surfaceContentSecondary};
-          ${textStyle('body2')};
-        `}
-      >
-        It looks like there’s no organization associated with{' '}
-        {isAddress(dao) ? (
-          <span css="font-weight: bold;">“{dao}”</span>
+      </ModalTitle>
+      <MessageContainer>
+        {loading ? (
+          <div />
+        ) : networks?.length ? (
+          <NotFoundOnNetworkMessage dao={dao} alternatives={networks} />
         ) : (
-          <React.Fragment>
-            the <strong>“{dao}”</strong> ENS domain
-          </React.Fragment>
-        )}{' '}
-        on the Ethereum {getNetworkFullName(networkType)}.
-      </div>
+          <NotFoundAtAllMessage dao={dao} />
+        )}
+      </MessageContainer>
       <Info>
         If you arrived here through a link, please double check that you were
         given the correct link. Alternatively, you may{' '}
@@ -54,8 +46,85 @@ function DAONotFoundError({ dao }) {
   )
 }
 
-DAONotFoundError.propTypes = {
+NotFoundAtAllMessage.propTypes = {
   dao: PropTypes.string,
 }
+
+function NotFoundAtAllMessage({ dao }) {
+  const theme = useTheme()
+  const { networkType } = useWallet()
+
+  return (
+    <Message color={theme.surfaceContentSecondary}>
+      There’s no organization associated with{' '}
+      <span css="font-weight: bold;">'{dao}'</span>
+      on the {getNetworkFullName(networkType)}.
+    </Message>
+  )
+}
+
+NotFoundOnNetworkMessage.propTypes = {
+  dao: PropTypes.string,
+  alternatives: PropTypes.arrayOf(PropTypes.string),
+}
+
+function NotFoundOnNetworkMessage({ dao, alternatives }) {
+  const theme = useTheme()
+  const routing = useRouting()
+  const { networkType, changeNetworkTypeDisconnected } = useWallet()
+
+  const goToOrg = useCallback(
+    (orgAddress, networType) => {
+      changeNetworkTypeDisconnected(networType)
+      routing.update(locator => ({
+        ...locator,
+        mode: { name: 'org', orgAddress },
+      }))
+    },
+    [routing, changeNetworkTypeDisconnected]
+  )
+
+  return (
+    <React.Fragment>
+      <Message color={theme.surfaceContentSecondary}>
+        There’s no organization associated with{' '}
+        <span css="font-weight: bold;">'{dao}'</span> on the{' '}
+        {getNetworkFullName(networkType)}, but it does exist on another chain.
+        You may switch the application to another chain to see it.
+      </Message>
+      <LinksList>
+        {alternatives.map(a => (
+          <li key={a}>
+            <Link onClick={() => goToOrg(dao, a)}>
+              Open {!isAddress(dao) ? dao : 'it'} on {getNetworkShortName(a)}
+            </Link>
+          </li>
+        ))}
+      </LinksList>
+    </React.Fragment>
+  )
+}
+
+const ModalTitle = styled.h1`
+  color: ${props => props.color};
+  ${textStyle('title2')};
+  margin-bottom: ${1.5 * GU}px;
+  text-align: center;
+`
+
+const MessageContainer = styled.div`
+  margin-bottom: ${6 * GU}px;
+  text-align: center;
+`
+
+const Message = styled.p`
+  ${textStyle('body2')};
+  color: ${props => props.color};
+`
+
+const LinksList = styled.ul`
+  list-style: none;
+  padding-top: ${2 * GU}px;
+`
 
 export default DAONotFoundError

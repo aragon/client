@@ -18,7 +18,12 @@ import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadg
 import appIds from '../../known-app-ids'
 import { getProviderString } from 'use-wallet'
 import { getNetworkConfig } from '../../network-config'
-import { sanitizeNetworkType, isOnEthMainnet } from '../../util/network'
+import {
+  sanitizeNetworkType,
+  isOnEthMainnet,
+  getNetworkFullName,
+  getNetworkSettings,
+} from '../../util/network'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
@@ -112,7 +117,7 @@ const Organization = React.memo(function Organization({
 
   const organizationText = checksummedDaoAddr ? (
     <span>
-      This organization is deployed on the Ethereum {network.name}.{' '}
+      This organization is deployed on {getNetworkFullName(network.type)}.{' '}
       {canUpgradeOrg ? (
         <span>
           <Link onClick={onShowOrgVersionDetails}>
@@ -175,7 +180,9 @@ const Organization = React.memo(function Organization({
             </div>
             <Info>
               <strong css="font-weight: 800">
-                Do not send ETH or ERC20 tokens to this address.
+                Do not send{' '}
+                {getNetworkSettings(network.type).nativeCurrency.symbol} or
+                ERC20 tokens to this address.
               </strong>{' '}
               {depositFundsHelpText}
             </Info>
@@ -341,7 +348,7 @@ const Organization = React.memo(function Organization({
                   ? `select the ${sanitizeNetworkType(network.type)} network`
                   : 'unlock your account'
               } in ${getProviderString(
-                'your Ethereum wallet',
+                'your wallet',
                 wallet.providerInfo.id
               )}.`}
             </Info>

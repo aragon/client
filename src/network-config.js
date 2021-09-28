@@ -9,6 +9,7 @@ const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 // cconnectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
   [KNOWN_CHAINS.get(1).type]: {
+    isActive: true,
     enableMigrateBanner: true,
     addresses: {
       ensRegistry:
@@ -25,10 +26,12 @@ export const networkConfigs = {
       chainId: 1,
       testnet: false,
       ...KNOWN_CHAINS.get(1),
+      shortName: 'Ethereum',
       live: true,
     },
   },
   [KNOWN_CHAINS.get(4).type]: {
+    isActive: true,
     enableMigrateBanner: true,
     addresses: {
       ensRegistry:
@@ -45,10 +48,12 @@ export const networkConfigs = {
       chainId: 4,
       testnet: true,
       ...KNOWN_CHAINS.get(4), // as returned by web3.eth.net.getNetworkType()
+      fullName: 'Rinkeby Testnet',
       live: true,
     },
   },
   [KNOWN_CHAINS.get(3).type]: {
+    isActive: false,
     enableMigrateBanner: true,
     addresses: {
       ensRegistry:
@@ -68,6 +73,7 @@ export const networkConfigs = {
   },
   [KNOWN_CHAINS.get(1337).type]: {
     enableMigrateBanner: true,
+    isActive: false,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
       governExecutorProxy: null,
@@ -91,6 +97,7 @@ export const networkConfigs = {
   // and expected that a few things will break.
   [KNOWN_CHAINS.get(100).type]: {
     enableMigrateBanner: false,
+    isActive: false,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0xaafca6b0c89521752e559650206d7c925fd0e530',
@@ -109,29 +116,34 @@ export const networkConfigs = {
   },
   [KNOWN_CHAINS.get(137).type]: {
     enableMigrateBanner: false,
+    isActive: true,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x3c70a0190d09f34519e6e218364451add21b7d4b',
       governExecutorProxy: null,
+      dai: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
     },
     nodes: {
       defaultEth:
-        'wss://cool-frosty-frog.matic.quiknode.pro/bd32caa885f4bbf687a022490b1b5cce6ddab38a/',
+        'wss://speedy-nodes-nyc.moralis.io/a01aedef55656aa69a8569cc/polygon/mainnet/ws',
     },
     connectGraphEndpoint: null,
     settings: {
       chainId: 137,
       testnet: false,
       ...KNOWN_CHAINS.get(137),
+      shortName: 'Polygon',
       live: true,
     },
   },
   [KNOWN_CHAINS.get(80001).type]: {
     enableMigrateBanner: false,
+    isActive: true,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x431f0eed904590b176f9ff8c36a1c4ff0ee9b982',
       governExecutorProxy: null,
+      dai: '0x94f417C155bB3fF7365828Bb7aCD26E84C17e830',
     },
     nodes: {
       defaultEth: 'wss://matic-testnet-archive-ws.bwarelabs.com',
@@ -141,11 +153,13 @@ export const networkConfigs = {
       chainId: 80001,
       testnet: true,
       ...KNOWN_CHAINS.get(80001),
+      fullName: 'Mumbai Testnet',
       live: true,
     },
   },
   unknown: {
     enableMigrateBanner: false,
+    isActive: false,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
       governExecutorProxy: null,

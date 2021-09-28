@@ -1,7 +1,7 @@
-import { getDaiTokenAddress } from '../../../../util/network'
+import { KNOWN_CHAINS } from '../../../../contexts/wallet'
+import { getDaiTokenAddress, getChainId } from '../../../../util/network'
 
-export const ETHER_TOKEN_FAKE_ADDRESS =
-  '0x0000000000000000000000000000000000000000'
+export const TOKEN_FAKE_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const getDaiToken = networkType => ({
   symbol: 'DAI',
@@ -9,18 +9,21 @@ const getDaiToken = networkType => ({
   address: getDaiTokenAddress(networkType),
 })
 
-const ETHER_TOKEN = {
-  symbol: 'ETH',
-  name: 'Ether',
-  address: ETHER_TOKEN_FAKE_ADDRESS,
+const getNativeCurrency = networkType => {
+  const chainId = getChainId(networkType)
+  const symbol = KNOWN_CHAINS.get(chainId)?.nativeCurrency.symbol
+  return {
+    symbol,
+    address: TOKEN_FAKE_ADDRESS,
+  }
 }
 
 export function getDefaultRedeemableTokens(networkType) {
-  return [ETHER_TOKEN, getDaiToken(networkType)]
+  return [getNativeCurrency(networkType), getDaiToken(networkType)]
 }
 
 export function getDefaultAcceptedTokens(networkType) {
-  return [ETHER_TOKEN, getDaiToken(networkType)]
+  return [getNativeCurrency(networkType), getDaiToken(networkType)]
 }
 
 export function getDefaultLockTokenByNetwork(networkType) {

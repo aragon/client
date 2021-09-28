@@ -10,6 +10,7 @@ import {
   useKeyDown,
   useTheme,
 } from '@aragon/ui'
+import styled from 'styled-components'
 import KEYS from '../../keycodes'
 import DomainField from '../../components/DomainField/DomainField'
 import { useCheckDomain, DOMAIN_CHECK, DOMAIN_ERROR } from '../../check-domain'
@@ -45,36 +46,12 @@ function OpenOrg({ onOpenOrg, onBack }) {
 
   return (
     <Box padding={5 * GU}>
-      <Bar
-        css={`
-          margin: -${5 * GU}px -${5 * GU}px 0;
-          border: 0;
-          border-bottom: 1px solid ${theme.border};
-          border-bottom-left-radius: 0;
-          border-bottom-right-radius: 0;
-        `}
-      >
+      <BackButtonContainer borderColor={theme.border}>
         <BackButton onClick={onBack} />
-      </Bar>
+      </BackButtonContainer>
 
-      <form
-        onSubmit={handleSubmit}
-        css={`
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-          height: ${36 * GU}px;
-        `}
-      >
-        <div
-          css={`
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            justify-content: center;
-          `}
-        >
+      <Form onSubmit={handleSubmit}>
+        <InputFieldContainer>
           <div css="position: relative">
             <DomainField
               ref={handleDomainFieldRef}
@@ -97,20 +74,15 @@ function OpenOrg({ onOpenOrg, onBack }) {
               </Info>
             )}
           </div>
-        </div>
-        <div
-          css={`
-            display: flex;
-            justify-content: flex-end;
-          `}
-        >
+        </InputFieldContainer>
+        <SubmitButtonContainer>
           <Button
             label="Open organization"
             mode="strong"
             onClick={handleSubmit}
           />
-        </div>
-      </form>
+        </SubmitButtonContainer>
+      </Form>
     </Box>
   )
 }
@@ -120,4 +92,31 @@ OpenOrg.propTypes = {
   onOpenOrg: PropTypes.func.isRequired,
 }
 
+const BackButtonContainer = styled(Bar)`
+  margin: -${5 * GU}px -${5 * GU}px 0;
+  border: 0;
+  border-bottom: 1px solid ${props => props.borderColor};
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: ${36 * GU}px;
+`
+
+const InputFieldContainer = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+`
+
+const SubmitButtonContainer = styled.div`
+  display: flex;
+  flex-content: flex-end;
+`
 export default OpenOrg
