@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@aragon/templates-tokens": "^1.2.1",
-    "@aragon/ui": "^1.9.0",
+    "@aragon/ui": "github:victaphu/ui.git",
     "@aragon/v2-migrator-script": "^0.1.4",
     "@aragon/wrapper": "github:victaphu/aragon-wrapper.git",
     "@ungap/event-target": "^0.1.0",
