@@ -1,0 +1,85 @@
+#!/usr/bin/env node
+
+const path = require('path')
+const { promisify } = require('util')
+const { exec } = require('child_process')
+const arg = require('arg')
+const recursiveCopy = require('recursive-copy')
+const commandExists = require('command-exists').sync
+const pkg = require('../package.json')
+
+const COMMAND = 'copy-aragon-ui-assets'
+const VERSION = pkg.version
+
+const HELP = `
+  Usage: ${COMMAND} [-hv] [-n dirname] <destination>
+
+  Options:
+
+    -h, --help               display this help and exit
+    -v, --version            display the version number
+    -n, --dirname <dirname>  set the directory name (default: aragon-ui)
+
+  Examples:
+
+    $ ${COMMAND} .
+    $ ${COMMAND} -n aragon-ui ./public
+`
+
+const argspec = {
+  '--help': Boolean,
+  '--version': Boolean,
+  '--dirname': String,
+  '-h': '--help',
+  '-v': '--version',
+  '-n': '--dirname',
+}
+
+const error = message => console.error(`\n  ${COMMAND} error: ${message}`)
+
+async function main(argv, argspec) {
+  const args = arg(argspec, { permissive: true })
+
+  if (args['--help']) return HELP
+  if (args['--version']) return VERSION
+
+  if (!args._[0]) {
+    throw new Error(`no destination directory provided\n${HELP}`)
+  }
+
+  const source = path.resolve(__dirname, '..', path.dirname(pkg.main))
+  const destination = path.resolve(
+    process.cwd(),
+    args._[0],
+    args['--dirname'] || 'aragon-ui'
+  )
+
+  const copy = commandExists('rsync') ? rsyncCopy : nodeCopy
+
+  return copy(source, destination).then(
+    () =>
+      `\naragonUI assets copied to ${path.relative(
+        process.cwd(),
+        destination
+      )}`
+  )
+}
+
+const rsyncCopy = async (from, to) =>
+  promisify(exec)(
+    `mkdir -p "${to}" && rsync --recursive --update --times "${from}/" "${to}"`
+  )
+
+const nodeCopy = async (from, to) =>
+  recursiveCopy(from, to, { overwrite: true })
+
+main(process.argv, argspec).then(
+  out => {
+    if (out) console.log(out)
+    process.exit(0)
+  },
+  err => {
+    error(err.message)
+    process.exit(1)
+  }
+)

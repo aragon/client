@@ -12,6 +12,9 @@
   "bugs": {
     "url": "https://github.com/aragon/aragon/issues"
   },
+  "bin": {
+    "copy-aragon-ui-assets": "./bin/copy-aragon-ui-assets"
+  },
   "homepage": "https://github.com/aragon/aragon#readme",
   "keywords": [
     "aragon",
