@@ -22,8 +22,7 @@ export function useDetectDao(domain) {
     let cancelled = false
 
     const checkWithProvider = async () => {
-      // TODO looku-up on matic fails for some reason. [VR 22-09-2021]
-      const networksToCheck = getActiveNetworks().filter(n => n !== 'matic')
+      const networksToCheck = getActiveNetworks()
       try {
         const providers = networksToCheck.map(n => ({
           network: n,
