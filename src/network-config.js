@@ -125,7 +125,7 @@ export const networkConfigs = {
     },
     nodes: {
       defaultEth:
-        'wss://cool-frosty-frog.matic.quiknode.pro/bd32caa885f4bbf687a022490b1b5cce6ddab38a/',
+        'wss://speedy-nodes-nyc.moralis.io/a01aedef55656aa69a8569cc/polygon/mainnet/ws',
     },
     connectGraphEndpoint: null,
     settings: {
