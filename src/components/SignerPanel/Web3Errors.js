@@ -80,10 +80,7 @@ NoWeb3Provider.propTypes = {
 }
 
 export function AccountLocked({ intent, onClose, walletProviderId }) {
-  const providerMessage = getProviderString(
-    'your wallet',
-    walletProviderId
-  )
+  const providerMessage = getProviderString('your wallet', walletProviderId)
   return (
     <Web3ProviderError
       intent={intent}

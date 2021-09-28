@@ -18,7 +18,12 @@ import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadg
 import appIds from '../../known-app-ids'
 import { getProviderString } from 'use-wallet'
 import { getNetworkConfig } from '../../network-config'
-import { sanitizeNetworkType, isOnEthMainnet, getNetworkFullName, getNetworkSettings } from '../../util/network'
+import {
+  sanitizeNetworkType,
+  isOnEthMainnet,
+  getNetworkFullName,
+  getNetworkSettings,
+} from '../../util/network'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
@@ -175,7 +180,9 @@ const Organization = React.memo(function Organization({
             </div>
             <Info>
               <strong css="font-weight: 800">
-                Do not send {getNetworkSettings(network.type).nativeCurrency.symbol} or ERC20 tokens to this address.
+                Do not send{' '}
+                {getNetworkSettings(network.type).nativeCurrency.symbol} or
+                ERC20 tokens to this address.
               </strong>{' '}
               {depositFundsHelpText}
             </Info>

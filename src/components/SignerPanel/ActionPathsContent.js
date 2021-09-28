@@ -304,8 +304,8 @@ class ActionPathsContent extends React.Component {
               `}
             >
               In some situations,{' '}
-              {getProviderString('your wallet', walletProviderId)} may
-              warn you that the second transaction will fail.{' '}
+              {getProviderString('your wallet', walletProviderId)} may warn you
+              that the second transaction will fail.{' '}
               <strong css="font-weight: 800">Please ignore this warning</strong>
               .
             </p>
