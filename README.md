@@ -49,7 +49,7 @@ You may either specify these secrets as environment variables or use a `.env`.
 
 **🎓 You may be interested in the [Aragon client architecture guide](./docs/ARCHITECTURE.md) if you're not familiar with how the project is set up.**
 
-Don't be shy to contribute even the smallest tweak. 🐲 There are still some dragons to be aware of, but we'll be here to help you get started!
+Don't be shy to contribute even the smallest tweak. 🐲 There are still some dragons to be aware of, but we will be here to help you get started!
 
 For other details about contributing to Aragon, more information is available in the [contributing guide](./CONTRIBUTING.md).
 
