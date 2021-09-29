@@ -78,7 +78,9 @@ function getExtendedRepos(appInstanceGroups, repos, networkType) {
       baseUrl: repoBaseUrl(repo.appId, repo.latestVersion, networkType),
       instances: instances || [],
       name: name || '',
-      repoName: repoName || '',
+      // if app was published missing content, repoName could be missing
+      // use the latestVersion app name instead
+      repoName: repoName || repo.latestVersion?.content?.appName || '',
     }
   })
 }
