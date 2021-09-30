@@ -10,7 +10,6 @@ const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 export const networkConfigs = {
   [KNOWN_CHAINS.get(1).type]: {
     isActive: true,
-    enableMigrateBanner: true,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
@@ -32,7 +31,6 @@ export const networkConfigs = {
   },
   [KNOWN_CHAINS.get(4).type]: {
     isActive: true,
-    enableMigrateBanner: true,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x98df287b6c145399aaa709692c8d308357bc085d',
@@ -54,7 +52,6 @@ export const networkConfigs = {
   },
   [KNOWN_CHAINS.get(3).type]: {
     isActive: false,
-    enableMigrateBanner: true,
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
@@ -72,7 +69,6 @@ export const networkConfigs = {
     },
   },
   [KNOWN_CHAINS.get(1337).type]: {
-    enableMigrateBanner: true,
     isActive: false,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
@@ -96,7 +92,6 @@ export const networkConfigs = {
   // xDai is an experimental chain in the Aragon Client. It's possible
   // and expected that a few things will break.
   [KNOWN_CHAINS.get(100).type]: {
-    enableMigrateBanner: false,
     isActive: false,
     addresses: {
       ensRegistry:
@@ -115,7 +110,6 @@ export const networkConfigs = {
     },
   },
   [KNOWN_CHAINS.get(137).type]: {
-    enableMigrateBanner: false,
     isActive: true,
     addresses: {
       ensRegistry:
@@ -137,7 +131,6 @@ export const networkConfigs = {
     },
   },
   [KNOWN_CHAINS.get(80001).type]: {
-    enableMigrateBanner: false,
     isActive: true,
     addresses: {
       ensRegistry:
@@ -158,7 +151,6 @@ export const networkConfigs = {
     },
   },
   unknown: {
-    enableMigrateBanner: false,
     isActive: false,
     addresses: {
       ensRegistry: localEnsRegistryAddress,

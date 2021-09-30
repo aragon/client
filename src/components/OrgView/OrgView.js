@@ -33,7 +33,6 @@ import SignerPanel from '../SignerPanel/SignerPanel'
 import UpgradeBanner from '../Upgrade/UpgradeBanner'
 import UpgradeModal from '../Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from '../Upgrade/UpgradeOrganizationPanel'
-import MigrateBanner from '../Migrate/MigrateBanner'
 import { NetworkIndicator } from '../NetworkIndicator/NetworkIndicator'
 import { NetworkSwitchModal } from '../Modals'
 
@@ -56,8 +55,6 @@ function OrgView({
   visible,
   web3,
   wrapper,
-  showMigrateBanner,
-  closeMigrateBanner,
 }) {
   const theme = useTheme()
   const routing = useRouting()
@@ -197,12 +194,6 @@ function OrgView({
           flex-shrink: 0;
         `}
       >
-        {showMigrateBanner && (
-          <MigrateBanner
-            visible={showMigrateBanner}
-            onClose={closeMigrateBanner}
-          />
-        )}
         <UpgradeBanner
           visible={canUpgradeOrg}
           onMoreInfo={handleUpgradeModalOpen}
@@ -433,8 +424,6 @@ OrgView.propTypes = {
   visible: PropTypes.bool.isRequired,
   web3: PropTypes.object,
   wrapper: AragonType,
-  showMigrateBanner: PropTypes.bool,
-  closeMigrateBanner: PropTypes.func.isRequired,
 }
 
 OrgView.defaultProps = {
