@@ -2,14 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
 import App404 from '../App404/App404'
-import {
-  AppCenter,
-  Console,
-  Home,
-  Organization,
-  Permissions,
-  GovernMigration,
-} from '../../apps'
+import { AppCenter, Console, Home, Organization, Permissions } from '../../apps'
 import AppIFrame from '../App/AppIFrame'
 import AppInternal from '../App/AppInternal'
 import AppLoader from '../App/AppLoader'
@@ -216,19 +209,6 @@ function App({
     return (
       <AppInternal>
         <Console apps={apps} wrapper={wrapper} />
-      </AppInternal>
-    )
-  }
-
-  if (instanceId === 'govern-migration') {
-    return (
-      <AppInternal>
-        <GovernMigration
-          apps={apps}
-          appsLoading={appsLoading}
-          daoAddress={daoAddress}
-          wrapper={wrapper}
-        />
       </AppInternal>
     )
   }
