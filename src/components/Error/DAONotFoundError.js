@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useTheme, textStyle, Link, GU, Info } from '@aragon/ui'
 import styled from 'styled-components'
@@ -8,6 +8,7 @@ import { useWallet } from '../../contexts/wallet'
 import { getNetworkFullName, getNetworkShortName } from '../../util/network'
 import { useDetectDao } from '../../hooks/useDetectDao'
 import { useRouting } from '../../routing'
+import { trackEvent, events } from '../../analytics'
 
 DAONotFoundError.propTypes = {
   dao: PropTypes.string,
@@ -16,6 +17,15 @@ DAONotFoundError.propTypes = {
 function DAONotFoundError({ dao }) {
   const theme = useTheme()
   const { loading, networks } = useDetectDao(dao)
+  const { networkType } = useWallet()
+
+  useEffect(() => {
+    // analytics
+    trackEvent(events.DAO_NOT_FOUND, {
+      dao_identifier: dao,
+      network: networkType,
+    })
+  }, [dao, networkType])
 
   return (
     <React.Fragment>
@@ -74,12 +84,18 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
   const { networkType, changeNetworkTypeDisconnected } = useWallet()
 
   const goToOrg = useCallback(
-    (orgAddress, networType) => {
-      changeNetworkTypeDisconnected(networType)
+    (orgAddress, network) => {
+      changeNetworkTypeDisconnected(network)
       routing.update(locator => ({
         ...locator,
         mode: { name: 'org', orgAddress },
       }))
+
+      // analytics
+      trackEvent(events.ORGANIZATION_LINK_CLICKED, {
+        dao_identifier: orgAddress,
+        network: network,
+      })
     },
     [routing, changeNetworkTypeDisconnected]
   )

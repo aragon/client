@@ -8,6 +8,7 @@ import FavoritesMenu from '../../FavoritesMenu/FavoritesMenu'
 import FavoritesMenuItemButton from '../../FavoritesMenu/FavoritesMenuItemButton'
 import OrgIcon from '../../OrgIcon/OrgIcon'
 import { useWallet } from '../../../contexts/wallet'
+import { favoriteToggleEvent } from '../../../contexts/FavoriteDaosContext'
 
 class Favorites extends React.Component {
   static propTypes = {
@@ -96,6 +97,15 @@ class Favorites extends React.Component {
         addressesEqual(dao.address, address) ? { ...dao, favorited } : dao
       ),
     })
+
+    // analytics
+    const { networkType } = this.props
+    favoriteToggleEvent(
+      localDaos.find(dao => addressesEqual(dao.address, address))?.name ||
+        address,
+      favorited,
+      networkType
+    )
   }
 
   render() {
