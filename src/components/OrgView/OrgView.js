@@ -35,6 +35,8 @@ import UpgradeModal from '../Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from '../Upgrade/UpgradeOrganizationPanel'
 import { NetworkIndicator } from '../NetworkIndicator/NetworkIndicator'
 import { NetworkSwitchModal } from '../Modals'
+import { trackEvent, events } from '../../analytics'
+import { useWallet } from '../../contexts/wallet'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -56,6 +58,7 @@ function OrgView({
   web3,
   wrapper,
 }) {
+  const { networkType } = useWallet()
   const theme = useTheme()
   const routing = useRouting()
   const { appearance } = useClientTheme()
@@ -130,8 +133,28 @@ function OrgView({
       }
 
       openApp(...args)
+
+      // analytics
+      // if an installed app clicked inside apps,
+      // this handler will be re triggered,
+      // but analytics is not required for apps' installed sub-page
+      if (args.length === 1) {
+        trackEvent(events.NAVIGATION_OPTION_SELECTED, {
+          dao_identifier: daoAddress.domain || daoAddress.address,
+          network: networkType,
+          option:
+            apps.find(obj => obj.proxyAddress === args[0])?.name || args[0],
+        })
+      }
     },
-    [autoClosingPanel, handleCloseMenuPanel, openApp]
+    [
+      autoClosingPanel,
+      handleCloseMenuPanel,
+      openApp,
+      daoAddress,
+      networkType,
+      apps,
+    ]
   )
 
   const openNetworkModal = useCallback(() => setNetworkModalOpened(true), [])

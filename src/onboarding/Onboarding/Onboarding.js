@@ -20,6 +20,7 @@ import validateCreationRequirements from '../validate-requirements'
 import { getWeb3 } from '../../util/web3'
 import styled from 'styled-components'
 import { NetworkSwitchModal, ConnectModal } from '../../components/Modals'
+import { trackEvent, events } from '../../analytics'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
@@ -60,14 +61,24 @@ function Onboarding({ web3 }) {
       ...locator,
       mode: { name: 'onboarding', status: 'open' },
     }))
-  }, [routing])
+
+    // analytics
+    trackEvent(events.OPEN_ORGANIZATION_CLICKED, {
+      network: networkType,
+    })
+  }, [routing, networkType])
 
   const goToCreate = useCallback(() => {
     routing.update(locator => ({
       ...locator,
       mode: { name: 'onboarding', status: 'create' },
     }))
-  }, [routing])
+
+    // analytics
+    trackEvent(events.CREATE_ORGANIZATION_CLICKED, {
+      network: networkType,
+    })
+  }, [routing, networkType])
 
   const goToOrg = useCallback(
     orgAddress => {
