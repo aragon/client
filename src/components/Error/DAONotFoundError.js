@@ -25,7 +25,7 @@ function DAONotFoundError({ dao }) {
       dao_identifier: dao,
       network: networkType,
     })
-  }, [networkType])
+  }, [dao, networkType])
 
   return (
     <React.Fragment>
