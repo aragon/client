@@ -278,7 +278,7 @@ function useDeploymentState(
   templateData,
   walletWeb3
 ) {
-  const { networkName, web3 } = useWallet()
+  const { networkName } = useWallet()
 
   const [transactionProgress, setTransactionProgress] = useState({
     signing: 0,
