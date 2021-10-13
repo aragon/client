@@ -183,7 +183,7 @@ export function useSyncInfo(wantedWeb3 = 'default') {
       () => ({
         request: async () => {
           if (!cancel) {
-            return getLatestBlockTimestamp(selectedWeb3).catch(_ => {              
+            return getLatestBlockTimestamp(selectedWeb3).catch(_ => {
               if (!cancel) {
                 setIsListening(false)
                 setConnectionStatus(STATUS_CONNECTION_ERROR)
