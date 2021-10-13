@@ -5,10 +5,10 @@
 import Web3 from 'web3'
 import { toWei } from 'web3-utils'
 import BN from 'bn.js'
-import { InvalidNetworkType, InvalidURI, NoConnection } from './errors'
+import { InvalidNetworkType, InvalidURI, NoConnection } from '../errors'
 import { log } from './utils'
-import { getEthNode } from './environment'
-import { isOnMainnet } from './network-config'
+import { getEthNode } from '../environment'
+import { isOnEthMainnet } from '../util/network'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -148,7 +148,7 @@ export async function getGasPrice(
   networkType,
   { mainnet: { safeMinimum = '3', disableEstimate } = {} } = {}
 ) {
-  if (!isOnMainnet(networkType)) {
+  if (!isOnEthMainnet(networkType)) {
     // Hardcode 10 for non-mainnet networks
     return toWei('10', 'gwei')
   }

@@ -9,7 +9,18 @@ export const events = {
   DAO_CREATED: 'dao_created',
   DAO_CREATIONFAILED: 'dao_creationFailed',
   WALLET_DISCONNECTED: 'wallet_disconnected',
-  DAOCREATION_TEMPLATE_SELECTED: 'daoCreation_template_selected',
+  DAO_CREATION_TEMPLATE_SELECTED: 'daoCreation_template_selected',
+
+  OPEN_ORGANIZATION_CLICKED: 'openOrganization_clicked',
+  CREATE_ORGANIZATION_CLICKED: 'createOrganization_clicked',
+  ORGANIZATION_LINK_CLICKED: 'organizationLink_clicked',
+  FAVORITE_ORGANIZATION_TOGGLED: 'favoriteOrganization_toggled',
+  USER_SETTINGS_CLICKED: 'userSettings_clicked',
+  USER_NETWORK_SETTINGS_SAVED: 'userNetworkSettings_saved',
+  CACHE_CLEARED: 'cache_cleared',
+  NAVIGATION_OPTION_SELECTED: 'navigation_option_selected',
+  DAO_CREATION_NEXT_CLICKED: 'daoCreation_next_clicked',
+  DAO_NOT_FOUND: 'dao_notFound',
 }
 
 /**
@@ -62,7 +73,7 @@ export function trackPage(pathName) {
  * Sends analytics informations about the connected wallets.
  *
  * @param {String} account Wallet address
- * @param {String} networkType The ethereum network the wallet is connected to
+ * @param {String} networkType The network the wallet is connected to
  * @param {String} connector Wallet connector used by use-wallet library
  * @returns {void}
  */

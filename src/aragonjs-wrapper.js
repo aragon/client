@@ -9,19 +9,20 @@ import { appOverrides, sortAppsPair } from './environment'
 import { NoConnection, DAONotFound } from './errors'
 import { getEthSubscriptionEventDelay, getIpfsGateway } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
-import { appBaseUrl } from './url-utils'
-import { noop, removeStartingSlash, pollEvery } from './utils'
+import { appBaseUrl } from './util/url'
+import { noop, removeStartingSlash, pollEvery } from './util/utils'
 import {
   getGasPrice,
   getWeb3,
   isEmptyAddress,
   isValidEnsName,
-} from './web3-utils'
+} from './util/web3'
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 import { getOrganizationByAddress } from './services/gql'
-import { getNetworkConfig, getChainId } from './network-config'
-import { KNOWN_CHAINS } from './wallet'
+import { getNetworkConfig } from './network-config'
+import { getChainId } from './util/network'
+import { KNOWN_CHAINS } from './contexts/wallet'
 
 const POLL_DELAY_CONNECTIVITY = 2000
 
@@ -310,7 +311,7 @@ const initWrapper = async (
       throw new DAONotFound(dao)
     }
     if (err.message === 'connection not open') {
-      throw new NoConnection('No Ethereum connection detected')
+      throw new NoConnection('No blockchain connection detected')
     }
 
     throw err

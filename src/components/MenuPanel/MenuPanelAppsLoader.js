@@ -4,7 +4,7 @@ import { Spring, animated } from 'react-spring'
 import { LoadingRing, GU, textStyle, springs } from '@aragon/ui'
 import { AppsStatusType } from '../../prop-types'
 import { APPS_STATUS_READY, APPS_STATUS_LOADING } from '../../symbols'
-import { noop } from '../../utils'
+import { noop } from '../../util/utils'
 import { MENU_PANEL_APP_INSTANCE_HEIGHT } from './MenuPanelAppInstance'
 import { MENU_ITEM_BASE_HEIGHT } from './MenuPanelAppGroup'
 

@@ -11,7 +11,7 @@ import {
   useTheme,
 } from '@aragon/ui'
 import { ActivityContext } from '../../contexts/ActivityContext'
-import { transformAddresses } from '../../web3-utils'
+import { transformAddresses } from '../../util/web3'
 import AppIcon from '../AppIcon/AppIcon'
 import LocalIdentityBadge from '../IdentityBadge/LocalIdentityBadge'
 import TimeTag from './TimeTag'
@@ -22,7 +22,7 @@ import {
   ACTIVITY_STATUS_FAILED,
   ACTIVITY_STATUS_TIMED_OUT,
 } from '../../symbols'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 const ActivityItem = ({ activity }) => {
   const theme = useTheme()

@@ -5,7 +5,7 @@ import { Info, Link, GU } from '@aragon/ui'
 import AddressLink from './AddressLink'
 import SignerButton from './SignerButton'
 import { getProviderString } from 'use-wallet'
-import { isElectron } from '../../utils'
+import { isElectron } from '../../util/utils'
 
 function Web3ProviderError({
   intent: { description, name, to },
@@ -49,7 +49,7 @@ export function NoWeb3Provider({ intent, onClose }) {
   const onElectron = isElectron()
   const neededText = onElectron
     ? 'You need to have Frame installed and enabled'
-    : 'You need to have an Ethereum wallet installed and enabled'
+    : 'You need to have a wallet installed and enabled'
 
   const actionText = (
     <span>
@@ -80,10 +80,7 @@ NoWeb3Provider.propTypes = {
 }
 
 export function AccountLocked({ intent, onClose, walletProviderId }) {
-  const providerMessage = getProviderString(
-    'your Ethereum wallet',
-    walletProviderId
-  )
+  const providerMessage = getProviderString('your wallet', walletProviderId)
   return (
     <Web3ProviderError
       intent={intent}
@@ -115,7 +112,7 @@ export function WrongNetwork({
     `}
       actionText={`
       Please connect ${getProviderString(
-        'your Ethereum wallet',
+        'your wallet',
         walletProviderId
       )} to the ${networkType} network.
     `}

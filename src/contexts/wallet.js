@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 import BN from 'bn.js'
 import {
@@ -7,8 +13,10 @@ import {
   ChainUnsupportedError,
   KNOWN_CHAINS,
 } from 'use-wallet'
-import { getWeb3, filterBalanceValue } from './web3-utils'
-import { useWalletConnectors } from './ethereum-providers/connectors'
+import { getWeb3, filterBalanceValue } from '../util/web3'
+import { useWalletConnectors } from '../ethereum-providers/connectors'
+import { useAPM, updateAPMContext } from './elasticAPM'
+import { LocalStorageWrapper } from '../local-storage-wrapper'
 
 export const WALLET_STATUS = Object.freeze({
   providers: 'providers',
@@ -19,7 +27,7 @@ export const WALLET_STATUS = Object.freeze({
 })
 
 // default network is mainnet if user is not conncted
-const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(1666700000)?.type
+const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(1666600000)?.type
 
 // // augment known chains with local, testnet and harmony one
 // KNOWN_CHAINS.get(1337).nativeCurrency = "ONE";
@@ -55,12 +63,31 @@ function WalletContextProvider({ children }) {
     ...walletBaseRest
   } = useWalletBase()
 
+  const initialNetwork = useMemo(() => {
+    const lastNetwork = LocalStorageWrapper.get('last-network', false)
+    if (!lastNetwork) return NETWORK_TYPE_DEFAULT
+    return lastNetwork
+  }, [])
+
   const [walletWeb3, setWalletWeb3] = useState(null)
+  const [disconnectedNetworkType, setDisconnectedNetworkType] = useState(
+    initialNetwork
+  )
 
   const connected = useMemo(() => status === 'connected', [status])
-  const networkType = useMemo(
-    () => (status === 'connected' ? networkName : NETWORK_TYPE_DEFAULT),
-    [status, networkName]
+  const networkType = useMemo(() => {
+    const newNetwork = connected ? networkName : disconnectedNetworkType
+    LocalStorageWrapper.set('last-network', newNetwork, false)
+    return newNetwork
+  }, [connected, networkName, disconnectedNetworkType])
+
+  const changeNetworkTypeDisconnected = useCallback(
+    newNetworkType => {
+      if (status === 'disconnected') {
+        setDisconnectedNetworkType(newNetworkType)
+      }
+    },
+    [status]
   )
 
   // get web3 and set local storage prefix whenever networkType changes
@@ -93,6 +120,7 @@ function WalletContextProvider({ children }) {
       status,
       chainId: connected ? chainId : 1, // connect to mainnet if wallet is not connected
       connected,
+      changeNetworkTypeDisconnected,
       ...walletBaseRest,
     }),
     [
@@ -106,8 +134,14 @@ function WalletContextProvider({ children }) {
       walletBaseRest,
       walletWeb3,
       connected,
+      changeNetworkTypeDisconnected,
     ]
   )
+
+  const { apm } = useAPM()
+  useEffect(() => {
+    updateAPMContext(apm, wallet.networkType)
+  }, [apm, wallet.networkType])
 
   return (
     <WalletContext.Provider value={wallet}>{children}</WalletContext.Provider>

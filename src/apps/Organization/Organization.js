@@ -17,16 +17,18 @@ import {
 import LocalIdentityBadge from '../../components/IdentityBadge/LocalIdentityBadge'
 import appIds from '../../known-app-ids'
 import { getProviderString } from 'use-wallet'
+import { getNetworkConfig } from '../../network-config'
 import {
   sanitizeNetworkType,
-  getNetworkConfig,
-  isOnMainnet,
-} from '../../network-config'
+  isOnEthMainnet,
+  getNetworkFullName,
+  getNetworkSettings,
+} from '../../util/network'
 import { AppType, DaoAddressType } from '../../prop-types'
 import { useRouting, ARAGONID_ENS_DOMAIN } from '../../routing'
 import airdrop, { testTokensEnabled } from '../../testnet/airdrop'
-import { toChecksumAddress } from '../../web3-utils'
-import { useWallet } from '../../wallet'
+import { toChecksumAddress } from '../../util/web3'
+import { useWallet } from '../../contexts/wallet'
 
 const Organization = React.memo(function Organization({
   apps,
@@ -110,12 +112,12 @@ const Organization = React.memo(function Organization({
   const checksummedDaoAddr =
     daoAddress.address && toChecksumAddress(daoAddress.address)
   const enableTransactions = wallet.connected && wallet.account
-  const isMainnet = isOnMainnet(network.type)
+  const isMainnet = isOnEthMainnet(network.type)
   const shortAddresses = layoutName !== 'large'
 
   const organizationText = checksummedDaoAddr ? (
     <span>
-      This organization is deployed on the Ethereum {network.name}.{' '}
+      This organization is deployed on {getNetworkFullName(network.type)}.{' '}
       {canUpgradeOrg ? (
         <span>
           <Link onClick={onShowOrgVersionDetails}>
@@ -178,7 +180,9 @@ const Organization = React.memo(function Organization({
             </div>
             <Info>
               <strong css="font-weight: 800">
-                Do not send ETH or ERC20 tokens to this address.
+                Do not send{' '}
+                {getNetworkSettings(network.type).nativeCurrency.symbol} or
+                ERC20 tokens to this address.
               </strong>{' '}
               {depositFundsHelpText}
             </Info>
@@ -344,7 +348,7 @@ const Organization = React.memo(function Organization({
                   ? `select the ${sanitizeNetworkType(network.type)} network`
                   : 'unlock your account'
               } in ${getProviderString(
-                'your Ethereum wallet',
+                'your wallet',
                 wallet.providerInfo.id
               )}.`}
             </Info>

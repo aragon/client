@@ -17,9 +17,10 @@ import {
   DaoStatusType,
   RepoType,
 } from '../../prop-types'
+import styled from 'styled-components'
 
 import { DAO_STATUS_LOADING } from '../../symbols'
-import { iOS, isSafari } from '../../utils'
+import { iOS, isSafari } from '../../util/utils'
 import { useClientTheme } from '../../client-theme'
 import { useRouting } from '../../routing'
 import ActivityButton from './ActivityButton/ActivityButton'
@@ -32,7 +33,10 @@ import SignerPanel from '../SignerPanel/SignerPanel'
 import UpgradeBanner from '../Upgrade/UpgradeBanner'
 import UpgradeModal from '../Upgrade/UpgradeModal'
 import UpgradeOrganizationPanel from '../Upgrade/UpgradeOrganizationPanel'
-import MigrateBanner from '../Migrate/MigrateBanner'
+import { NetworkIndicator } from '../NetworkIndicator/NetworkIndicator'
+import { NetworkSwitchModal } from '../Modals'
+import { trackEvent, events } from '../../analytics'
+import { useWallet } from '../../contexts/wallet'
 
 // Remaining viewport width after the menu panel is factored in
 const AppWidthContext = React.createContext(0)
@@ -53,9 +57,8 @@ function OrgView({
   visible,
   web3,
   wrapper,
-  showMigrateBanner,
-  closeMigrateBanner,
 }) {
+  const { networkType } = useWallet()
   const theme = useTheme()
   const routing = useRouting()
   const { appearance } = useClientTheme()
@@ -64,6 +67,7 @@ function OrgView({
 
   const [menuPanelOpen, setMenuPanelOpen] = useState(!autoClosingPanel)
   const [orgUpgradePanelOpened, setOrgUpgradePanelOpened] = useState(false)
+  const [networkModalOpened, setNetworkModalOpened] = useState(false)
   const [upgradeModalOpened, setUpgradeModalOpened] = useState(false)
 
   const appInstanceGroups = useMemo(
@@ -129,9 +133,33 @@ function OrgView({
       }
 
       openApp(...args)
+
+      // analytics
+      // if an installed app clicked inside apps,
+      // this handler will be re triggered,
+      // but analytics is not required for apps' installed sub-page
+      if (args.length === 1) {
+        trackEvent(events.NAVIGATION_OPTION_SELECTED, {
+          dao_identifier: daoAddress.domain || daoAddress.address,
+          network: networkType,
+          option:
+            apps.find(obj => obj.proxyAddress === args[0])?.name || args[0],
+        })
+      }
     },
-    [autoClosingPanel, handleCloseMenuPanel, openApp]
+    [
+      autoClosingPanel,
+      handleCloseMenuPanel,
+      openApp,
+      daoAddress,
+      networkType,
+      apps,
+    ]
   )
+
+  const openNetworkModal = useCallback(() => setNetworkModalOpened(true), [])
+
+  const closeNetworkSwitchModal = () => setNetworkModalOpened(false)
 
   const handleUpgradeModalOpen = useCallback(() => {
     setUpgradeModalOpened(true)
@@ -189,12 +217,6 @@ function OrgView({
           flex-shrink: 0;
         `}
       >
-        {showMigrateBanner && (
-          <MigrateBanner
-            visible={showMigrateBanner}
-            onClose={closeMigrateBanner}
-          />
-        )}
         <UpgradeBanner
           visible={canUpgradeOrg}
           onMoreInfo={handleUpgradeModalOpen}
@@ -213,38 +235,9 @@ function OrgView({
             background: ${theme.background};
           `}
         >
-          <div
-            css={`
-              flex-shrink: 0;
-              position: relative;
-              z-index: 2;
-              height: ${8 * GU}px;
-              display: flex;
-              justify-content: space-between;
-              background: ${theme.surface};
-              box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
-
-              ${menuPanelOpen && iOS
-                ? `
-                /* behaviour only in iOS:
-                 * with the nested div->div->div structure
-                 * the 3rd div has positioned absolute
-                 * Chrome, Firefox and Safari uch div gets rendered
-                 * aboe the rest of the content (up the tree till a
-                 * position relative is found) but in iOS it gets
-                 * rendered below the sibling of the element with
-                 * position relative (and z-index did not work)
-                 * this fix gives the element an absolute (z-index
-                 * layers are then respected);
-                 * this also adds the appropriate value to recover the
-                 * elements height
-                 * */
-                position: absolute;
-                width: 100%;
-                z-index: 0;
-              `
-                : ''}
-            `}
+          <TopbarContainer
+            iosMenuPane={menuPanelOpen && iOS}
+            bgColor={theme.surface}
           >
             {autoClosingPanel ? (
               <ButtonIcon
@@ -267,12 +260,13 @@ function OrgView({
                 }}
               />
             )}
-            <div css="display: flex">
+            <RightButtonContainer>
+              <NetworkIndicator clickHandler={openNetworkModal} />
               <AccountModule />
               <GlobalPreferencesButton />
               <ActivityButton apps={apps} />
-            </div>
-          </div>
+            </RightButtonContainer>
+          </TopbarContainer>
           <div
             css={`
               flex-grow: 1;
@@ -386,7 +380,11 @@ function OrgView({
           </div>
         </div>
       </AppWidthContext.Provider>
-
+      <NetworkSwitchModal
+        network={'mainnet'}
+        visible={networkModalOpened}
+        onClose={closeNetworkSwitchModal}
+      />
       <UpgradeModal
         visible={upgradeModalOpened}
         onClose={handleUpgradeModalClose}
@@ -397,6 +395,44 @@ function OrgView({
   )
 }
 
+// TODO extract topbar into proper component [vr 16-09-2021]
+/* NOTE: Behaviour only in iOS:
+ * With the nested div->div->div structure the 3rd div has absolute position in
+ * Chrome, Firefox and Safari. Such div gets rendered above the rest of the
+ * content (up the tree till a position relative is found) but in iOS it gets
+ * rendered below the sibling of the element with position relative (and z-index
+ * did not work) this fix gives the element an absolute position (z-index layers
+ * are then respected); this also adds the appropriate value to recover the
+ * elements height.
+ * */
+const TopbarContainer = styled.div`
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  height: ${8 * GU}px;
+  display: flex;
+  justify-content: space-between;
+  background: ${props => props.bgColor};
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+
+  ${props =>
+    props.iosMenuPanel
+      ? `
+          position: absolute;
+          width: 100%;
+          z-index: 0;
+        `
+      : ''}
+`
+
+const RightButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 16px;
+  height: 100%;"
+`
 OrgView.propTypes = {
   apps: PropTypes.arrayOf(AppType).isRequired,
   appsStatus: AppsStatusType.isRequired,
@@ -411,8 +447,6 @@ OrgView.propTypes = {
   visible: PropTypes.bool.isRequired,
   web3: PropTypes.object,
   wrapper: AragonType,
-  showMigrateBanner: PropTypes.bool,
-  closeMigrateBanner: PropTypes.func.isRequired,
 }
 
 OrgView.defaultProps = {

@@ -7,8 +7,8 @@ import {
   roleResolver,
   permissionsByRole,
 } from '../permissions'
-import { log, noop } from '../utils'
-import { addressesEqual, getEmptyAddress } from '../web3-utils'
+import { log, noop } from '../util/utils'
+import { addressesEqual, getEmptyAddress } from '../util/web3'
 
 const PermissionsContext = React.createContext()
 

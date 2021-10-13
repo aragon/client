@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Tag, GU, useViewport } from '@aragon/ui'
 import { AppType, EthereumAddressType } from '../prop-types'
-import { shortenAddress } from '../web3-utils'
+import { shortenAddress } from '../util/web3'
 import AppIcon from './AppIcon/AppIcon'
 
 const AppInstanceLabel = React.memo(

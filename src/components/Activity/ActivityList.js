@@ -13,7 +13,7 @@ import activityNoResults from '../../assets/activity-no-results.png'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { AppType } from '../../prop-types'
 import { ACTIVITY_STATUS_PENDING } from '../../symbols'
-import { addressesEqual } from '../../web3-utils'
+import { addressesEqual } from '../../util/web3'
 import ActivityItem from './ActivityItem'
 
 // 8GU for top bar, 4GU for activity heading,

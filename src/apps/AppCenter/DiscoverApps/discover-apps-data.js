@@ -7,7 +7,7 @@ import redemptionsIcon from './icons/redemptions.svg'
 import surveyIcon from './icons/survey.svg'
 import timeLockIcon from './icons/time-lock.svg'
 import tokenRequestIcon from './icons/token-request.svg'
-import { shuffleArray } from '../../../utils'
+import { shuffleArray } from '../../../util/utils'
 
 export const appsInDevelopment = [
   // Ready
@@ -17,8 +17,7 @@ export const appsInDevelopment = [
       name: 'Agent',
       status: 'ready',
       description: `
-        Hold assets and interact with any other Ethereum
-        app, directly from your Aragon organization.
+        Hold assets and interact with any other app, directly from your Aragon organization.
       `,
       link:
         'https://hack.aragon.org/docs/guides-use-agent#installing-aragon-agent',

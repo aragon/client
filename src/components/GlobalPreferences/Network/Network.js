@@ -19,9 +19,10 @@ import {
   getIpfsGateway,
 } from '../../../local-settings'
 import keycodes from '../../../keycodes'
-import { sanitizeNetworkType } from '../../../network-config'
-import { checkValidEthNode } from '../../../web3-utils'
-import { useWallet } from '../../../wallet'
+import { sanitizeNetworkType } from '../../../util/network'
+import { checkValidEthNode } from '../../../util/web3'
+import { useWallet } from '../../../contexts/wallet'
+import { trackEvent, events } from '../../../analytics'
 
 function Network({ wrapper }) {
   const {
@@ -145,6 +146,12 @@ const useNetwork = wrapper => {
     setIpfsGateway(ipfsGateway, networkType)
     // For now, we have to reload the page to propagate the changes
     window.location.reload()
+
+    // analytics
+    trackEvent(events.USER_NETWORK_SETTINGS_SAVED, {
+      settings: { ethNode: ethNode, ipfsGateway: ipfsGateway },
+      network: networkType,
+    })
   }, [ethNode, ipfsGateway, networkType])
   const handleClearCache = useCallback(async () => {
     if (wrapper) {
@@ -152,7 +159,12 @@ const useNetwork = wrapper => {
     }
     window.localStorage.clear()
     window.location.reload()
-  }, [wrapper])
+
+    // analytics
+    trackEvent(events.CACHE_CLEARED, {
+      network: networkType,
+    })
+  }, [wrapper, networkType])
   const handleKeyPress = useCallback(
     ({ keyCode }) => {
       const defaultEthNode = getEthNode(networkType)

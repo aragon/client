@@ -10,8 +10,8 @@ import {
   STATUS_TOO_LITTLE_ETH,
   STATUS_WALLET_CONNECTION_DROPPED,
 } from './connection-statuses'
-import { useWallet } from '../../wallet'
-import { getNetworkName, isOnMainnet } from '../../network-config'
+import { useWallet } from '../../contexts/wallet'
+import { getNetworkFullName, isOnEthMainnet } from '../../util/network'
 
 function WalletSyncedInfo({ header, info, status }) {
   return (
@@ -62,7 +62,9 @@ WalletSyncedInfo.propTypes = {
 function ConnectionInfoMessage({ connectionStatus }) {
   const routing = useRouting()
   const { networkType } = useWallet()
-  const networkName = useMemo(() => getNetworkName(networkType), [networkType])
+  const networkName = useMemo(() => getNetworkFullName(networkType), [
+    networkType,
+  ])
 
   const handleNetworkSettingsClick = useCallback(() => {
     routing.update(locator => ({
@@ -82,7 +84,7 @@ function ConnectionInfoMessage({ connectionStatus }) {
   }
 
   if (
-    isOnMainnet(networkType) &&
+    isOnEthMainnet(networkType) &&
     connectionStatus === STATUS_CLIENT_CONNECTION_DROPPED
   ) {
     return (

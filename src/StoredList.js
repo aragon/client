@@ -1,4 +1,4 @@
-import { identity, log } from './utils'
+import { identity, log } from './util/utils'
 
 class StoredList {
   // name: the key used by StoredList to save the list in localStorage.

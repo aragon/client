@@ -1,5 +1,5 @@
-import { getParsedAppLocator } from './environment'
-import { getIpfsGateway } from './local-settings'
+import { getParsedAppLocator } from '../environment'
+import { getIpfsGateway } from '../local-settings'
 import { appendTrailingSlash } from './utils'
 
 /*

@@ -22,8 +22,8 @@ import Notifications from './Notifications/Notifications'
 import CustomLabels from './CustomLabels/CustomLabels'
 import SharedIdentities from './SharedIdentities/SharedIdentities'
 import useSharedLink from './SharedIdentities/useSharedLink'
-import { useWallet } from '../../wallet'
-import { isOnMainnet } from '../../network-config'
+import { useWallet } from '../../contexts/wallet'
+import { isOnEthMainnet } from '../../util/network'
 
 const CUSTOM_LABELS_KEY = 'custom-labels'
 const NETWORK_KEY = 'network'
@@ -167,7 +167,7 @@ function useGlobalPreferences(wrapper) {
     // Only show network preferences if on mainnet
     const keys = SECTION_KEYS.filter(section => {
       return (
-        (isOnMainnet(networkType) && section === NETWORK_KEY) ||
+        (isOnEthMainnet(networkType) && section === NETWORK_KEY) ||
         (wrapper && section !== NETWORK_KEY)
       )
     })

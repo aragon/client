@@ -11,7 +11,7 @@ import {
 } from '@aragon/ui'
 import { Header, Navigation, ScreenPropsType } from '..'
 import { trackEvent, events } from '../../../analytics'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 function ReviewScreen({
   items,

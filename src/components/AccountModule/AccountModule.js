@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useWallet, WALLET_STATUS } from '../../wallet'
+import { useWallet, WALLET_STATUS } from '../../contexts/wallet'
 import { useLocalIdentity } from '../../hooks'
 import {
   useNetworkConnectionData,

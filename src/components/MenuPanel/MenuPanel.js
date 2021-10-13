@@ -9,7 +9,7 @@ import {
   unselectable,
   useTheme,
 } from '@aragon/ui'
-import { lerp } from '../../math-utils'
+import { lerp } from '../../util/math'
 import {
   AppInstanceGroupType,
   AppsStatusType,

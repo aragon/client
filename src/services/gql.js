@@ -1,5 +1,5 @@
 import { networkConfigs } from '../network-config'
-import { getLocalStorageKey } from '../utils'
+import { getLocalStorageKey } from '../util/utils'
 
 const getGraphEndpoint = networkType => {
   return networkConfigs[networkType].connectGraphEndpoint

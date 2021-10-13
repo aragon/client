@@ -18,7 +18,7 @@ In short, some important pieces of the architecture to know about:
 - Each application is composed of a smart contract and a UI frontend, connected through [aragonAPI](https://github.com/aragon/aragon.js/tree/master/packages/aragon-api)
 - On-chain state from Ethereum is reduced in the Aragon client through [`@aragon/wrapper`](https://github.com/aragon/aragon.js/tree/master/packages/aragon-wrapper), which acts as a Web3 middleware layer
 - Application sandboxing is provided through [iframes](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe) and [WebWorkers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) that are launched by the Aragon client
-- Generic UI components are imported from [aragonUI](https://github.com/aragon/aragon-ui)
+- Generic UI components are imported from [aragonUI](https://github.com/aragon/ui)
 
 Some more documentation about these particular areas are available in the [Developer Portal](https://hack.aragon.org/):
 
@@ -38,7 +38,7 @@ If you find an issue, or would like to add a feature, ask yourself these followi
 - Is it in one of the sandboxed applications (e.g. Voting, Tokens, or Finance from [`aragon/aragon-apps`](https://github.com/aragon/aragon-apps))?
 	- Make the changes there!
 - Is it a generic UI component?
-	- Would it mostly benefit Aragon-related developers? **If yes**, [aragonUI](https://github.com/aragon/aragon-ui) is the best place.
+	- Would it mostly benefit Aragon-related developers? **If yes**, [aragonUI](https://github.com/aragon/ui) is the best place.
 	- **Else**, add it into `aragon/aragon` 👍.
 - Is there something wrong with how the client or one of the apps is talking to Ethereum?
 	- [`@aragon/wrapper`](https://github.com/aragon/aragon.js/tree/master/packages/aragon-wrapper) is likely the culprit.
@@ -51,7 +51,7 @@ If you find an issue, or would like to add a feature, ask yourself these followi
 
 ## Starting frontend development
 
-Refer to the [frontend development setup](./FRONTEND_SETUP.md) to set up everything you need to start local development on the Client or an app in `aragon-app`!
+Refer to the [frontend development setup](./FRONTEND_SETUP.md) to set up everything you need to start local development on the Client or an app in [`aragon/aragon-apps`](https://github.com/aragon/aragon-apps)!
 
 ## Your own Aragon app
 

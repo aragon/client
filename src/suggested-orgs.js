@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useFavoriteDaos } from './contexts/FavoriteDaosContext'
 import { getRecommendedOrganizations } from './known-organizations'
-import { useWallet } from './wallet'
+import { useWallet } from './contexts/wallet'
 
 export function useSuggestedOrgs(maxSuggestions = 6) {
   const { favoriteDaos } = useFavoriteDaos()

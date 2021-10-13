@@ -4,7 +4,6 @@ import { Button } from '@aragon/ui'
 import {
   fetchApmArtifact,
   getRecommendedGasLimit,
-  resolveEnsDomain,
 } from '../../aragonjs-wrapper'
 import { EthereumAddressType } from '../../prop-types'
 import {
@@ -13,8 +12,8 @@ import {
   TRANSACTION_STATUS_SUCCESS,
   TRANSACTION_STATUS_UPCOMING,
 } from '../../symbols'
-import { log } from '../../utils'
-import { getGasPrice } from '../../web3-utils'
+import { log } from '../../util/utils'
+import { getGasPrice } from '../../util/web3'
 import {
   loadTemplateState,
   saveTemplateState,
@@ -22,13 +21,13 @@ import {
 } from '../create-utils'
 import Setup, { SETUP_MODE_CONFIGURE, SETUP_MODE_SELECT } from '../Setup/Setup'
 import Deployment from '../Deployment/Deployment'
-import ErrorModal from '../../components/ErrorModal/ErrorModal'
+import { ErrorModal } from '../../components/Modals'
 import {
   STATUS_SELECT_TEMPLATE,
   STATUS_TEMPLATE_SCREENS,
   STATUS_DEPLOYMENT,
 } from './create-statuses'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 import { getIpfsGateway } from '../../local-settings'
 import { web3Provider } from '../../Web3Provider'
 import { trackEvent, events } from '../../analytics'
@@ -357,18 +356,11 @@ function useDeploymentState(
                   transactionProgress.signed === 0
                 ) {
                   const daoEns = completeDomain(templateData.domain)
-                  const daoAddress =
-                    (await resolveEnsDomain(
-                      networkType,
-                      web3.currentProvider,
-                      daoEns
-                    )) || daoEns
 
                   trackEvent(events.DAO_CREATED, {
                     network: networkName,
                     template: template.name,
-                    dao_identifier: templateData.domain,
-                    dao_address: daoAddress,
+                    dao_identifier: daoEns,
                   })
                 }
 
@@ -539,12 +531,6 @@ const Create = React.memo(function Create({
     walletWeb3
   )
 
-  // useEffect(() => {
-  //   if (condition) {
-
-  //   }
-  // }, [transactionsStatus])
-
   const handleUseTemplate = useCallback(
     (id, optionalApps) => {
       selectTemplate(id, optionalApps)
@@ -552,7 +538,21 @@ const Create = React.memo(function Create({
     [selectTemplate]
   )
 
-  const handleTemplateNext = useCallback(data => nextScreen(data), [nextScreen])
+  const handleTemplateNext = useCallback(
+    data => {
+      nextScreen(data)
+
+      // analytics
+      trackEvent(events.DAO_CREATION_NEXT_CLICKED, {
+        network: networkType,
+        wallet_address: account,
+        dao_identifier: data.domain,
+        step: configureSteps[configureStepIndex],
+        settings: data,
+      })
+    },
+    [nextScreen, configureStepIndex, configureSteps, networkType, account]
+  )
   const handleTemplatePrev = useCallback(() => prevScreen(), [prevScreen])
 
   const handleOpenNewOrg = useCallback(() => {

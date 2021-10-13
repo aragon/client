@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { DropDown, Field } from '@aragon/ui'
 import { getAnyEntity } from '../../permissions'
 import { AppType, AragonType } from '../../prop-types'
-import { getEmptyAddress } from '../../web3-utils'
+import { getEmptyAddress } from '../../util/web3'
 import AppInstanceLabel from '../../components/AppInstanceLabel'
 import LocalIdentitiesAutoComplete from '../../components/LocalIdentitiesAutoComplete/LocalIdentitiesAutoComplete'
 

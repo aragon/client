@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import { Spring, animated } from 'react-spring'
 import { useTheme } from '@aragon/ui'
 import { EthereumAddressType, ClientThemeType } from './prop-types'
-import { useWallet } from './wallet'
+import { useWallet } from './contexts/wallet'
 import { useClientTheme } from './client-theme'
 import { useRouting } from './routing'
 import initWrapper, { pollConnectivity } from './aragonjs-wrapper'
 import { Onboarding } from './onboarding'
-import { getWeb3 } from './web3-utils'
-import { getLocalStorageKey, log } from './utils'
+import { getWeb3 } from './util/web3'
+import { log } from './util/utils'
 import { ActivityProvider } from './contexts/ActivityContext'
 import { FavoriteDaosProvider } from './contexts/FavoriteDaosContext'
 import { PermissionsProvider } from './contexts/PermissionsContext'
@@ -20,8 +20,7 @@ import GlobalPreferences from './components/GlobalPreferences/GlobalPreferences'
 import CustomToast from './components/CustomToast/CustomToast'
 import OrgView from './components/OrgView/OrgView'
 import { identifyUser } from './analytics'
-import { networkConfigs } from './network-config'
-import { isKnownRepo } from './repo-utils'
+import { isKnownRepo } from './util/repo'
 
 import {
   APPS_STATUS_ERROR,
@@ -39,17 +38,6 @@ import { DAONotFound } from './errors'
 import DAONotFoundError from './components/Error/DAONotFoundError'
 import ErrorScreen from './components/Error/ErrorScreen'
 
-const MIGRATION_BANNER_HIDE = 'MIGRATION_BANNER_HIDE&'
-export const MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP = new Date(
-  '2021-05-14T15:43:08Z'
-).getTime()
-
-const getMigrateBannerKey = (networkType, address) =>
-  getLocalStorageKey(`${MIGRATION_BANNER_HIDE}${address}`, networkType)
-
-const enableMigrateBanner = networkType =>
-  Boolean(networkConfigs[networkType]?.enableMigrateBanner)
-
 const INITIAL_DAO_STATE = {
   apps: [],
   appIdentifiers: {},
@@ -59,7 +47,6 @@ const INITIAL_DAO_STATE = {
   permissions: {},
   permissionsLoading: true,
   repos: [],
-  showMigrateBanner: false,
   fatalError: null,
 }
 
@@ -182,15 +169,8 @@ class App extends React.Component {
       walletAccount,
       onDaoAddress: ({ networkType, address, domain, createdAt }) => {
         log('dao', networkType, address, domain, createdAt)
-        const hideMigrateBanner = getMigrateBannerKey(networkType, address)
-        const showMigrateBanner =
-          enableMigrateBanner(networkType) &&
-          createdAt &&
-          !localStorage.getItem(hideMigrateBanner) &&
-          createdAt < MIGRATION_LAST_DATE_ELIGIBLE_TIMESTAMP
 
         this.setState({
-          showMigrateBanner,
           daoStatus: DAO_STATUS_READY,
           daoAddress: { address, domain },
         })
@@ -292,15 +272,6 @@ class App extends React.Component {
       })
   }
 
-  closeMigrateBanner = address => {
-    const { networkType } = this.props
-    this.setState({ showMigrateBanner: false })
-    localStorage.setItem(
-      getMigrateBannerKey(networkType, address),
-      String(true)
-    )
-  }
-
   handleIdentityCancel = () => {
     const { identityIntent } = this.state
     identityIntent.reject(new Error('Identity modification cancelled'))
@@ -361,7 +332,6 @@ class App extends React.Component {
       transactionBag,
       signatureBag,
       wrapper,
-      showMigrateBanner,
     } = this.state
 
     const { address: intentAddress = null, label: intentLabel = '' } =
@@ -449,10 +419,6 @@ class App extends React.Component {
                               visible={routing.mode.name === 'org'}
                               web3={getWeb3(web3)}
                               wrapper={wrapper}
-                              showMigrateBanner={showMigrateBanner}
-                              closeMigrateBanner={() =>
-                                this.closeMigrateBanner(daoAddress.address)
-                              }
                             />
                           </div>
                         </PermissionsProvider>

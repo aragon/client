@@ -17,14 +17,18 @@ import {
   MILD_PROVIDER_SYNC_DELAY,
   OK_PROVIDER_SYNC_DELAY,
 } from './utils'
-import { pollEvery } from '../../utils'
-import { useWallet, ChainUnsupportedError, WALLET_STATUS } from '../../wallet'
-import { getWeb3, getLatestBlockTimestamp } from '../../web3-utils'
+import { pollEvery } from '../../util/utils'
+import {
+  useWallet,
+  ChainUnsupportedError,
+  WALLET_STATUS,
+} from '../../contexts/wallet'
+import { getWeb3, getLatestBlockTimestamp } from '../../util/web3'
 import {
   getNetworkSettings,
   normalizeNetworkName,
-  getNetworkName,
-} from '../../network-config'
+  getNetworkFullName,
+} from '../../util/network'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
@@ -40,7 +44,7 @@ export function useNetworkConnectionData() {
 
   return {
     walletNetworkName: normalizeNetworkName(networkType),
-    walletNetworkFullName: getNetworkName(networkType),
+    walletNetworkFullName: getNetworkFullName(networkType),
     isWrongNetwork,
   }
 }

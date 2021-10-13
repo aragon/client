@@ -7,14 +7,14 @@ import {
   DaoAddressType,
   RepoType,
 } from '../../prop-types'
-import { log, removeStartingSlash } from '../../utils'
-import { repoBaseUrl } from '../../url-utils'
-import { KERNEL_APP_BASE_NAMESPACE } from '../../aragonos-utils'
+import { log, removeStartingSlash } from '../../util/utils'
+import { repoBaseUrl } from '../../util/url'
+import { KERNEL_APP_BASE_NAMESPACE } from '../../util/aragonos'
 import InstalledApps from './InstalledApps/InstalledApps'
 import DiscoverApps from './DiscoverApps/DiscoverApps'
 import UpgradeAppPanel from './UpgradeAppPanel'
 import EmptyBlock from './EmptyBlock'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 function getLocation(localPath, extendedRepos) {
   const defaultScreen = { screen: 'installed' }
@@ -78,7 +78,9 @@ function getExtendedRepos(appInstanceGroups, repos, networkType) {
       baseUrl: repoBaseUrl(repo.appId, repo.latestVersion, networkType),
       instances: instances || [],
       name: name || '',
-      repoName: repoName || '',
+      // if app was published missing content, repoName could be missing
+      // use the latestVersion app name instead
+      repoName: repoName || repo.latestVersion?.content?.appName || '',
     }
   })
 }

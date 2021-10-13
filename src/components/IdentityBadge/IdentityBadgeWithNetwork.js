@@ -1,6 +1,6 @@
 import React from 'react'
 import { IdentityBadge } from '@aragon/ui'
-import { useWallet } from '../../wallet'
+import { useWallet } from '../../contexts/wallet'
 
 const IdentityBadgeWithNetwork = React.memo(function IdentityBadgeWithNetwork(
   props

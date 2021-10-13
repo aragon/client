@@ -18,7 +18,7 @@ import styled from 'styled-components'
 import { createSubscription } from './notification-service-api'
 import notificationImage from './notification.png'
 import LocalLabelAppBadge from '../../LocalLabelAppBadge/LocalLabelAppBadge'
-import { useWallet } from '../../../wallet'
+import { useWallet } from '../../../contexts/wallet'
 
 const getEventNamesFromAbi = memoize(abi =>
   abi.filter(item => item.type === 'event').map(item => item.name)

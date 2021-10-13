@@ -8,9 +8,10 @@ import React, {
 import uniqby from 'lodash.uniqby'
 import PropTypes from 'prop-types'
 import StoredList from '../StoredList'
-import { addressesEqual } from '../web3-utils'
-import { useWallet } from '../wallet'
-import { getLocalStorageKey } from '../utils'
+import { addressesEqual } from '../util/web3'
+import { useWallet } from '../contexts/wallet'
+import { getLocalStorageKey } from '../util/utils'
+import { trackEvent, events } from '../analytics'
 
 const FavoriteDaosContext = React.createContext()
 
@@ -66,23 +67,29 @@ function FavoriteDaosProvider({ children }) {
         setFavoriteDaos(
           storedList.add({ name: dao.name, address: dao.address })
         )
+
+        // analytics
+        favoriteToggleEvent(dao.name || dao.address, true, networkType)
       }
     },
-    [favoriteDaos, setFavoriteDaos, storedList]
+    [favoriteDaos, setFavoriteDaos, storedList, networkType]
   )
 
-  const removeFavoriteByAddress = useCallback(
-    removeAddress => {
+  const removeFavorite = useCallback(
+    dao => {
       const daoIndex = favoriteDaos.findIndex(({ address }) =>
-        addressesEqual(removeAddress, address)
+        addressesEqual(dao.address, address)
       )
       if (daoIndex > -1) {
         setFavoriteDaos(() => {
           return storedList.remove(daoIndex)
         })
+
+        // analytics
+        favoriteToggleEvent(dao.name || dao.address, false, networkType)
       }
     },
-    [favoriteDaos, setFavoriteDaos, storedList]
+    [favoriteDaos, setFavoriteDaos, storedList, networkType]
   )
 
   const updateFavoriteDaos = useCallback(
@@ -98,7 +105,7 @@ function FavoriteDaosProvider({ children }) {
         favoriteDaos,
         addFavorite,
         isAddressFavorited,
-        removeFavoriteByAddress,
+        removeFavorite,
         updateFavoriteDaos,
       }}
     >
@@ -117,4 +124,18 @@ function useFavoriteDaos() {
 
 const FavoriteDaosConsumer = FavoriteDaosContext.Consumer
 
-export { FavoriteDaosProvider, FavoriteDaosConsumer, useFavoriteDaos }
+const favoriteToggleEvent = (daoIdentifier, toggle, networkType) => {
+  // analytics
+  trackEvent(events.FAVORITE_ORGANIZATION_TOGGLED, {
+    network: networkType,
+    dao_identifier: daoIdentifier,
+    favorited: toggle,
+  })
+}
+
+export {
+  FavoriteDaosProvider,
+  FavoriteDaosConsumer,
+  useFavoriteDaos,
+  favoriteToggleEvent,
+}
