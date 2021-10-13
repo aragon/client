@@ -1,4 +1,4 @@
 module.exports = {
-  DEFAULT_LOCAL_ENS_ADDRESS: '0x5d0d0212199b2c041483226b20f1e4ed6ca4a4de',
-  DEFAULT_LOCAL_IPFS_GATEWAY: 'https://ipfs.infura.io/ipfs',
+  DEFAULT_LOCAL_ENS_ADDRESS: '0x5f6F7E8cc7346a11ca2dEf8f827b7a0b612c56a1',
+  DEFAULT_LOCAL_IPFS_GATEWAY: 'http://localhost:8080/ipfs',
 }

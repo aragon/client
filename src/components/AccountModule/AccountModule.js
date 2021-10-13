@@ -220,7 +220,7 @@ function useConnectionInfo() {
     walletListening,
     clientOnline,
     walletOnline,
-    0,
+    clientSyncDelay,
     walletSyncDelay,
     walletNetworkName
   )

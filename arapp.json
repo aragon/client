@@ -1,7 +1,7 @@
 {
   "environments": {
     "default": {
-      "registry": "0xaac811c23aea92a373de0df71da1eda61af0587b",
+      "registry": "0x5f6f7e8cc7346a11ca2def8f827b7a0b612c56a1",
       "appName": "aragon.aragonpm.eth",
       "network": "rpc"
     },
