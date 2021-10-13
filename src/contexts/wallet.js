@@ -27,7 +27,7 @@ export const WALLET_STATUS = Object.freeze({
 })
 
 // default network is mainnet if user is not conncted
-const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(1666600000)?.type
+const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(1)?.type
 
 const WalletContext = React.createContext()
 
