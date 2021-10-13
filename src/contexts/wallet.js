@@ -29,24 +29,6 @@ export const WALLET_STATUS = Object.freeze({
 // default network is mainnet if user is not conncted
 const NETWORK_TYPE_DEFAULT = KNOWN_CHAINS.get(1666600000)?.type
 
-// // augment known chains with local, testnet and harmony one
-// KNOWN_CHAINS.get(1337).nativeCurrency = "ONE";
-
-// // // inject harmony one
-// // // KNOWN_CHAINS.set(1666700000).nativeCurrency = "ONE";
-// // // KNOWN_CHAINS.get(1666700001).nativeCurrency = "ONE";
-// // // KNOWN_CHAINS.get(1666700002).nativeCurrency = "ONE";
-// // // KNOWN_CHAINS.get(1666700003).nativeCurrency = "ONE";
-
-// KNOWN_CHAINS.set(1666700000, {
-//   id: 1666700000,
-//   nativeCurrency: "ONE",
-//   type: 'HarmonyTestnet',
-//   fullName: 'HarmonyOne Testnet',
-//   shortName: 'Testnet',
-//   explorerUrl: `https://explorer.pops.one/`,
-// });
-
 const WalletContext = React.createContext()
 
 function WalletContextProvider({ children }) {
