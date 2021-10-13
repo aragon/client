@@ -347,7 +347,6 @@ function useDeploymentState(
           if (!cancelled) {
             try {
               await walletWeb3.eth.sendTransaction(transaction)
-              
               if (!cancelled) {
                 // analytics
                 // we are only interested in the first tx of creating a DAO
