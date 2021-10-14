@@ -247,7 +247,7 @@ export function getWeb3Provider(networkType) {
   const options = getOptions(networkType)
 
   if (!options) {
-    return new Web3.providers.WebsocketProvider(host)  
+    return new Web3.providers.WebsocketProvider(host)
   }
   return new Web3.providers.WebsocketProvider(host, options)
 }
