@@ -164,6 +164,27 @@ export const networkConfigs = {
       chainId: 1666600000,
       ...KNOWN_CHAINS.get(1666600000),
       live: true,
+      options: {
+        timeout: 30000, // ms
+
+        clientConfig: {
+          // Useful if requests are large
+          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+
+          // Useful to keep a connection alive
+          keepalive: true,
+          keepaliveInterval: 60000, // ms
+        },
+
+        // Enable auto reconnection
+        reconnect: {
+          auto: true,
+          delay: 5000, // ms
+          maxAttempts: 5,
+          onTimeout: false,
+        },
+      },
     },
   },
 
@@ -181,6 +202,27 @@ export const networkConfigs = {
       chainId: 1666700000,
       ...KNOWN_CHAINS.get(1666700000),
       live: true,
+      options: {
+        timeout: 30000, // ms
+
+        clientConfig: {
+          // Useful if requests are large
+          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+
+          // Useful to keep a connection alive
+          keepalive: true,
+          keepaliveInterval: 60000, // ms
+        },
+
+        // Enable auto reconnection
+        reconnect: {
+          auto: true,
+          delay: 5000, // ms
+          maxAttempts: 5,
+          onTimeout: false,
+        },
+      },
     },
   },
 

@@ -8,7 +8,7 @@ import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../errors'
 import { log } from './utils'
 import { getEthNode } from '../environment'
-import { isOnEthMainnet } from '../util/network'
+import { getOptions, isOnEthMainnet } from '../util/network'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -244,28 +244,11 @@ export function getWeb3(provider) {
  */
 export function getWeb3Provider(networkType) {
   const host = getEthNode(networkType)
-  var options = {
-    timeout: 30000, // ms
+  const options = getOptions(networkType)
 
-    clientConfig: {
-      // Useful if requests are large
-      maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
-      maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
-
-      // Useful to keep a connection alive
-      keepalive: true,
-      keepaliveInterval: 60000, // ms
-    },
-
-    // Enable auto reconnection
-    reconnect: {
-      auto: true,
-      delay: 5000, // ms
-      maxAttempts: 5,
-      onTimeout: false,
-    },
+  if (!options) {
+    return new Web3.providers.WebsocketProvider(host)  
   }
-
   return new Web3.providers.WebsocketProvider(host, options)
 }
 
