@@ -11,7 +11,7 @@ export const getActiveNetworks = () => {
     .map(n => n.settings.type)
 }
 
-export const getOptions = (networkType) => {
+export const getOptions = networkType => {
   return getNetworkConfig(networkType).settings?.options
 }
 
