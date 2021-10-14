@@ -5,6 +5,16 @@
       "appName": "aragon.aragonpm.eth",
       "network": "rpc"
     },
+    "harmony": {
+      "registry": "0x5d0d0212199b2c041483226b20f1e4ed6ca4a4de",
+      "appName": "aragon.aragonpm.eth",
+      "network": "harmony"
+    },
+    "harmonyTest": {
+      "registry": "0x5d0d0212199b2c041483226b20f1e4ed6ca4a4de",
+      "appName": "aragon.aragonpm.eth",
+      "network": "harmonyTest"
+    },
     "rinkeby": {
       "registry": "0x98df287b6c145399aaa709692c8d308357bc085d",
       "appName": "aragon.aragonpm.eth",

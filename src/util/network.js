@@ -11,6 +11,10 @@ export const getActiveNetworks = () => {
     .map(n => n.settings.type)
 }
 
+export const getOptions = (networkType) => {
+  return getNetworkConfig(networkType).settings?.options
+}
+
 export function isOnEthMainnet(networkType) {
   return networkType === KNOWN_CHAINS.get(1).type
 }

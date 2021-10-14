@@ -149,6 +149,83 @@ export const networkConfigs = {
       live: true,
     },
   },
+
+  [KNOWN_CHAINS.get(1666600000).type]: {
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry: localEnsRegistryAddress,
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://ws.s0.t.hmny.io/',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 1666600000,
+      ...KNOWN_CHAINS.get(1666600000),
+      live: true,
+      options: {
+        timeout: 30000, // ms
+
+        clientConfig: {
+          // Useful if requests are large
+          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+
+          // Useful to keep a connection alive
+          keepalive: true,
+          keepaliveInterval: 60000, // ms
+        },
+
+        // Enable auto reconnection
+        reconnect: {
+          auto: true,
+          delay: 5000, // ms
+          maxAttempts: 5,
+          onTimeout: false,
+        },
+      },
+    },
+  },
+
+  [KNOWN_CHAINS.get(1666700000).type]: {
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry: localEnsRegistryAddress,
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://ws.s0.pops.one/',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 1666700000,
+      ...KNOWN_CHAINS.get(1666700000),
+      live: true,
+      options: {
+        timeout: 30000, // ms
+
+        clientConfig: {
+          // Useful if requests are large
+          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+
+          // Useful to keep a connection alive
+          keepalive: true,
+          keepaliveInterval: 60000, // ms
+        },
+
+        // Enable auto reconnection
+        reconnect: {
+          auto: true,
+          delay: 5000, // ms
+          maxAttempts: 5,
+          onTimeout: false,
+        },
+      },
+    },
+  },
+
   unknown: {
     isActive: false,
     addresses: {
