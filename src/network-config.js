@@ -150,48 +150,49 @@ export const networkConfigs = {
     },
   },
 
-  [KNOWN_CHAINS.get(1666600000).type]: {
-    enableMigrateBanner: false,
-    addresses: {
-      ensRegistry: localEnsRegistryAddress,
-      governExecutorProxy: null,
-    },
-    nodes: {
-      defaultEth: 'wss://ws.s0.t.hmny.io/',
-    },
-    connectGraphEndpoint: null,
-    settings: {
-      chainId: 1666600000,
-      ...KNOWN_CHAINS.get(1666600000),
-      live: true,
-      options: {
-        timeout: 30000, // ms
+  // [KNOWN_CHAINS.get(1666600000).type]: {
+  //   enableMigrateBanner: false,
+  //   addresses: {
+  //     ensRegistry: localEnsRegistryAddress || '0x5d0d0212199b2c041483226b20f1e4ed6ca4a4de',
+  //     governExecutorProxy: null,
+  //   },
+  //   nodes: {
+  //     defaultEth: 'wss://ws.s0.t.hmny.io/',
+  //   },
+  //   connectGraphEndpoint: null,
+  //   settings: {
+  //     chainId: 1666600000,
+  //     ...KNOWN_CHAINS.get(1666600000),
+  //     live: true,
+  //     options: {
+  //       timeout: 30000, // ms
 
-        clientConfig: {
-          // Useful if requests are large
-          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
-          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+  //       clientConfig: {
+  //         // Useful if requests are large
+  //         maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+  //         maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
 
-          // Useful to keep a connection alive
-          keepalive: true,
-          keepaliveInterval: 60000, // ms
-        },
+  //         // Useful to keep a connection alive
+  //         keepalive: true,
+  //         keepaliveInterval: 60000, // ms
+  //       },
 
-        // Enable auto reconnection
-        reconnect: {
-          auto: true,
-          delay: 5000, // ms
-          maxAttempts: 5,
-          onTimeout: false,
-        },
-      },
-    },
-  },
+  //       // Enable auto reconnection
+  //       reconnect: {
+  //         auto: true,
+  //         delay: 5000, // ms
+  //         maxAttempts: 5,
+  //         onTimeout: false,
+  //       },
+  //     },
+  //   },
+  // },
 
   [KNOWN_CHAINS.get(1666700000).type]: {
     enableMigrateBanner: false,
     addresses: {
-      ensRegistry: localEnsRegistryAddress,
+      ensRegistry:
+        localEnsRegistryAddress || '0x6679ff29c4f450cab0e0eeb798fb47877add98f3',
       governExecutorProxy: null,
     },
     nodes: {

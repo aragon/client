@@ -98,7 +98,9 @@ export const pollConnectivity = pollEvery((providers = [], onConnectivity) => {
 
 export const resolveEnsDomain = async (networkType, provider, domain) => {
   try {
+    console.warn(getNetworkConfig(networkType))
     const registryAddress = getNetworkConfig(networkType).addresses.ensRegistry
+    console.warn(registryAddress)
     return await ensResolve(domain, {
       provider,
       registryAddress,
