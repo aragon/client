@@ -9,7 +9,6 @@ import {
   Split,
   Link,
   GU,
-  blockExplorerUrl,
   textStyle,
   useLayout,
   useTheme,
@@ -22,6 +21,8 @@ import { useRepoDetails } from '../../../hooks'
 import Screenshots from '../Screenshots'
 import { sanitizeCodeRepositoryUrl } from '../../../util/url'
 import { useWallet } from '../../../contexts/wallet'
+import { blockExplorerUrl } from 'use-wallet'
+import { getChainId } from '../../../util/network'
 
 const AppContent = React.memo(
   ({ repo, repoVersions, onRequestUpgrade, onClose }) => {
@@ -196,9 +197,7 @@ const AppContent = React.memo(
                         <BreakLink compact={compact}>
                           <Link
                             external
-                            href={blockExplorerUrl('address', repoAddress, {
-                              networkType,
-                            })}
+                            href={blockExplorerUrl('address', repoAddress, getChainId(networkType))}
                           >
                             {repoName}
                           </Link>

@@ -4,8 +4,9 @@ import PropTypes from 'prop-types'
 import { GU, Modal, useTheme, useViewport, textStyle, Button } from '@aragon/ui'
 import styled from 'styled-components'
 
-import { useWallet } from '../../../contexts/wallet'
 import { getNetworkShortName, getNetworkFullName } from '../../../util/network'
+import { networkConfigs } from '../../../network-config'
+import { useWallet } from '../../../contexts/wallet'
 
 NetworkSwitchModal.propTypes = {
   visible: PropTypes.bool.isRequired,
@@ -13,6 +14,7 @@ NetworkSwitchModal.propTypes = {
 }
 
 export function NetworkSwitchModal({ onClose, visible }) {
+
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
@@ -36,21 +38,17 @@ export function NetworkSwitchModal({ onClose, visible }) {
         <Body>
           <div>
             <NetworkTitle>Mainnets</NetworkTitle>
-            <ButtonsRow networkNames={mainNetworksTypes} onClose={onClose} />
+            <ButtonsRow networkNames={Object.values(networkConfigs).filter(chain => !chain.settings.testnet && chain.isActive).map(chain => chain.settings.type)} onClose={onClose} />
           </div>
           <div>
             <NetworkTitle>Testnets</NetworkTitle>
-            <ButtonsRow networkNames={testNetworksTypes} onClose={onClose} />
+            <ButtonsRow networkNames={Object.values(networkConfigs).filter(chain => chain.settings.testnet && chain.isActive).map(chain => chain.settings.type)} onClose={onClose} />
           </div>
         </Body>
       </Content>
     </Modal>
   )
 }
-
-// add new networks here
-const mainNetworksTypes = ['main', 'matic']
-const testNetworksTypes = ['rinkeby', 'mumbai', 'harmonyTest']
 
 ButtonsRow.propTypes = {
   networkNames: PropTypes.arrayOf(PropTypes.string).isRequired,

@@ -381,7 +381,6 @@ function OrgView({
         </div>
       </AppWidthContext.Provider>
       <NetworkSwitchModal
-        network={'mainnet'}
         visible={networkModalOpened}
         onClose={closeNetworkSwitchModal}
       />
