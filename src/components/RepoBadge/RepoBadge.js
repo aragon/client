@@ -32,7 +32,11 @@ const RepoBadge = React.memo(function RepoBadge({
       <LinkBase
         focusRingSpacing={0}
         external
-        href={blockExplorerUrl('address', contractAddress, getChainId(networkType))}
+        href={blockExplorerUrl(
+          'address',
+          contractAddress,
+          getChainId(networkType)
+        )}
         css={`
           display: flex;
           background: ${theme.badge};

@@ -11,7 +11,7 @@ import {
   useWallet as useWalletBase,
   UseWalletProvider,
   ChainUnsupportedError,
-  chains
+  chains,
 } from 'use-wallet'
 import { getWeb3, filterBalanceValue } from '../util/web3'
 import { useWalletConnectors } from '../ethereum-providers/connectors'

@@ -32,7 +32,11 @@ const ActivityItem = ({ activity }) => {
   const handleOpen = useCallback(() => {
     if (activity.transactionHash) {
       window.open(
-        blockExplorerUrl('transaction', activity.transactionHash, getChainId(networkType)),
+        blockExplorerUrl(
+          'transaction',
+          activity.transactionHash,
+          getChainId(networkType)
+        ),
         '_blank',
         'noopener'
       )

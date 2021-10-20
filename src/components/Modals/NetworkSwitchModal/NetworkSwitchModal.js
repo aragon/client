@@ -14,7 +14,6 @@ NetworkSwitchModal.propTypes = {
 }
 
 export function NetworkSwitchModal({ onClose, visible }) {
-
   const theme = useTheme()
   const { below } = useViewport()
   const smallMode = below('medium')
@@ -38,11 +37,21 @@ export function NetworkSwitchModal({ onClose, visible }) {
         <Body>
           <div>
             <NetworkTitle>Mainnets</NetworkTitle>
-            <ButtonsRow networkNames={Object.values(networkConfigs).filter(chain => !chain.settings.testnet && chain.isActive).map(chain => chain.settings.type)} onClose={onClose} />
+            <ButtonsRow
+              networkNames={Object.values(networkConfigs)
+                .filter(chain => !chain.settings.testnet && chain.isActive)
+                .map(chain => chain.settings.type)}
+              onClose={onClose}
+            />
           </div>
           <div>
             <NetworkTitle>Testnets</NetworkTitle>
-            <ButtonsRow networkNames={Object.values(networkConfigs).filter(chain => chain.settings.testnet && chain.isActive).map(chain => chain.settings.type)} onClose={onClose} />
+            <ButtonsRow
+              networkNames={Object.values(networkConfigs)
+                .filter(chain => chain.settings.testnet && chain.isActive)
+                .map(chain => chain.settings.type)}
+              onClose={onClose}
+            />
           </div>
         </Body>
       </Content>

@@ -197,7 +197,11 @@ const AppContent = React.memo(
                         <BreakLink compact={compact}>
                           <Link
                             external
-                            href={blockExplorerUrl('address', repoAddress, getChainId(networkType))}
+                            href={blockExplorerUrl(
+                              'address',
+                              repoAddress,
+                              getChainId(networkType)
+                            )}
                           >
                             {repoName}
                           </Link>
