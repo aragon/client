@@ -178,10 +178,10 @@
     graphql "^15.5.0"
     graphql-request "^3.4.0"
 
-"@aragon/wrapper@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-5.5.0.tgz#2986968f46185acb30bec279808ca1a616a76881"
-  integrity sha512-B9JnuA8N2YqUaxc4VTi3KqZEb9tdmB4/UQmRQKw1xSWHG+PoV0tpTOcNyz2csAd2HhYyIW5Sl/ZWVcQVtmQkwA==
+"@aragon/wrapper@^5.5.1":
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/@aragon/wrapper/-/wrapper-5.5.1.tgz#284961cf9c9e8a84504364594063e8b41057154e"
+  integrity sha512-CFRNG61cxjUmVUeKRdkR5Qi7LUjEyMYduj1R8VXtxF4aY89G3KgtmpO1OXdKgLlwq+ZrOVkF3j34yhY8MzE3gw==
   dependencies:
     "@aragon/os" "^4.2.1"
     "@aragon/rpc-messenger" "^2.0.0"

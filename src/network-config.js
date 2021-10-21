@@ -180,6 +180,9 @@ export const networkConfigs = {
       chainId: 1666600000,
       ...chains.getChainInformation(1666600000),
       live: false,
+      events: {
+        blockSizeLimit: 1024,
+      },
       options: {
         timeout: 30000, // ms
 
@@ -219,6 +222,9 @@ export const networkConfigs = {
       chainId: 1666700000,
       ...chains.getChainInformation(1666700000),
       live: true,
+      events: {
+        blockSizeLimit: 1024,
+      },
       options: {
         timeout: 30000, // ms
 

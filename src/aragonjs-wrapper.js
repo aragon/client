@@ -22,7 +22,7 @@ import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 import { getOrganizationByAddress } from './services/gql'
 import { getNetworkConfig } from './network-config'
 import { chains } from 'use-wallet'
-import { getChainId } from './util/network'
+import { getChainId, getNetworkSettings } from './util/network'
 
 const POLL_DELAY_CONNECTIVITY = 2000
 
@@ -294,6 +294,7 @@ const initWrapper = async (
     events: {
       // Infura hack: delay event processing for specified number of ms
       subscriptionEventDelay: getEthSubscriptionEventDelay(),
+      blockSizeLimit: getNetworkSettings(networkType).events?.blockSizeLimit,
     },
   })
 
