@@ -208,7 +208,7 @@ export const networkConfigs = {
     enableMigrateBanner: false,
     addresses: {
       ensRegistry:
-        localEnsRegistryAddress || '0x6679ff29c4f450cab0e0eeb798fb47877add98f3',
+        localEnsRegistryAddress || '0xbc7828fa8665c637901ad5abd5c7e647c9ab140f',
       governExecutorProxy: null,
     },
     nodes: {
