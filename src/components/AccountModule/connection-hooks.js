@@ -124,7 +124,6 @@ export function useSyncInfo(wantedWeb3 = 'default') {
   const walletWeb3 = wallet.web3
   const selectedWeb3 =
     wantedWeb3 === 'wallet' ? walletWeb3 : getWeb3(clientWeb3)
-
   const [isListening, setIsListening] = useState(true)
   const [isOnline, setIsOnline] = useState(window.navigator.onLine)
   const [connectionStatus, setConnectionStatus] = useState(
@@ -137,7 +136,6 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     if (!selectedWeb3 || !selectedWeb3.currentProvider) {
       return
     }
-
     let cancel = false
     const handleWebsocketDrop = () => {
       if (!cancel) {
@@ -145,11 +143,9 @@ export function useSyncInfo(wantedWeb3 = 'default') {
         setConnectionStatus(STATUS_CONNECTION_ERROR)
       }
     }
-
     if (selectedWeb3.currentProvider.on) {
       selectedWeb3.currentProvider.on('error', handleWebsocketDrop)
     }
-
     return () => {
       cancel = true
       if (selectedWeb3.currentProvider.connection?.removeEventListener) {
@@ -182,7 +178,6 @@ export function useSyncInfo(wantedWeb3 = 'default') {
     if (!selectedWeb3) {
       return
     }
-
     let cancel = false
     const pollBlockTimestamp = pollEvery(
       () => ({
@@ -220,13 +215,11 @@ export function useSyncInfo(wantedWeb3 = 'default') {
       BLOCK_TIMESTAMP_POLL_INTERVAL
     )
     const cleanUpTimestampPoll = pollBlockTimestamp()
-
     return () => {
       cancel = true
       cleanUpTimestampPoll()
     }
   }, [selectedWeb3])
-
   return {
     connectionStatus,
     isListening,

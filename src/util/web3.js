@@ -8,7 +8,7 @@ import BN from 'bn.js'
 import { InvalidNetworkType, InvalidURI, NoConnection } from '../errors'
 import { log } from './utils'
 import { getEthNode } from '../environment'
-import { isOnEthMainnet } from '../util/network'
+import { getOptions, isOnEthMainnet } from '../util/network'
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 const ETH_ADDRESS_SPLIT_REGEX = /(0x[a-fA-F0-9]{40}(?:\b|\.|,|\?|!|;))/g
@@ -244,7 +244,12 @@ export function getWeb3(provider) {
  */
 export function getWeb3Provider(networkType) {
   const host = getEthNode(networkType)
-  return new Web3.providers.WebsocketProvider(host)
+  const options = getOptions(networkType)
+
+  if (!options) {
+    return new Web3.providers.WebsocketProvider(host)
+  }
+  return new Web3.providers.WebsocketProvider(host, options)
 }
 
 export function isConnected(provider) {

@@ -1,5 +1,6 @@
 import { getEnsRegistryAddress } from './local-settings'
-import { useWallet, KNOWN_CHAINS } from './contexts/wallet'
+import { useWallet } from './contexts/wallet'
+import { chains } from 'use-wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
@@ -8,7 +9,7 @@ const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
 // TODO stop exposing data object [vr 17-09-2021]
 // cconnectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
 export const networkConfigs = {
-  [KNOWN_CHAINS.get(1).type]: {
+  [chains.getChainInformation(1).type]: {
     isActive: true,
     addresses: {
       ensRegistry:
@@ -24,12 +25,28 @@ export const networkConfigs = {
     settings: {
       chainId: 1,
       testnet: false,
-      ...KNOWN_CHAINS.get(1),
-      shortName: 'Ethereum',
+      ...chains.getChainInformation(1),
       live: true,
     },
   },
-  [KNOWN_CHAINS.get(4).type]: {
+  [chains.getChainInformation(3).type]: {
+    isActive: false,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://ropsten.eth.aragon.network/ws',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 3,
+      testnet: true,
+      ...chains.getChainInformation(3),
+    },
+  },
+  [chains.getChainInformation(4).type]: {
     isActive: true,
     addresses: {
       ensRegistry:
@@ -45,30 +62,11 @@ export const networkConfigs = {
     settings: {
       chainId: 4,
       testnet: true,
-      ...KNOWN_CHAINS.get(4), // as returned by web3.eth.net.getNetworkType()
-      fullName: 'Rinkeby Testnet',
+      ...chains.getChainInformation(4), // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
   },
-  [KNOWN_CHAINS.get(3).type]: {
-    isActive: false,
-    addresses: {
-      ensRegistry:
-        localEnsRegistryAddress || '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
-      governExecutorProxy: null,
-    },
-    nodes: {
-      defaultEth: 'wss://ropsten.eth.aragon.network/ws',
-    },
-    connectGraphEndpoint: null,
-    settings: {
-      chainId: 3,
-      testnet: true,
-      ...KNOWN_CHAINS.get(3),
-      live: true,
-    },
-  },
-  [KNOWN_CHAINS.get(1337).type]: {
+  [chains.getChainInformation(1337).type]: {
     isActive: false,
     addresses: {
       ensRegistry: localEnsRegistryAddress,
@@ -84,14 +82,13 @@ export const networkConfigs = {
       // we expose a way to change this value.
       chainId: 1337,
       testnet: true,
-
-      ...KNOWN_CHAINS.get(1337),
+      ...chains.getChainInformation(1337),
       live: false,
     },
   },
   // xDai is an experimental chain in the Aragon Client. It's possible
   // and expected that a few things will break.
-  [KNOWN_CHAINS.get(100).type]: {
+  [chains.getChainInformation(100).type]: {
     isActive: false,
     addresses: {
       ensRegistry:
@@ -105,11 +102,10 @@ export const networkConfigs = {
     settings: {
       chainId: 100,
       testnet: false,
-      ...KNOWN_CHAINS.get(100),
-      live: true,
+      ...chains.getChainInformation(100),
     },
   },
-  [KNOWN_CHAINS.get(137).type]: {
+  [chains.getChainInformation(137).type]: {
     isActive: true,
     addresses: {
       ensRegistry:
@@ -124,12 +120,31 @@ export const networkConfigs = {
     settings: {
       chainId: 137,
       testnet: false,
-      ...KNOWN_CHAINS.get(137),
-      shortName: 'Polygon',
+      ...chains.getChainInformation(137),
       live: true,
+      options: {
+        timeout: 30000, // ms
+
+        clientConfig: {
+          // Useful if requests are large
+          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+          // Useful to keep a connection alive
+          keepalive: true,
+          keepaliveInterval: 60000, // ms
+        },
+
+        // Enable auto reconnection
+        reconnect: {
+          auto: true,
+          delay: 5000, // ms
+          maxAttempts: 5,
+          onTimeout: false,
+        },
+      },
     },
   },
-  [KNOWN_CHAINS.get(80001).type]: {
+  [chains.getChainInformation(80001).type]: {
     isActive: true,
     addresses: {
       ensRegistry:
@@ -144,11 +159,90 @@ export const networkConfigs = {
     settings: {
       chainId: 80001,
       testnet: true,
-      ...KNOWN_CHAINS.get(80001),
-      fullName: 'Mumbai Testnet',
+      ...chains.getChainInformation(80001),
       live: true,
     },
   },
+
+  [chains.getChainInformation(1666600000).type]: {
+    isActive: false,
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x5d0d0212199b2c041483226b20f1e4ed6ca4a4de',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://ws.s0.t.hmny.io/',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 1666600000,
+      ...chains.getChainInformation(1666600000),
+      live: false,
+      options: {
+        timeout: 30000, // ms
+
+        clientConfig: {
+          // Useful if requests are large
+          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+          // Useful to keep a connection alive
+          keepalive: true,
+          keepaliveInterval: 60000, // ms
+        },
+
+        // Enable auto reconnection
+        reconnect: {
+          auto: true,
+          delay: 5000, // ms
+          maxAttempts: 5,
+          onTimeout: false,
+        },
+      },
+    },
+  },
+
+  [chains.getChainInformation(1666700000).type]: {
+    isActive: true,
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0xbc7828fa8665c637901ad5abd5c7e647c9ab140f',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://ws.s0.pops.one/',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 1666700000,
+      ...chains.getChainInformation(1666700000),
+      live: true,
+      options: {
+        timeout: 30000, // ms
+
+        clientConfig: {
+          // Useful if requests are large
+          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+
+          // Useful to keep a connection alive
+          keepalive: true,
+          keepaliveInterval: 60000, // ms
+        },
+
+        // Enable auto reconnection
+        reconnect: {
+          auto: true,
+          delay: 5000, // ms
+          maxAttempts: 5,
+          onTimeout: false,
+        },
+      },
+    },
+  },
+
   unknown: {
     isActive: false,
     addresses: {
@@ -161,8 +255,6 @@ export const networkConfigs = {
     connectGraphEndpoint: null,
     settings: {
       testnet: true,
-      name: `Unknown network`,
-      shortName: 'Unknown',
       type: 'unknown',
       live: false,
     },
