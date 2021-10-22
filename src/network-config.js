@@ -172,7 +172,7 @@ export const networkConfigs = {
       dai: '0x94f417C155bB3fF7365828Bb7aCD26E84C17e830',
     },
     nodes: {
-      defaultEth: 'wss://matic-testnet-archive-ws.bwarelabs.com',
+      // defaultEth: 'TO BE CREATED',
     },
     connectGraphEndpoint: null,
     settings: {
