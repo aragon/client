@@ -163,6 +163,44 @@ export const networkConfigs = {
       live: true,
     },
   },
+  [chains.getChainInformation(56).type]: {
+    isActive: false,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x431f0eed904590b176f9ff8c36a1c4ff0ee9b982',
+      governExecutorProxy: null,
+      dai: '0x94f417C155bB3fF7365828Bb7aCD26E84C17e830',
+    },
+    nodes: {
+      defaultEth: 'wss://matic-testnet-archive-ws.bwarelabs.com',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 56,
+      testnet: false,
+      ...chains.getChainInformation(56),
+      live: true,
+    },
+  },
+  [chains.getChainInformation(97).type]: {
+    isActive: true,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth:
+        'wss://speedy-nodes-nyc.moralis.io/e2537fd4d6ad21265cf9d450/bsc/testnet/ws',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 97,
+      testnet: true,
+      ...chains.getChainInformation(97),
+      live: true,
+    },
+  },
 
   [chains.getChainInformation(1666600000).type]: {
     isActive: false,

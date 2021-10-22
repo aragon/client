@@ -144,10 +144,10 @@
   dependencies:
     "@truffle/hdwallet-provider" "^1.0.0"
 
-"@aragon/ui@^1.9.2":
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-1.9.2.tgz#d0ff123ba50ee1159292486b8d01103f924f789a"
-  integrity sha512-RToZpC20wriFb/Ps+dLiIxx1h5aQ5ThF22DV1IJiCjlCeEPYCREBXUhlNaRW4yurKmgqsl/inN4Ic1lh7ebVgg==
+"@aragon/ui@^1.9.3":
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/@aragon/ui/-/ui-1.9.3.tgz#8660a815925bfa2598c175c8bea6233641867aa7"
+  integrity sha512-ofD0PVmz6KgxB8HfIRbTJC2eBOckqMN/pupZqKUosIq8I9M7SEj5UeRW7AtOn6Fp/ipJC5XlYZRxcJUUsP9thg==
   dependencies:
     "@babel/runtime" "^7.3.1"
     airbnb-prop-types "^2.9.0"
@@ -14499,10 +14499,10 @@ use-token@^0.2.0:
   dependencies:
     js-sha3 "^0.8.0"
 
-use-wallet@^0.12.1:
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.12.1.tgz#b86ebe2e82a914f7830eaa24a053fad53f7d2912"
-  integrity sha512-07SXQh2g9RK9ky36fqCv7zef5raUiRd6gGJgNYm3OtNDM/vW7KweOQODEVldUCe+CcGvUepidSFjBTtl7NxT3A==
+use-wallet@^0.12.2:
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.12.2.tgz#72209c62edbf0092cd9aadb1178dfc2cb542e9d4"
+  integrity sha512-GSvRUanGoPe0k23J0GBoGAiB/Xw6r/rWWObmookiwz7THfpA4Lq+gVMG5X7FFuvppwvhC+p1psajEQ9HmW67Tg==
   dependencies:
     "@aragon/provided-connector" "^6.0.8"
     "@typescript-eslint/parser" "^4.1.0"
