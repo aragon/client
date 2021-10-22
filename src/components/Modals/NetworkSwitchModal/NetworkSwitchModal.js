@@ -129,12 +129,10 @@ const Row = styled.div`
   padding-top: ${GU}px;
   justify-content: center;
   display: flex;
-
-  & > :not(:first-child) {
-    margin-left: ${3 * GU}px;
-  }
+  flex-wrap: wrap;
 `
 
 const FixWidthButton = styled(Button)`
   width: ${18 * GU}px;
+  margin: ${1 * GU}px;
 `
