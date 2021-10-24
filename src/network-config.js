@@ -201,6 +201,24 @@ export const networkConfigs = {
       live: true,
     },
   },
+  [chains.getChainInformation(421611).type]: {
+    isActive: true,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x206edd024d8ac4df5e8953619ea8355b91248af1',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://rinkeby.arbitrum.io/ws',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 421611,
+      testnet: true,
+      ...chains.getChainInformation(421611),
+      live: true,
+    },
+  },
 
   [chains.getChainInformation(1666600000).type]: {
     isActive: false,

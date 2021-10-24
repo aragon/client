@@ -5,6 +5,11 @@
       "appName": "aragon.aragonpm.eth",
       "network": "rpc"
     },
+    "arbitrumTest": {
+      "registry": "0x206edd024d8ac4df5e8953619ea8355b91248af1",
+      "appName": "aragon.aragonpm.eth",
+      "network": "arbitrumTest"
+    },
     "harmony": {
       "registry": "0x5d0d0212199b2c041483226b20f1e4ed6ca4a4de",
       "appName": "aragon.aragonpm.eth",
