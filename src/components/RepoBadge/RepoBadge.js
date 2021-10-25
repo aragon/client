@@ -1,9 +1,11 @@
 import React from 'react'
-import { LinkBase, GU, RADIUS, blockExplorerUrl, useTheme } from '@aragon/ui'
+import { LinkBase, GU, RADIUS, useTheme } from '@aragon/ui'
 import AppIcon from '../../components/AppIcon/AppIcon'
 import { repoBaseUrl } from '../../util/url'
 import { RepoVersionType } from '../../prop-types'
 import { useWallet } from '../../contexts/wallet'
+import { blockExplorerUrl } from 'use-wallet'
+import { getChainId } from '../../util/network'
 
 const RepoBadge = React.memo(function RepoBadge({
   displayVersion,
@@ -30,9 +32,11 @@ const RepoBadge = React.memo(function RepoBadge({
       <LinkBase
         focusRingSpacing={0}
         external
-        href={blockExplorerUrl('address', contractAddress, {
-          networkType,
-        })}
+        href={blockExplorerUrl(
+          'address',
+          contractAddress,
+          getChainId(networkType)
+        )}
         css={`
           display: flex;
           background: ${theme.badge};

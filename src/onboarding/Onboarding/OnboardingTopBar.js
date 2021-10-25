@@ -7,6 +7,7 @@ import { useWallet } from '../../contexts/wallet'
 import { isOnEthMainnet } from '../../util/network'
 import styled from 'styled-components'
 import { NetworkIndicator } from '../../components/NetworkIndicator/NetworkIndicator'
+import { trackEvent, events } from '../../analytics'
 
 function OnboardingTopBar({ status, solid, modalOpener }) {
   const theme = useTheme()
@@ -22,7 +23,12 @@ function OnboardingTopBar({ status, solid, modalOpener }) {
       path = '/create'
     }
     window.location.hash = path + '?preferences=/network'
-  }, [status])
+
+    // analytics
+    trackEvent(events.USER_SETTINGS_CLICKED, {
+      network: networkType,
+    })
+  }, [status, networkType])
 
   return (
     <React.Fragment>

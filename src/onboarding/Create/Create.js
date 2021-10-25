@@ -347,7 +347,6 @@ function useDeploymentState(
           if (!cancelled) {
             try {
               await walletWeb3.eth.sendTransaction(transaction)
-
               if (!cancelled) {
                 // analytics
                 // we are only interested in the first tx of creating a DAO
@@ -532,12 +531,6 @@ const Create = React.memo(function Create({
     walletWeb3
   )
 
-  // useEffect(() => {
-  //   if (condition) {
-
-  //   }
-  // }, [transactionsStatus])
-
   const handleUseTemplate = useCallback(
     (id, optionalApps) => {
       selectTemplate(id, optionalApps)
@@ -545,7 +538,21 @@ const Create = React.memo(function Create({
     [selectTemplate]
   )
 
-  const handleTemplateNext = useCallback(data => nextScreen(data), [nextScreen])
+  const handleTemplateNext = useCallback(
+    data => {
+      nextScreen(data)
+
+      // analytics
+      trackEvent(events.DAO_CREATION_NEXT_CLICKED, {
+        network: networkType,
+        wallet_address: account,
+        dao_identifier: data.domain,
+        step: configureSteps[configureStepIndex],
+        settings: data,
+      })
+    },
+    [nextScreen, configureStepIndex, configureSteps, networkType, account]
+  )
   const handleTemplatePrev = useCallback(() => prevScreen(), [prevScreen])
 
   const handleOpenNewOrg = useCallback(() => {

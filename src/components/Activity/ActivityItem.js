@@ -6,7 +6,6 @@ import {
   IconCross,
   IconCheck,
   GU,
-  blockExplorerUrl,
   textStyle,
   useTheme,
 } from '@aragon/ui'
@@ -23,6 +22,8 @@ import {
   ACTIVITY_STATUS_TIMED_OUT,
 } from '../../symbols'
 import { useWallet } from '../../contexts/wallet'
+import { blockExplorerUrl } from 'use-wallet'
+import { getChainId } from '../../util/network'
 
 const ActivityItem = ({ activity }) => {
   const theme = useTheme()
@@ -31,9 +32,11 @@ const ActivityItem = ({ activity }) => {
   const handleOpen = useCallback(() => {
     if (activity.transactionHash) {
       window.open(
-        blockExplorerUrl('transaction', activity.transactionHash, {
-          networkType,
-        }),
+        blockExplorerUrl(
+          'transaction',
+          activity.transactionHash,
+          getChainId(networkType)
+        ),
         '_blank',
         'noopener'
       )

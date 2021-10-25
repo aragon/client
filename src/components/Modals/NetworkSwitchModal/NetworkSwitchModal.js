@@ -4,8 +4,9 @@ import PropTypes from 'prop-types'
 import { GU, Modal, useTheme, useViewport, textStyle, Button } from '@aragon/ui'
 import styled from 'styled-components'
 
-import { useWallet } from '../../../contexts/wallet'
 import { getNetworkShortName, getNetworkFullName } from '../../../util/network'
+import { networkConfigs } from '../../../network-config'
+import { useWallet } from '../../../contexts/wallet'
 
 NetworkSwitchModal.propTypes = {
   visible: PropTypes.bool.isRequired,
@@ -36,21 +37,27 @@ export function NetworkSwitchModal({ onClose, visible }) {
         <Body>
           <div>
             <NetworkTitle>Mainnets</NetworkTitle>
-            <ButtonsRow networkNames={mainNetworksTypes} onClose={onClose} />
+            <ButtonsRow
+              networkNames={Object.values(networkConfigs)
+                .filter(chain => !chain.settings.testnet && chain.isActive)
+                .map(chain => chain.settings.type)}
+              onClose={onClose}
+            />
           </div>
           <div>
             <NetworkTitle>Testnets</NetworkTitle>
-            <ButtonsRow networkNames={testNetworksTypes} onClose={onClose} />
+            <ButtonsRow
+              networkNames={Object.values(networkConfigs)
+                .filter(chain => chain.settings.testnet && chain.isActive)
+                .map(chain => chain.settings.type)}
+              onClose={onClose}
+            />
           </div>
         </Body>
       </Content>
     </Modal>
   )
 }
-
-// add new networks here
-const mainNetworksTypes = ['main', 'matic']
-const testNetworksTypes = ['rinkeby', 'mumbai']
 
 ButtonsRow.propTypes = {
   networkNames: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -122,12 +129,10 @@ const Row = styled.div`
   padding-top: ${GU}px;
   justify-content: center;
   display: flex;
-
-  & > :not(:first-child) {
-    margin-left: ${3 * GU}px;
-  }
+  flex-wrap: wrap;
 `
 
 const FixWidthButton = styled(Button)`
   width: ${18 * GU}px;
+  margin: ${1 * GU}px;
 `

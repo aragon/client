@@ -7,13 +7,10 @@ import { useFavoriteDaos } from '../../contexts/FavoriteDaosContext'
 import { getKnownOrganization } from '../../known-organizations'
 import { addressesEqual } from '../../util/web3'
 import { useWallet } from '../../contexts/wallet'
+import { trackEvent, events } from '../../analytics'
 
 function Suggestions({ suggestedOrgs }) {
-  const {
-    isAddressFavorited,
-    removeFavoriteByAddress,
-    addFavorite,
-  } = useFavoriteDaos()
+  const { isAddressFavorited, removeFavorite, addFavorite } = useFavoriteDaos()
 
   const { networkType } = useWallet()
 
@@ -31,10 +28,10 @@ function Suggestions({ suggestedOrgs }) {
       if (favorite) {
         addFavorite(org)
       } else {
-        removeFavoriteByAddress(org.address)
+        removeFavorite(org)
       }
     },
-    [addFavorite, removeFavoriteByAddress, suggestedOrgs]
+    [addFavorite, removeFavorite, suggestedOrgs]
   )
 
   const openOrg = useCallback(
@@ -43,8 +40,14 @@ function Suggestions({ suggestedOrgs }) {
         addressesEqual(org.address, address)
       )
       window.location.hash = `/${(org && org.name) || address}`
+
+      // analytics
+      trackEvent(events.ORGANIZATION_LINK_CLICKED, {
+        dao_identifier: org.name || org.address,
+        network: networkType,
+      })
     },
-    [suggestedOrgs]
+    [suggestedOrgs, networkType]
   )
 
   if (suggestedOrgs.length === 0) {
