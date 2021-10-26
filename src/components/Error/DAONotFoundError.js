@@ -58,50 +58,6 @@ function DAONotFoundError({ dao }) {
 
 NotFoundAtAllMessage.propTypes = {
   dao: PropTypes.string,
-  alternatives: PropTypes.arrayOf(PropTypes.string),
-}
-
-function NotFoundOnNetworkMessage({ dao, alternatives }) {
-  const theme = useTheme()
-  const routing = useRouting()
-  const { networkType, changeNetworkTypeDisconnected } = useWallet()
-
-  const goToOrg = useCallback(
-    (orgAddress, network) => {
-      changeNetworkTypeDisconnected(network)
-      routing.update(locator => ({
-        ...locator,
-        mode: { name: 'org', orgAddress },
-      }))
-
-      // analytics
-      trackEvent(events.ORGANIZATION_LINK_CLICKED, {
-        dao_identifier: orgAddress,
-        network: network,
-      })
-    },
-    [routing, changeNetworkTypeDisconnected]
-  )
-
-  return (
-    <React.Fragment>
-      <Message color={theme.surfaceContentSecondary}>
-        There’s no organization associated with{' '}
-        <span css="font-weight: bold;">'{dao}'</span> on the{' '}
-        {getNetworkFullName(networkType)}, but it does exist on another chain.
-        You may switch the application to another chain to see it.
-      </Message>
-      <LinksList>
-        {alternatives.map(a => (
-          <li key={a}>
-            <Link onClick={() => goToOrg(dao, a)}>
-              Open {!isAddress(dao) ? dao : 'it'} on {getNetworkShortName(a)}
-            </Link>
-          </li>
-        ))}
-      </LinksList>
-    </React.Fragment>
-  )
 }
 
 function NotFoundAtAllMessage({ dao }) {
