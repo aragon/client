@@ -84,18 +84,12 @@ function NotFoundOnNetworkMessage({ dao, alternatives }) {
   const { networkType, changeNetworkTypeDisconnected } = useWallet()
 
   const goToOrg = useCallback(
-    (orgAddress, network) => {
-      changeNetworkTypeDisconnected(network)
+    (orgAddress, networType) => {
+      changeNetworkTypeDisconnected(networType)
       routing.update(locator => ({
         ...locator,
         mode: { name: 'org', orgAddress },
       }))
-
-      // analytics
-      trackEvent(events.ORGANIZATION_LINK_CLICKED, {
-        dao_identifier: orgAddress,
-        network: network,
-      })
     },
     [routing, changeNetworkTypeDisconnected]
   )
