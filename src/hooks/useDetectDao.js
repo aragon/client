@@ -36,7 +36,8 @@ export function useDetectDao(domain) {
           )
         })
 
-        const availableNetworks = await Promise.all(availabilityPromise)
+        const availableNetworks = await Promise.allSettled(availabilityPromise)
+
         const daoExists = availableNetworks.map(a => !a)
         const daoExistsOnNetworks = networksToCheck.filter(
           (_, i) => daoExists[i]
