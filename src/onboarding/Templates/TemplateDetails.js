@@ -34,7 +34,7 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
     onUse(template.id, selectedOptionalApps)
 
     // analytics test
-    trackEvent(events.DAOCREATION_TEMPLATE_SELECTED, {
+    trackEvent(events.DAO_CREATION_TEMPLATE_SELECTED, {
       name: template.name,
       network: networkName,
     })

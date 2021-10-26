@@ -15,11 +15,13 @@ import { log } from '../../util/utils'
 import { resolveEnsDomain } from '../../aragonjs-wrapper'
 import { saveTemplateState } from '../create-utils'
 import { useRouting } from '../../routing'
-import { useWallet, KNOWN_CHAINS } from '../../contexts/wallet'
+import { useWallet } from '../../contexts/wallet'
+import { chains } from 'use-wallet'
 import validateCreationRequirements from '../validate-requirements'
 import { getWeb3 } from '../../util/web3'
 import styled from 'styled-components'
 import { NetworkSwitchModal, ConnectModal } from '../../components/Modals'
+import { trackEvent, events } from '../../analytics'
 
 const initialEmbeddedTemplates = embeddedTemplates.map(template => ({
   ...template,
@@ -60,14 +62,24 @@ function Onboarding({ web3 }) {
       ...locator,
       mode: { name: 'onboarding', status: 'open' },
     }))
-  }, [routing])
+
+    // analytics
+    trackEvent(events.OPEN_ORGANIZATION_CLICKED, {
+      network: networkType,
+    })
+  }, [routing, networkType])
 
   const goToCreate = useCallback(() => {
     routing.update(locator => ({
       ...locator,
       mode: { name: 'onboarding', status: 'create' },
     }))
-  }, [routing])
+
+    // analytics
+    trackEvent(events.CREATE_ORGANIZATION_CLICKED, {
+      network: networkType,
+    })
+  }, [routing, networkType])
 
   const goToOrg = useCallback(
     orgAddress => {
@@ -86,7 +98,7 @@ function Onboarding({ web3 }) {
       account,
       balance,
       isContractAccount,
-      KNOWN_CHAINS.get(chainId)?.nativeCurrency.symbol
+      chains.getChainInformation(chainId)?.nativeCurrency.symbol
     )
 
     if (
@@ -105,7 +117,7 @@ function Onboarding({ web3 }) {
       account,
       balance,
       isContractAccount,
-      KNOWN_CHAINS.get(chainId)?.nativeCurrency.symbol
+      chains.getChainInformation(chainId)?.nativeCurrency.symbol
     )
     setRequirementsError(requirementsError)
 
@@ -281,7 +293,6 @@ function Onboarding({ web3 }) {
           onConnectError={connectProviderError}
         />
         <NetworkSwitchModal
-          network={networkType}
           visible={networkModalOpened}
           onClose={closeNetworkSwitchModal}
         />

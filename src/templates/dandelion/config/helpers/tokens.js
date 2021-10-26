@@ -1,4 +1,4 @@
-import { KNOWN_CHAINS } from '../../../../contexts/wallet'
+import { chains } from 'use-wallet'
 import { getDaiTokenAddress, getChainId } from '../../../../util/network'
 
 export const TOKEN_FAKE_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -11,7 +11,7 @@ const getDaiToken = networkType => ({
 
 const getNativeCurrency = networkType => {
   const chainId = getChainId(networkType)
-  const symbol = KNOWN_CHAINS.get(chainId)?.nativeCurrency.symbol
+  const symbol = chains.get(chainId)?.nativeCurrency.symbol
   return {
     symbol,
     address: TOKEN_FAKE_ADDRESS,

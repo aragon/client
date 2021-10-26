@@ -21,8 +21,8 @@ import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 import { getOrganizationByAddress } from './services/gql'
 import { getNetworkConfig } from './network-config'
-import { getChainId } from './util/network'
-import { KNOWN_CHAINS } from './contexts/wallet'
+import { chains } from 'use-wallet'
+import { getChainId, getNetworkSettings } from './util/network'
 
 const POLL_DELAY_CONNECTIVITY = 2000
 
@@ -294,11 +294,12 @@ const initWrapper = async (
     events: {
       // Infura hack: delay event processing for specified number of ms
       subscriptionEventDelay: getEthSubscriptionEventDelay(),
+      blockSizeLimit: getNetworkSettings(networkType).events?.blockSizeLimit,
     },
   })
 
   try {
-    const network = KNOWN_CHAINS.get(getChainId(networkType))
+    const network = chains.getChainInformation(getChainId(networkType))
     await wrapper.init({
       network,
       accounts: {
