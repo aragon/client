@@ -201,7 +201,6 @@ export const networkConfigs = {
       live: true,
     },
   },
-  /*  Temporary commented until use-wallet package is published
   [chains.getChainInformation(421611).type]: {
     isActive: true,
     addresses: {
@@ -220,7 +219,6 @@ export const networkConfigs = {
       live: true,
     },
   },
-*/
   [chains.getChainInformation(1666600000).type]: {
     isActive: false,
     enableMigrateBanner: false,
