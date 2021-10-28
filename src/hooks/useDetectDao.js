@@ -28,7 +28,7 @@ export function useDetectDao(domain) {
           clearTimeout(id)
           // Ignore for prefer-promise-reject-errors
           // eslint-disable-next-line
-          reject()
+          reject({reason: 'timed out'})
         }, ms)
       })
 
