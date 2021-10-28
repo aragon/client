@@ -21,6 +21,21 @@ export function useDetectDao(domain) {
 
     let cancelled = false
 
+    const promiseTimeout = function(ms, promise) {
+      // Create a promise that rejects in <ms> milliseconds
+      const timeout = new Promise((resolve, reject) => {
+        const id = setTimeout(() => {
+          clearTimeout(id)
+          // Ignore for prefer-promise-reject-errors
+          // eslint-disable-next-line
+          reject()
+        }, ms)
+      })
+
+      // Returns a race between our timeout and the passed in promise
+      return Promise.race([promise, timeout])
+    }
+
     const checkWithProvider = async () => {
       const networksToCheck = getActiveNetworks()
       try {
@@ -29,10 +44,10 @@ export function useDetectDao(domain) {
           provider: getWeb3Provider(n),
         }))
         const availabilityPromise = providers.map(p => {
-          return isEnsDomainAvailable(
-            p.network,
-            p.provider,
-            completeDomain(domain)
+          // Avoid bad web sockets to freeze the application looking forever
+          return promiseTimeout(
+            3000,
+            isEnsDomainAvailable(p.network, p.provider, completeDomain(domain))
           )
         })
 
