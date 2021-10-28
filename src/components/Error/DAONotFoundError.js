@@ -34,7 +34,9 @@ function DAONotFoundError({ dao }) {
       </ModalTitle>
       <MessageContainer>
         {loading ? (
-          <div />
+          <Message color={theme.surfaceContentSecondary}>
+            Searching for it on other networks...
+          </Message>
         ) : networks?.length ? (
           <NotFoundOnNetworkMessage dao={dao} alternatives={networks} />
         ) : (
