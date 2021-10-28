@@ -11,7 +11,7 @@ const getDaiToken = networkType => ({
 
 const getNativeCurrency = networkType => {
   const chainId = getChainId(networkType)
-  const symbol = chains.get(chainId)?.nativeCurrency.symbol
+  const symbol = chains.getChainInformation(chainId)?.nativeCurrency.symbol
   return {
     symbol,
     address: TOKEN_FAKE_ADDRESS,
