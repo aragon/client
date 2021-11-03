@@ -10,6 +10,11 @@
       "appName": "aragon.aragonpm.eth",
       "network": "harmony"
     },
+    "fuji": {
+      "registry": "0x5b442a5e9020a886354c77e4ad10b11ddd883714",
+      "appName": "aragon.aragonpm.eth",
+      "network": "fuji"
+    },
     "harmonyTest": {
       "registry": "0xbc7828fa8665c637901ad5abd5c7e647c9ab140f",
       "appName": "aragon.aragonpm.eth",
