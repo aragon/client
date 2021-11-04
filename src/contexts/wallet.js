@@ -133,7 +133,7 @@ WalletContextProvider.propTypes = { children: PropTypes.node }
 
 export function WalletProvider({ children }) {
   return (
-    <UseWalletProvider connectors={useWalletConnectors}>
+    <UseWalletProvider connectors={useWalletConnectors} autoConnect>
       <WalletContextProvider>{children}</WalletContextProvider>
     </UseWalletProvider>
   )
