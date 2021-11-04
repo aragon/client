@@ -68,7 +68,7 @@
     "scrypt": "github:barrysteyn/node-scrypt#fb60a8d3c158fe115a624b5ffa7480f3a24b03fb",
     "secp256k1": "^4.0.2",
     "styled-components": ">=4.0.0",
-    "use-wallet": "^0.12.3",
+    "use-wallet": "^0.13.1",
     "web3": "^1.5.2",
     "web3-eth-abi": "^1.5.2",
     "web3-utils": "^1.5.2"
