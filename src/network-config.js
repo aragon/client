@@ -169,7 +169,7 @@ export const networkConfigs = {
       ensRegistry:
         localEnsRegistryAddress || '0x431f0eed904590b176f9ff8c36a1c4ff0ee9b982',
       governExecutorProxy: null,
-      dai: '0x94f417C155bB3fF7365828Bb7aCD26E84C17e830',
+      dai: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
     },
     nodes: {
       // defaultEth: 'TO BE CREATED',
@@ -188,6 +188,7 @@ export const networkConfigs = {
       ensRegistry:
         localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
       governExecutorProxy: null,
+      dai: '0xec5dcb5dbf4b114c9d0f65bccab49ec54f6a0867',
     },
     nodes: {
       defaultEth:
@@ -209,6 +210,7 @@ export const networkConfigs = {
       ensRegistry:
         localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
       governExecutorProxy: null,
+      dai: '0xef977d2f931c1978db5f6747666fa1eacb0d0339',
     },
     nodes: {
       defaultEth: 'wss://ws.s0.t.hmny.io/',
@@ -251,6 +253,7 @@ export const networkConfigs = {
       ensRegistry:
         localEnsRegistryAddress || '0xbc7828fa8665c637901ad5abd5c7e647c9ab140f',
       governExecutorProxy: null,
+      dai: '0x97F2f01096c1B6942220158c130662f35C3a3166',
     },
     nodes: {
       defaultEth: 'wss://ws.s0.pops.one/',
