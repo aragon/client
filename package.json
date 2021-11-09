@@ -71,7 +71,8 @@
     "use-wallet": "^0.13.1",
     "web3": "^1.5.2",
     "web3-eth-abi": "^1.5.2",
-    "web3-utils": "^1.5.2"
+    "web3-utils": "^1.5.2",
+    "yarn": "^1.22.17"
   },
   "devDependencies": {
     "@aragon/os": "^4.0.0",
@@ -126,6 +127,7 @@
     "build:staging": "cross-env ARAGON_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm run build",
     "build:ropsten": "cross-env ARAGON_ETH_NETWORK_TYPE=ropsten npm run build",
     "build:xdai": "cross-env ARAGON_ETH_NETWORK_TYPE=xdai npm run build",
+    "build:fuji": "cross-ens ARAGON_ETH_NETWORK_TYPE=fuji npm run build",
     "lint": "eslint ./src",
     "test": "npm run lint && npm run jest",
     "jest": "jest",
@@ -137,6 +139,7 @@
     "publish:mainnet:patch": "npm run publish:patch -- --environment mainnet --build-script build:mainnet",
     "publish:rinkeby:major": "npm run publish:major -- --environment rinkeby --build-script build:rinkeby",
     "publish:rinkeby:minor": "npm run publish:minor -- --environment rinkeby --build-script build:rinkeby",
+    "publish:fuji:major": "npm run publish:major -- --environment fuji --build-script build:fuji",
     "publish:rinkeby:patch": "npm run publish:patch -- --environment rinkeby --build-script build:rinkeby",
     "publish:staging:major": "npm run publish:major -- --environment staging --build-script build:staging",
     "publish:staging:minor": "npm run publish:minor -- --environment staging --build-script build:staging",

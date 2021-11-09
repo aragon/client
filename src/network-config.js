@@ -326,7 +326,7 @@ export const networkConfigs = {
         auto: true,
         delay: 5000, // ms
         maxAttempts: 5,
-        onTimeout: false,
+        onTimeout: true,
       },
     },
   },
