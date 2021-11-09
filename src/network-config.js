@@ -287,6 +287,50 @@ export const networkConfigs = {
     },
   },
 
+  [chains.getChainInformation(43113).type]: {
+    isActive: true,
+    enableMigrateBanner: false,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x5b442a5e9020a886354c77e4ad10b11ddd883714',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://api.avax-test.network/ext/bc/C/ws',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 43113,
+      testnet: true,
+      ...chains.getChainInformation(43113), // as returned by web3.eth.net.getNetworkType()
+      live: true,
+    },
+    events: {
+      blockSizeLimit: 1024,
+    },
+    options: {
+      timeout: 30000, // ms
+
+      clientConfig: {
+        // Useful if requests are large
+        maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+        maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+
+        // Useful to keep a connection alive
+        keepalive: true,
+        keepaliveInterval: 60000, // ms
+      },
+
+      // Enable auto reconnection
+      reconnect: {
+        auto: true,
+        delay: 5000, // ms
+        maxAttempts: 5,
+        onTimeout: false,
+      },
+    },
+  },
+
   unknown: {
     isActive: false,
     addresses: {
