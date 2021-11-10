@@ -15,6 +15,11 @@
       "appName": "aragon.aragonpm.eth",
       "network": "harmonyTest"
     },
+    "fuji": {
+      "registry": "0x5b442a5e9020a886354c77e4ad10b11ddd883714",
+      "appName": "aragon.aragonpm.eth",
+      "network": "fuji"
+    },
     "rinkeby": {
       "registry": "0x98df287b6c145399aaa709692c8d308357bc085d",
       "appName": "aragon.aragonpm.eth",
