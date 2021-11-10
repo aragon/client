@@ -2,6 +2,7 @@ import aragonGovernanceImage from './images/aragon-governance.svg'
 import aragonMesh from './images/aragon-mesh.svg'
 import aragonNetworkImage from './images/aragon-network.svg'
 import aragonOneImage from './images/aragon-one.svg'
+import badgerDaoImage from './images/badgerdao.png'
 import blankDaoImage from './images/blankdao.svg'
 import brightIdImage from './images/brightid.svg'
 import decentralandImage from './images/decentraland.svg'
@@ -161,6 +162,13 @@ export const KnownOrganizations = {
         name: 'NuCypher DAO',
         template: null,
       },
+      {
+        address: '0x33d53383314190b0b885d1b6913b5a50e2d3a639',
+        domain: 'badger.aragonid.eth',
+        image: badgerDaoImage,
+        name: 'BadgerDAO',
+        template: TEMPLATE_COMPANY
+      }
     ].map(org => [org.address.toLowerCase(), org])
   ),
   rinkeby: new Map(
