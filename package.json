@@ -118,7 +118,7 @@
     "start:staging": "cross-env ARAGON_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm start",
     "start:ropsten": "cross-env ARAGON_ETH_NETWORK_TYPE=ropsten npm start",
     "start:xdai": "cross-env ARAGON_ETH_NETWORK_TYPE=xdai npm start",
-    "start:fuji": "cross-env ARAGON_ETH_NETWORK_TYPE=fuji npm start",
+    "start:fuji": "cross-env ARAGON_IPFS_GATEWAY=https://ipfs.io/ipfs ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY=5 ARAGON_ETH_NETWORK_TYPE=fuji npm start",
     "build": "node scripts/build",
     "build:local": "node scripts/build-local",
     "build:mainnet": "cross-env ARAGON_ETH_NETWORK_TYPE=main npm run build",
