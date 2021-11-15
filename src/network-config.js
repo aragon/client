@@ -114,7 +114,7 @@ export const networkConfigs = {
       dai: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
     },
     nodes: {
-      defaultEth: 'wss://mainnet-polygon-1.aragon.network/ws',
+      defaultEth: 'wss://mainnet-polygon.aragon.network/ws',
     },
     connectGraphEndpoint: null,
     settings: {
