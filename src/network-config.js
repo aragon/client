@@ -244,6 +244,45 @@ export const networkConfigs = {
     },
   },
 
+  [chains.getChainInformation(588).type]: {
+    isActive: true,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://stardust-ws.metis.io/',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 588,
+      testnet: true,
+      ...chains.getChainInformation(588),
+      live: true,
+      disableEstimateGas: true,
+    },
+  },
+  [chains.getChainInformation(1088).type]: {
+    isActive: true,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'wss://andromeda-ws.metis.io/',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 1088,
+      testnet: false,
+      ...chains.getChainInformation(1088),
+      live: true,
+      disableEstimateGas: true,
+    },
+  },
+
   [chains.getChainInformation(1666700000).type]: {
     isActive: true,
     enableMigrateBanner: false,
