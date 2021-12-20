@@ -279,8 +279,7 @@ const initWrapper = async (
   const wrapper = new Aragon(daoAddress, {
     provider,
     // Let web3 provider handle gas estimations on mainnet
-    defaultGasPriceFn: () =>
-      getGasPrice(networkType, { mainnet: { disableEstimate: true } }),
+    defaultGasPriceFn: () => getGasPrice(networkType),
     apm: {
       ensRegistryAddress: getNetworkConfig(networkType).addresses.ensRegistry,
       ipfs: ipfsConf,

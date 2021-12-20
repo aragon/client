@@ -27,6 +27,7 @@ export const networkConfigs = {
       testnet: false,
       ...chains.getChainInformation(1),
       live: true,
+      disableEstimateGas: true,
     },
   },
   [chains.getChainInformation(3).type]: {

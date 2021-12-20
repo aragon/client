@@ -143,11 +143,9 @@ export async function getIsContractAccount(web3, account) {
   }
 }
 
+const safeMinimum = '3'
 const gasPriceApi = 'https://ethgasstation.info/json/ethgasAPI.json'
-export async function getGasPrice(
-  networkType,
-  { mainnet: { safeMinimum = '3', disableEstimate } = {} } = {}
-) {
+export async function getGasPrice(networkType) {
   if (getNetworkConfig(networkType).settings.disableEstimateGas) {
     return
   }
@@ -155,11 +153,6 @@ export async function getGasPrice(
   if (!isOnEthMainnet(networkType)) {
     // Hardcode 10 for non-mainnet networks
     return toWei('10', 'gwei')
-  }
-
-  // Mainnet and gas estimation disabled; let the web3 provider handle gas price
-  if (disableEstimate) {
-    return
   }
 
   const safeMinimumInWei = toWei(safeMinimum, 'gwei')
