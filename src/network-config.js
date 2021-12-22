@@ -27,7 +27,6 @@ export const networkConfigs = {
       testnet: false,
       ...chains.getChainInformation(1),
       live: true,
-      disableEstimateGas: true,
     },
   },
   [chains.getChainInformation(3).type]: {
@@ -261,7 +260,6 @@ export const networkConfigs = {
       testnet: true,
       ...chains.getChainInformation(588),
       live: true,
-      disableEstimateGas: true,
     },
   },
   [chains.getChainInformation(1088).type]: {
@@ -280,7 +278,6 @@ export const networkConfigs = {
       testnet: false,
       ...chains.getChainInformation(1088),
       live: true,
-      disableEstimateGas: true,
     },
   },
 
