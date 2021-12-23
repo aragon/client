@@ -11,12 +11,7 @@ import { getEthSubscriptionEventDelay, getIpfsGateway } from './local-settings'
 import { workerFrameSandboxDisabled } from './security/configuration'
 import { appBaseUrl } from './util/url'
 import { noop, removeStartingSlash, pollEvery } from './util/utils'
-import {
-  getGasPrice,
-  getWeb3,
-  isEmptyAddress,
-  isValidEnsName,
-} from './util/web3'
+import { getWeb3, isEmptyAddress, isValidEnsName } from './util/web3'
 import SandboxedWorker from './worker/SandboxedWorker'
 import WorkerSubscriptionPool from './worker/WorkerSubscriptionPool'
 import { getOrganizationByAddress } from './services/gql'
@@ -279,8 +274,6 @@ const initWrapper = async (
   const wrapper = new Aragon(daoAddress, {
     provider,
     // Let web3 provider handle gas estimations on mainnet
-    defaultGasPriceFn: () =>
-      getGasPrice(networkType, { mainnet: { disableEstimate: true } }),
     apm: {
       ensRegistryAddress: getNetworkConfig(networkType).addresses.ensRegistry,
       ipfs: ipfsConf,

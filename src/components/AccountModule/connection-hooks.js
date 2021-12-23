@@ -30,6 +30,7 @@ import {
   getNetworkFullName,
 } from '../../util/network'
 import { useClientWeb3 } from '../../contexts/ClientWeb3Context'
+import { getNetworkConfig } from '../../network-config'
 
 const BLOCK_TIMESTAMP_POLL_INTERVAL = 60000
 
@@ -66,12 +67,23 @@ export function useWalletConnectionDetails(
   const theme = useTheme()
   const { networkType } = useWallet()
   const networkSettings = getNetworkSettings(networkType)
+  const networkConfig = getNetworkConfig(networkType)
+
+  const maxProviderSyncDelay =
+    networkConfig.settings?.customSyncDelays?.MAX_PROVIDER_SYNC_DELAY ||
+    MAX_PROVIDER_SYNC_DELAY
+  const mildProviderSyncDelay =
+    networkConfig.settings?.customSyncDelays?.MILD_PROVIDER_SYNC_DELAY ||
+    MILD_PROVIDER_SYNC_DELAY
+  const okProviderSyncDelay =
+    networkConfig.settings?.customSyncDelays?.OK_PROVIDER_SYNC_DELAY ||
+    OK_PROVIDER_SYNC_DELAY
 
   const isWalletAndClientSynced =
-    Math.abs(walletSyncDelay - clientSyncDelay) <= OK_PROVIDER_SYNC_DELAY
+    Math.abs(walletSyncDelay - clientSyncDelay) <= okProviderSyncDelay
   const networkSlowdown =
-    walletSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
-    clientSyncDelay >= MILD_PROVIDER_SYNC_DELAY &&
+    walletSyncDelay >= mildProviderSyncDelay &&
+    clientSyncDelay >= mildProviderSyncDelay &&
     isWalletAndClientSynced
 
   const defaultOkConnectionDetails = {
@@ -90,8 +102,8 @@ export function useWalletConnectionDetails(
     !clientOnline ||
     !walletOnline ||
     networkSlowdown ||
-    clientSyncDelay >= MAX_PROVIDER_SYNC_DELAY ||
-    walletSyncDelay >= MAX_PROVIDER_SYNC_DELAY
+    clientSyncDelay >= maxProviderSyncDelay ||
+    walletSyncDelay >= maxProviderSyncDelay
   ) {
     return {
       connectionMessage: 'No connection',
@@ -99,8 +111,8 @@ export function useWalletConnectionDetails(
       connectionColor: theme.negative,
     }
   } else if (
-    walletSyncDelay >= OK_PROVIDER_SYNC_DELAY ||
-    clientSyncDelay >= OK_PROVIDER_SYNC_DELAY
+    walletSyncDelay >= okProviderSyncDelay ||
+    clientSyncDelay >= okProviderSyncDelay
   ) {
     return {
       connectionMessage: 'Syncing issues',
@@ -268,7 +280,19 @@ export function useSyncState(
     }
   }
 
-  if (clientSyncDelay >= 30 && walletSyncDelay >= 30) {
+  const networkConfig = getNetworkConfig(networkType)
+
+  const maxProviderSyncDelay =
+    networkConfig.settings?.customSyncDelays?.MAX_PROVIDER_SYNC_DELAY ||
+    MAX_PROVIDER_SYNC_DELAY
+  const okProviderSyncDelay =
+    networkConfig.settings?.customSyncDelays?.OK_PROVIDER_SYNC_DELAY ||
+    OK_PROVIDER_SYNC_DELAY
+
+  if (
+    clientSyncDelay >= maxProviderSyncDelay &&
+    walletSyncDelay >= maxProviderSyncDelay
+  ) {
     return {
       header: 'Last known state',
       info: `: ${clientSyncDelay} min behind`,
@@ -276,7 +300,10 @@ export function useSyncState(
     }
   }
 
-  if (clientSyncDelay >= 3 || walletSyncDelay >= 3) {
+  if (
+    clientSyncDelay >= okProviderSyncDelay ||
+    walletSyncDelay >= okProviderSyncDelay
+  ) {
     return {
       header: 'Out of sync',
       info: `: ${clientSyncDelay} min behind`,
