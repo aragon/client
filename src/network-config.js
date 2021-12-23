@@ -260,6 +260,10 @@ export const networkConfigs = {
     settings: {
       chainId: 588,
       testnet: true,
+      customSyncDelays: {
+        MILD_PROVIDER_SYNC_DELAY: 25,
+        OK_PROVIDER_SYNC_DELAY: 15,
+      },
       ...chains.getChainInformation(588),
       live: true,
     },
@@ -278,6 +282,10 @@ export const networkConfigs = {
     settings: {
       chainId: 1088,
       testnet: false,
+      customSyncDelays: {
+        MILD_PROVIDER_SYNC_DELAY: 25,
+        OK_PROVIDER_SYNC_DELAY: 15,
+      },
       ...chains.getChainInformation(1088),
       live: true,
     },
