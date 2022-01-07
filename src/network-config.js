@@ -4,7 +4,7 @@ import { chains } from 'use-wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
-const DAI_RINKEBY_TOKEN_ADDRESS = '0x0527e400502d0cb4f214dd0d2f2a323fc88ff924'
+const DAI_RINKEBY_TOKEN_ADDRESS = '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa'
 
 // TODO stop exposing data object [vr 17-09-2021]
 // cconnectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
