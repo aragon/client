@@ -49,9 +49,9 @@ export default {
   header,
   icon,
   description: `
-  Facilitate collaboration with an organization that makes it easy for contributors to simply part ways when disagreements occur.
+  Facilitate collaboration with an organization that makes it easy for contributors to simply part ways when disagreements occur (the maintainer stopped active support for this template).
   `,
-  userGuideUrl: 'https://1hive.org/dandelion',
+  userGuideUrl: 'https://github.com/1Hive/dandelion-template/blob/master/README.md',
   sourceCodeUrl: 'https://github.com/1hive/dandelion-org',
   registry: 'aragonpm.eth',
   apps: [
