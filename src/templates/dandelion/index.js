@@ -52,7 +52,7 @@ export default {
   Facilitate collaboration with an organization that makes it easy for contributors to simply part ways when disagreements occur (the maintainer stopped active support for this template).
   `,
   userGuideUrl:
-    'https://github.com/1Hive/dandelion-template/blob/master/README.md',
+    'https://github.com/1Hive/dandelion-template/blob/master/README.md'
   sourceCodeUrl: 'https://github.com/1hive/dandelion-org',
   registry: 'aragonpm.eth',
   apps: [
