@@ -105,7 +105,10 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
               `}
             >
               {template.name}
-              {(template.disabled || template.new || template.beta) && (
+              {(template.disabled ||
+                template.new ||
+                template.beta ||
+                template.unsupported) && (
                 <Tag
                   mode="new"
                   css={`
@@ -117,6 +120,8 @@ function TemplateDetails({ template, visible, onUse, onClose }) {
                     ? 'Coming soon'
                     : template.beta
                     ? 'Beta'
+                    : template.unsupported
+                    ? 'Unsupported'
                     : 'New'}
                 </Tag>
               )}

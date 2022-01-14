@@ -45,13 +45,14 @@ function adjustVotingSettings(support, quorum) {
 export default {
   id: 'dandelion-org-template.aragonpm.eth',
   name: 'Dandelion',
-  new: true,
+  unsupported: true,
   header,
   icon,
   description: `
   Facilitate collaboration with an organization that makes it easy for contributors to simply part ways when disagreements occur.
   `,
-  userGuideUrl: 'https://1hive.org/dandelion',
+  userGuideUrl:
+    'https://github.com/1Hive/dandelion-template/blob/master/README.md',
   sourceCodeUrl: 'https://github.com/1hive/dandelion-org',
   registry: 'aragonpm.eth',
   apps: [
