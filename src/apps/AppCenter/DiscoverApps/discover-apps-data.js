@@ -40,7 +40,7 @@ export const appsInDevelopment = [
         Facilitate collaboration with an organization that makes it easy
         for contributors to simply part ways when disagreements occur.
       `,
-      link: 'https://1hive.org/dandelion',
+      link: 'https://github.com/1Hive/dandelion-template',
     },
     {
       icon: redemptionsIcon,
