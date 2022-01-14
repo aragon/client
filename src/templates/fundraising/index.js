@@ -146,14 +146,14 @@ function extractCollateralizationSettings(fundraising) {
 export default {
   id: 'fundraising-multisig-template.aragonpm.eth',
   name: 'Fundraising',
-  beta: true,
+  unsupported: true,
   header,
   icon,
   description: `
     Launch a transparent and accountable crowdfunding campaign for your
     organization.
   `,
-  userGuideUrl: 'https://fundraising.aragon.black/',
+  userGuideUrl: 'https://github.com/AragonBlack/fundraising#readme',
   sourceCodeUrl: 'https://github.com/AragonBlack/fundraising',
   registry: 'aragonpm.eth',
   apps: [
