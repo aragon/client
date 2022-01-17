@@ -4,7 +4,6 @@ import openEnterpriseIcon from './icons/open-enterprise.svg'
 import pandoIcon from './icons/pando.svg'
 import payrollIcon from './icons/payroll.svg'
 import redemptionsIcon from './icons/redemptions.svg'
-import surveyIcon from './icons/survey.svg'
 import timeLockIcon from './icons/time-lock.svg'
 import tokenRequestIcon from './icons/token-request.svg'
 import { shuffleArray } from '../../../util/utils'
@@ -25,7 +24,7 @@ export const appsInDevelopment = [
     {
       icon: openEnterpriseIcon,
       name: 'Open Enterprise',
-      status: 'ready',
+      status: 'unsupported',
       description: `
         Suite for open and fluid organizations.
         Bounties, range voting, and more.
@@ -35,7 +34,7 @@ export const appsInDevelopment = [
     {
       icon: dandelionIcon,
       name: 'Dandelion',
-      status: 'ready',
+      status: 'unsupported',
       description: `
         Facilitate collaboration with an organization that makes it easy
         for contributors to simply part ways when disagreements occur.
@@ -75,13 +74,6 @@ export const appsInDevelopment = [
   ]),
   // Experimental
   ...shuffleArray([
-    {
-      icon: surveyIcon,
-      name: 'Survey',
-      status: 'experimental',
-      description: `Create multi-option signaling votes.`,
-      link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
-    },
     {
       icon: payrollIcon,
       name: 'Payroll',
