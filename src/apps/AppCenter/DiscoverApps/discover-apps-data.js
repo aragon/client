@@ -76,13 +76,6 @@ export const appsInDevelopment = [
   // Experimental
   ...shuffleArray([
     {
-      icon: surveyIcon,
-      name: 'Survey',
-      status: 'experimental',
-      description: `Create multi-option signaling votes.`,
-      link: 'https://github.com/aragon/aragon-apps/tree/master/apps/survey',
-    },
-    {
       icon: payrollIcon,
       name: 'Payroll',
       status: 'experimental',
