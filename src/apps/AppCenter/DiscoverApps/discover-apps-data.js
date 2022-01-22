@@ -24,7 +24,7 @@ export const appsInDevelopment = [
     {
       icon: openEnterpriseIcon,
       name: 'Open Enterprise',
-      status: 'unsupported',
+      status: 'not maintained',
       description: `
         Suite for open and fluid organizations.
         Bounties, range voting, and more.
@@ -34,7 +34,7 @@ export const appsInDevelopment = [
     {
       icon: dandelionIcon,
       name: 'Dandelion',
-      status: 'unsupported',
+      status: 'not maintained',
       description: `
         Facilitate collaboration with an organization that makes it easy
         for contributors to simply part ways when disagreements occur.
