@@ -54,7 +54,7 @@ function TemplateCard({ onOpen, template }) {
               {(template.disabled ||
                 template.new ||
                 template.beta ||
-                template.unsupported) && (
+                template.not_maintained) && (
                 <Tag
                   mode="new"
                   css={`
@@ -66,8 +66,8 @@ function TemplateCard({ onOpen, template }) {
                     ? 'Coming soon'
                     : template.beta
                     ? 'Beta'
-                    : template.unsupported
-                    ? 'Unsupported'
+                    : template.not_maintained
+                    ? 'Not Maintained'
                     : 'New'}
                 </Tag>
               )}
