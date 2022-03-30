@@ -39,11 +39,11 @@ export const connectors = [
         },
       }
     : null,
-  WALLETCONNECT_URL
+  !WALLETCONNECT_URL
     ? {
         id: 'walletconnect',
         properties: {
-          chainId: 1,
+          chainId: [1, 4, 137, 80001, 1666600000, 1666700000, 97, 56, 588, 1088], // add here to handle more injected chains
           rpc: WALLETCONNECT_URL,
         },
       }
