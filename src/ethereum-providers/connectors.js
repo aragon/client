@@ -1,7 +1,12 @@
-import { getPortisDappId, getFortmaticApiKey } from '../local-settings'
+import {
+  getPortisDappId,
+  getFortmaticApiKey,
+  getWalletconnectRpcUrl,
+} from '../local-settings'
 
 const FORMATIC_KEY = getFortmaticApiKey()
 const PORTIS_ID = getPortisDappId()
+const WALLETCONNECT_URL = getWalletconnectRpcUrl()
 
 export const connectors = [
   {
@@ -12,12 +17,6 @@ export const connectors = [
   },
   {
     id: 'frame',
-    properties: {
-      chainId: 1,
-    },
-  },
-  {
-    id: 'walletconnect',
     properties: {
       chainId: 1,
     },
@@ -37,6 +36,15 @@ export const connectors = [
         properties: {
           dAppId: PORTIS_ID,
           chainId: [1],
+        },
+      }
+    : null,
+  WALLETCONNECT_URL
+    ? {
+        id: 'walletconnect',
+        properties: {
+          chainId: 1,
+          rpc: WALLETCONNECT_URL,
         },
       }
     : null,
