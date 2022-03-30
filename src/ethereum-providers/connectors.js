@@ -16,6 +16,12 @@ export const connectors = [
       chainId: 1,
     },
   },
+  {
+    id: 'walletconnect',
+    properties: {
+      chainId: 1,
+    },
+  },
   FORMATIC_KEY
     ? {
         id: 'fortmatic',
