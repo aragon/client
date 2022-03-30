@@ -39,7 +39,7 @@ export const connectors = [
         },
       }
     : null,
-  !WALLETCONNECT_URL
+  WALLETCONNECT_URL
     ? {
         id: 'walletconnect',
         properties: {
