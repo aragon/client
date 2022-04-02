@@ -1,7 +1,4 @@
-import {
-  getPortisDappId,
-  getFortmaticApiKey,
-} from '../local-settings'
+import { getPortisDappId, getFortmaticApiKey } from '../local-settings'
 
 const FORMATIC_KEY = getFortmaticApiKey()
 const PORTIS_ID = getPortisDappId()
