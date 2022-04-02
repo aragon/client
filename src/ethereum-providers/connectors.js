@@ -1,7 +1,6 @@
 import {
   getPortisDappId,
   getFortmaticApiKey,
-  getWalletconnectRpcUrl,
 } from '../local-settings'
 
 const FORMATIC_KEY = getFortmaticApiKey()
