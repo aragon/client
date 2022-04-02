@@ -6,7 +6,6 @@ import {
 
 const FORMATIC_KEY = getFortmaticApiKey()
 const PORTIS_ID = getPortisDappId()
-const WALLETCONNECT_URL = getWalletconnectRpcUrl()
 
 export const connectors = [
   {
