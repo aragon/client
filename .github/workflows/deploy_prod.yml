@@ -36,7 +36,7 @@ jobs:
       - name: Activate fleek
         run: cp .github/fleek/prod.fleek.json ./.fleek.json
       - name: Install build dependencies
-        run: apt-get update && apt-get install -y build-essential git libusb-1.0-0 libusb-1.0-0-dev libudev-dev
+        run: sudo apt-get update && sudo apt-get install -y build-essential git libusb-1.0-0 libusb-1.0-0-dev libudev-dev
       - name: Build the client
         env:
           REACT_APP_DEPLOY_VERSION: ${{ github.sha }}
