@@ -46,7 +46,6 @@ jobs:
           ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY: 5000
           ARAGON_FORTMATIC_API_KEY: ${{ secrets.FORMATIC_API_KEY }}
           ARAGON_PORTIS_DAPP_ID: ${{ secrets.PORTIS_DAPP_ID }}
-          ARAGON_WALLETCONNECT_URL: ${{ secrets.WALLETCONNECT_URL }}
         # TODO remove --network-concurrency 1 once use-wallet 0.9.0 is published
         run: yarn install --frozen-lockfile --network-concurrency 1 && yarn build
       - name: Deploy fleek
