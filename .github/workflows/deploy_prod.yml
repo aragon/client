@@ -61,7 +61,13 @@ jobs:
         env:
           COMMIT_SHA: ${{ github.sha }}
         run: |
-          for f in $(find ./public/ -name "*.js.map") ; do 
-            export filename=${f%.*}
-            curl -X POST https://apm-monitoring.aragon.org/assets/v1/sourcemaps -F service_name="client" -F service_version="$COMMIT_SHA" -F bundle_filepath="http://localhost/${filename#./public/}" -F sourcemap=@$f
+          for f in $(find ./public/ -name *.js.map) ; do 
+            curl -X POST "https://kibana-sourcemaps.aragon.org/api/apm/sourcemaps" \
+              -H 'Content-Type: multipart/form-data' \
+              -H 'kbn-xsrf: true' \
+              -H 'Authorization: ApiKey ${{ secrets.APM_API_KEY }}' \
+              -F service_name="client" \
+              -F service_version="$COMMIT_SHA" \
+              -F bundle_filepath="http://localhost/static/js/$(basename $f)" \
+              -F sourcemap=@$f
           done
