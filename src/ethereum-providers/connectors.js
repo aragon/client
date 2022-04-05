@@ -39,8 +39,8 @@ export const connectors = [
     properties: {
       chainId: [1, 4, 137, 80001, 1666600000, 1666700000, 97, 56, 588, 1088], // add here to handle more injected chains
       rpc: {
-        '1': 'https://mainnet.infura.io/v3/dd908cbc08714031bbf381d443083123',
-        '4': 'https://rinkey.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161',
+        '1': 'https://mainnet.eth.aragon.network',
+        '4': 'https://rinkeby.eth.aragon.network',
         '137': 'https://polygon-rpc.com',
         '80001': 'https://rpc-mumbai.maticvigil.com',
         '1666600000': 'https://api.harmony.one/',
