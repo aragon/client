@@ -14484,10 +14484,10 @@ use-token@^0.2.0:
   dependencies:
     js-sha3 "^0.8.0"
 
-use-wallet@^0.13.4:
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.13.4.tgz#78c8facfdd910a03719ef808043534a8f367c20a"
-  integrity sha512-C5bBobwAKi/SbIX+JzHkxChqU1A2tIcx8fQPoL0gzTGYkqvH97EchnT8yRQGMl2RiICua2nGMLrfa42Yexzs+Q==
+use-wallet@^0.13.6:
+  version "0.13.6"
+  resolved "https://registry.yarnpkg.com/use-wallet/-/use-wallet-0.13.6.tgz#4ba24005550943fe6640d4a29fbf7e8bfa8c879b"
+  integrity sha512-GBypStD/y4tqUtWuDG2qhAr8XoTqMzoUybFQmHYOireeprmjqXPKFimhW7OpOZqt1hB21FmDYoGyFUgrbOzpeQ==
   dependencies:
     "@aragon/provided-connector" "^6.0.8"
     "@typescript-eslint/parser" "^4.1.0"
