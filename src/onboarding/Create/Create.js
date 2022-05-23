@@ -269,6 +269,7 @@ function useTemplateRepoInformation(templateRepoAddress, setError) {
 function useDeploymentState(
   account,
   applyEstimateGas,
+  applyEstimatePriorityFee,
   attempts,
   status,
   template,
@@ -341,6 +342,7 @@ function useDeploymentState(
           }
           try {
             transaction = await applyEstimateGas(transaction)
+            await applyEstimatePriorityFee(transaction)
           } catch (_) {}
 
           if (!cancelled) {
@@ -509,6 +511,18 @@ const Create = React.memo(function Create({
     [web3]
   )
 
+  const applyEstimatePriorityFee = useCallback(async transaction => {
+    const gasPrice = await web3.eth.getGasPrice()
+    const priorityFeeHistory = await web3.eth.getFeeHistory("1", "latest");
+    if(gasPrice && priorityFeeHistory && priorityFeeHistory.baseFeePerGas && priorityFeeHistory.baseFeePerGas.length > 0) {
+      const [baseFee] = priorityFeeHistory.baseFeePerGas;
+      transaction.maxPriorityFeePerGas = web3.utils.numberToHex(parseInt(gasPrice) - web3.utils.hexToNumber(baseFee));
+      transaction.gasPrice = gasPrice;
+      transaction.maxFeePerGas = gasPrice + web3.utils.hexToNumber(baseFee);
+    }
+    return transaction
+  })
+
   const [attempts, setAttempts] = useState(0)
 
   const {
@@ -519,6 +533,7 @@ const Create = React.memo(function Create({
   } = useDeploymentState(
     account,
     applyEstimateGas,
+    applyEstimatePriorityFee,
     attempts,
     status,
     template,
