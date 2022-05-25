@@ -44,6 +44,9 @@ const WEB3_TX_OBJECT_KEYS = new Set([
   'gasPrice',
   'data',
   'nonce',
+  'maxPriorityFeePerGas',
+  'gasPrice',
+  'maxFeePerGas',
 ])
 
 const getAppName = (apps, proxyAddress) => {
@@ -237,9 +240,13 @@ class SignerPanel extends React.PureComponent {
 
     try {
       if (pretransaction) {
+        pretransaction = await this.applyGasAndPriorityEstimation(
+          pretransaction
+        )
         await this.signTransaction(pretransaction, intent, true)
       }
 
+      transaction = await this.applyGasAndPriorityEstimation(transaction)
       const transactionHash = await this.signTransaction(
         transaction,
         intent,
@@ -306,6 +313,34 @@ class SignerPanel extends React.PureComponent {
     if (!opened) {
       this.setState({ ...INITIAL_STATE })
     }
+  }
+
+  // adds maxPriorityFeePerGas, gasPrice and maxFeePerGas to the transaction if the RPC supports these
+  applyGasAndPriorityEstimation = async transaction => {
+    const { walletWeb3 } = this.props
+    const priorityFeeHistory = await walletWeb3.eth.getFeeHistory(
+      '4',
+      'latest',
+      [10]
+    )
+    if (
+      priorityFeeHistory &&
+      priorityFeeHistory.reward &&
+      priorityFeeHistory.reward.length > 0
+    ) {
+      // takes the top 10 of the last 4 blocks and take the average after removing zero values
+      const feeHistories = priorityFeeHistory.reward
+        .map(fee => walletWeb3.utils.hexToNumber(fee[0]))
+        .filter(fee => fee > 0)
+      return {
+        ...transaction,
+        maxPriorityFeePerGas: Math.round(
+          feeHistories.reduce((acc, fee) => acc + fee, 0) /
+            feeHistories.length
+        ),
+      }
+    }
+    return transaction
   }
 
   render() {

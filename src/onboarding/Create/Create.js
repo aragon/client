@@ -342,7 +342,7 @@ function useDeploymentState(
           }
           try {
             transaction = await applyEstimateGas(transaction)
-            await applyEstimatePriorityFee(transaction)
+            transaction = await applyEstimatePriorityFee(transaction)
           } catch (_) {}
 
           if (!cancelled) {
@@ -512,13 +512,22 @@ const Create = React.memo(function Create({
   )
 
   const applyEstimatePriorityFee = useCallback(async transaction => {
-    const gasPrice = await web3.eth.getGasPrice()
-    const priorityFeeHistory = await web3.eth.getFeeHistory("1", "latest");
-    if(gasPrice && priorityFeeHistory && priorityFeeHistory.baseFeePerGas && priorityFeeHistory.baseFeePerGas.length > 0) {
-      const [baseFee] = priorityFeeHistory.baseFeePerGas;
-      transaction.maxPriorityFeePerGas = web3.utils.numberToHex(parseInt(gasPrice) - web3.utils.hexToNumber(baseFee));
-      transaction.gasPrice = gasPrice;
-      transaction.maxFeePerGas = gasPrice + web3.utils.hexToNumber(baseFee);
+    const priorityFeeHistory = await web3.eth.getFeeHistory('4', 'latest', [10])
+    if (
+      priorityFeeHistory &&
+      priorityFeeHistory.reward &&
+      priorityFeeHistory.reward.length > 0
+    ) {
+      // takes the top 10 of the last 4 blocks and take the average after removing zero values
+      const feeHistories = priorityFeeHistory.reward
+        .map(fee => walletWeb3.utils.hexToNumber(fee[0]))
+        .filter(fee => fee > 0)
+      return {
+        ...transaction,
+        maxPriorityFeePerGas: Math.round(
+          feeHistories.reduce((acc, fee) => acc + fee, 0) / feeHistories.length
+        ),
+      }
     }
     return transaction
   })
