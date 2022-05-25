@@ -511,26 +511,32 @@ const Create = React.memo(function Create({
     [web3]
   )
 
-  const applyEstimatePriorityFee = useCallback(async transaction => {
-    const priorityFeeHistory = await web3.eth.getFeeHistory('4', 'latest', [10])
-    if (
-      priorityFeeHistory &&
-      priorityFeeHistory.reward &&
-      priorityFeeHistory.reward.length > 0
-    ) {
-      // takes the top 10 of the last 4 blocks and take the average after removing zero values
-      const feeHistories = priorityFeeHistory.reward
-        .map(fee => walletWeb3.utils.hexToNumber(fee[0]))
-        .filter(fee => fee > 0)
-      return {
-        ...transaction,
-        maxPriorityFeePerGas: Math.round(
-          feeHistories.reduce((acc, fee) => acc + fee, 0) / feeHistories.length
-        ),
+  const applyEstimatePriorityFee = useCallback(
+    async transaction => {
+      const priorityFeeHistory = await web3.eth.getFeeHistory('4', 'latest', [
+        10,
+      ])
+      if (
+        priorityFeeHistory &&
+        priorityFeeHistory.reward &&
+        priorityFeeHistory.reward.length > 0
+      ) {
+        // takes the top 10 of the last 4 blocks and take the average after removing zero values
+        const feeHistories = priorityFeeHistory.reward
+          .map(fee => web3.utils.hexToNumber(fee[0]))
+          .filter(fee => fee > 0)
+        return {
+          ...transaction,
+          maxPriorityFeePerGas: Math.round(
+            feeHistories.reduce((acc, fee) => acc + fee, 0) /
+              feeHistories.length
+          ),
+        }
       }
-    }
-    return transaction
-  })
+      return transaction
+    },
+    [web3]
+  )
 
   const [attempts, setAttempts] = useState(0)
 

@@ -335,8 +335,7 @@ class SignerPanel extends React.PureComponent {
       return {
         ...transaction,
         maxPriorityFeePerGas: Math.round(
-          feeHistories.reduce((acc, fee) => acc + fee, 0) /
-            feeHistories.length
+          feeHistories.reduce((acc, fee) => acc + fee, 0) / feeHistories.length
         ),
       }
     }
