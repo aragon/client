@@ -250,7 +250,6 @@ export const KnownOrganizations = {
       },
     ].map(org => [org.address.toLowerCase(), org])
   ),
-
 }
 
 // Get the organizations that might appear in the suggestions,

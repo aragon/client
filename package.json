@@ -136,7 +136,8 @@
     "publish:staging:patch": "npm run publish:patch -- --environment staging --build-script build:staging",
     "publish:ropsten:major": "npm run publish:major -- --environment ropsten --build-script build:ropsten",
     "publish:ropsten:minor": "npm run publish:minor -- --environment ropsten --build-script build:ropsten",
-    "publish:ropsten:patch": "npm run publish:patch -- --environment ropsten --build-script build:ropsten"
+    "publish:ropsten:patch": "npm run publish:patch -- --environment ropsten --build-script build:ropsten",
+    "postinstall": "patch-package"
   },
   "browserslist": {
     "development": ">2%, last 1 edge versions, not ie > 0, not op_mini all",
