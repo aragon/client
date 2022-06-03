@@ -1,0 +1,22 @@
+diff --git a/node_modules/radspec/dist/parser/index.js b/node_modules/radspec/dist/parser/index.js
+index a50e29b..14465dc 100644
+--- a/node_modules/radspec/dist/parser/index.js
++++ b/node_modules/radspec/dist/parser/index.js
+@@ -87,7 +87,7 @@
+    * @param  {Array<Node>} astBody Subtree of AST being walked
+    * @return {Node}
+    */primary(){if(this.matches("NUMBER","STRING","HEXADECIMAL","BOOLEAN")){let type={NUMBER:"NumberLiteral",STRING:"StringLiteral",HEXADECIMAL:"BytesLiteral",BOOLEAN:"BoolLiteral"}[this.previous().type];return{type,value:this.previous().value}}if(this.matches("LEFT_PAREN")){let expression;do// Keep munching expressions in the context of the current expression
+-expression=this.comparison(expression?[expression]:[]);while(!this.eof()&&!this.matches("RIGHT_PAREN"));return this.eof()&&this.report("Unterminated grouping"),{type:"GroupedExpression",body:expression}}this.report(`Unknown token "${this.consume().type}"`)}/**
++    expression=this.comparison(expression?[expression]:[]);while(!this.eof()&&!this.matches("RIGHT_PAREN"));return this.eof()&&this.report("Unterminated grouping"),{type:"GroupedExpression",body:expression}}return this.matches("COLON")?{type:"StringLiteral",value:null}:void this.report(`Unknown token "${this.consume().type}"`)}/**
+    * Try to parse a type.
+    *
+    * @return {string} The type
+@@ -115,7 +115,7 @@ const hasSelectedTypeInList=!!typeList.find(item=>item.selected);return hasSelec
+    *
+    * @param  {Array<Node>} astBody Subtree of AST being walked
+    * @return {Node}
+-   */walk(astBody){let token=this.peek();if("MONOLOGUE"===token.type)return{type:"MonologueStatement",value:this.consume().value};if("TICK"===token.type){let node={type:"ExpressionStatement",body:[]};for(this.matches("TICK");!this.eof()&&"TICK"!==this.peek().type;)node.body.push(this.walk(node.body));return this.eof()&&this.report("Unterminated expression"),this.matches("TICK"),node}return this.comparison(astBody)}/**
++   */walk(astBody){let token=this.peek();if("MONOLOGUE"===token.type)return{type:"MonologueStatement",value:this.consume().value};if("TICK"===token.type){let node={type:"ExpressionStatement",body:[]};this.matches("TICK");let loopDetectorCursor=0,loopDetector=!1;for(;!this.eof()&&"TICK"!==this.peek().type;)if(node.body.push(this.walk(node.body)),loopDetectorCursor++,1e4<=loopDetectorCursor){loopDetector=!0;break}if(loopDetector){for(;!this.eof()&&"TICK"!==this.peek().type;)this.cursor++;this.report("Infinite loop detected")}return this.eof()&&this.report("Unterminated expression"),this.matches("TICK"),node}return this.comparison(astBody)}/**
+    * Walks the token list and returns an AST.
+    *
+    * @return {AST} The AST
