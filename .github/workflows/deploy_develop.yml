@@ -47,8 +47,6 @@ jobs:
           ARAGON_PORTIS_DAPP_ID: ${{ secrets.PORTIS_DAPP_ID }}
         # TODO remove --network-concurrency 1 once use-wallet 0.9.0 is published
         run: yarn install --frozen-lockfile --network-concurrency 1 && yarn build
-      - name: Replace fleek storage api url
-        run: for f in $(find ./public/ -type f); do sed -i 's/storageapi.fleek.co/storageapi2.fleek.co/g' $f; done
       - name: Deploy fleek
         id: deploy
         uses: fleekhq/action-deploy@v1
