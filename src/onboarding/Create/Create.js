@@ -31,6 +31,7 @@ import { getIpfsGateway } from '../../local-settings'
 import { web3Provider } from '../../Web3Provider'
 import { trackEvent, events } from '../../analytics'
 import { completeDomain } from '../../check-domain'
+import { getPriorityFeeEstimation } from '../../util/web3'
 
 const MAX_RETRY = 5
 
@@ -513,25 +514,11 @@ const Create = React.memo(function Create({
 
   const applyEstimatePriorityFee = useCallback(
     async transaction => {
-      const priorityFeeHistory = await web3.eth.getFeeHistory('4', 'latest', [
-        10,
-      ])
-      if (priorityFeeHistory?.reward?.length > 0) {
-        // takes the top 10 of the last 4 blocks and take the average after removing zero values
-        const feeHistories = priorityFeeHistory.reward
-          .map(fee => web3.utils.hexToNumber(fee[0]))
-          .filter(fee => fee > 0)
-        if (feeHistories.length > 0) {
-          return {
-            ...transaction,
-            maxPriorityFeePerGas: Math.round(
-              feeHistories.reduce((acc, fee) => acc + fee, 0) /
-                feeHistories.length
-            ),
-          }
-        }
+      const estimatedPriorityFee = await getPriorityFeeEstimation(web3)
+      return {
+        ...transaction,
+        maxPriorityFeePerGas: estimatedPriorityFee,
       }
-      return transaction
     },
     [web3]
   )

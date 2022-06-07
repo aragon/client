@@ -256,6 +256,29 @@ export function transformAddresses(str, callback) {
     )
 }
 
+/**
+ * Calculates the current priority fee estimation
+ *
+ * @export
+ * @param {*} web3
+ * @return {number | undefined} 
+ */
+export async function getPriorityFeeEstimation(web3) {
+  const priorityFeeHistory = await web3.eth.getFeeHistory('4', 'latest', [10])
+  if (priorityFeeHistory?.reward?.length > 0) {
+    // takes the top 10 of the last 4 blocks and take the average after removing zero values
+    const feeHistories = priorityFeeHistory.reward
+      .map(fee => web3.utils.hexToNumber(fee[0]))
+      .filter(fee => fee > 0)
+    if (feeHistories.length > 0) {
+      return Math.round(
+        feeHistories.reduce((acc, fee) => acc + fee, 0) / feeHistories.length
+      )
+    }
+  }
+  return undefined
+}
+
 // Re-export some utilities from web3-utils
 export {
   fromWei,

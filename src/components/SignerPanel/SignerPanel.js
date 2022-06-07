@@ -6,7 +6,7 @@ import { Transition, animated } from 'react-spring'
 import { useWallet } from '../../contexts/wallet'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { AppType, EthereumAddressType } from '../../prop-types'
-import { addressesEqual } from '../../util/web3'
+import { addressesEqual, getPriorityFeeEstimation } from '../../util/web3'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
@@ -318,27 +318,11 @@ class SignerPanel extends React.PureComponent {
   // adds maxPriorityFeePerGas, gasPrice and maxFeePerGas to the transaction if the RPC supports these
   applyGasAndPriorityEstimation = async transaction => {
     const { walletWeb3 } = this.props
-    const priorityFeeHistory = await walletWeb3.eth.getFeeHistory(
-      '4',
-      'latest',
-      [10]
-    )
-    if (priorityFeeHistory?.reward?.length > 0) {
-      // takes the top 10 of the last 4 blocks and take the average after removing zero values
-      const feeHistories = priorityFeeHistory.reward
-        .map(fee => walletWeb3.utils.hexToNumber(fee[0]))
-        .filter(fee => fee > 0)
-      if (feeHistories.length > 0) {
-        return {
-          ...transaction,
-          maxPriorityFeePerGas: Math.round(
-            feeHistories.reduce((acc, fee) => acc + fee, 0) /
-              feeHistories.length
-          ),
-        }
-      }
+    const estimatedPriorityFee = await getPriorityFeeEstimation(walletWeb3)
+    return {
+      ...transaction,
+      maxPriorityFeePerGas: estimatedPriorityFee,
     }
-    return transaction
   }
 
   render() {
