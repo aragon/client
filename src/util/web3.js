@@ -260,8 +260,8 @@ export function transformAddresses(str, callback) {
  * Calculates the current priority fee estimation
  *
  * @export
- * @param {*} web3
- * @return {number | undefined} 
+ * @param {*} web3 The connected web3 instance
+ * @return {number | undefined} Returns the estimated priority fee or undefined
  */
 export async function getPriorityFeeEstimation(web3) {
   const priorityFeeHistory = await web3.eth.getFeeHistory('4', 'latest', [10])
