@@ -153,7 +153,8 @@ export const networkConfigs = {
       dai: '0x94f417C155bB3fF7365828Bb7aCD26E84C17e830',
     },
     nodes: {
-      defaultEth: 'wss://matic-testnet-archive-ws.bwarelabs.com',
+      defaultEth:
+        'wss://polygon-mumbai.g.alchemy.com/v2/wgOXirpZVAKhsdwji9jzIE2rax8BsmHT',
     },
     connectGraphEndpoint: null,
     settings: {
