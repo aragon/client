@@ -106,7 +106,7 @@
     "rimraf": "^2.6.2"
   },
   "resolutions": {
-    "@aragon/wrapper/web3": "1.2.6",
+    "@aragon/wrapper/web3": "1.7.5",
     "@aragon/wrapper/web3-eth-abi": "1.2.6"
   },
   "scripts": {
@@ -147,12 +147,6 @@
   "browserslist": {
     "development": ">2%, last 1 edge versions, not ie > 0, not op_mini all",
     "production": ">2%, last 1 edge versions, not ie > 0, not op_mini all"
-  },
-  "husky": {
-    "hooks": {
-      "pre-push": "npm test",
-      "pre-commit": "lint-staged"
-    }
   },
   "lint-staged": {
     "src/*.js": [
