@@ -6,7 +6,7 @@ import { Transition, animated } from 'react-spring'
 import { useWallet } from '../../contexts/wallet'
 import { ActivityContext } from '../../contexts/ActivityContext'
 import { AppType, EthereumAddressType } from '../../prop-types'
-import { addressesEqual } from '../../util/web3'
+import { addressesEqual, getPriorityFeeEstimation } from '../../util/web3'
 import ConfirmTransaction from './ConfirmTransaction'
 import ConfirmMsgSign from './ConfirmMsgSign'
 import SigningStatus from './SigningStatus'
@@ -44,6 +44,9 @@ const WEB3_TX_OBJECT_KEYS = new Set([
   'gasPrice',
   'data',
   'nonce',
+  'maxPriorityFeePerGas',
+  'gasPrice',
+  'maxFeePerGas',
 ])
 
 const getAppName = (apps, proxyAddress) => {
@@ -237,9 +240,13 @@ class SignerPanel extends React.PureComponent {
 
     try {
       if (pretransaction) {
+        pretransaction = await this.applyGasAndPriorityEstimation(
+          pretransaction
+        )
         await this.signTransaction(pretransaction, intent, true)
       }
 
+      transaction = await this.applyGasAndPriorityEstimation(transaction)
       const transactionHash = await this.signTransaction(
         transaction,
         intent,
@@ -305,6 +312,16 @@ class SignerPanel extends React.PureComponent {
     // Reset signer state only after it has finished transitioning out
     if (!opened) {
       this.setState({ ...INITIAL_STATE })
+    }
+  }
+
+  // adds maxPriorityFeePerGas, gasPrice and maxFeePerGas to the transaction if the RPC supports these
+  applyGasAndPriorityEstimation = async transaction => {
+    const { walletWeb3 } = this.props
+    const estimatedPriorityFee = await getPriorityFeeEstimation(walletWeb3)
+    return {
+      ...transaction,
+      maxPriorityFeePerGas: estimatedPriorityFee,
     }
   }
 
