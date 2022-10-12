@@ -1,5 +1,4 @@
 import aragonGovernanceImage from './images/aragon-governance.svg'
-import aragonMesh from './images/aragon-mesh.svg'
 import aragonNetworkImage from './images/aragon-network.svg'
 import aragonOneImage from './images/aragon-one.svg'
 import blankDaoImage from './images/blankdao.svg'
@@ -11,14 +10,12 @@ import lightwaveImage from './images/lightwave.svg'
 import livepeerImage from './images/livepeer.svg'
 import melonCouncilImage from './images/melon-council.svg'
 import myBitImage from './images/mybit.svg'
-import onehive from './images/1hive.svg'
 import saintFameImage from './images/saint-fame.svg'
 import pieDaoImage from './images/pie-dao.png'
 import valtechImage from './images/valtech.png'
 import pNetworkImage from './images/pnetwork.png'
 import cryptokekImage from './images/cryptokek.svg'
 import nucypherDaoImage from './images/nucypher.svg'
-import nucypherIbexImage from './images/nucypher-ibex.png'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -162,7 +159,7 @@ export const KnownOrganizations = {
         template: null,
       },
     ].map(org => [org.address.toLowerCase(), org])
-  )
+  ),
 }
 
 // Get the organizations that might appear in the suggestions,
