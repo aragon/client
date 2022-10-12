@@ -1,6 +1,6 @@
 # Build-time environment options
 
-The app can be configured in a number of ways via environment variables. Without any settings, the app is configured to connect to our Rinkeby deployment fetching assets from IPFS.
+The app can be configured in a number of ways via environment variables. Without any settings, the app is configured to connect to our Goerli deployment fetching assets from IPFS.
 
 ## General settings
 
@@ -14,7 +14,7 @@ Address of the ENS registry that [aragonPM](https://hack.aragon.org/docs/apm-int
 
 ### `ARAGON_ETH_NETWORK_TYPE`
 
-Expected network type to connect to. Either one of `main`, `rinkeby` or `local`.
+Expected network type to connect to. Either one of `main`, `goerli` or `local`.
 
 ### `ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY`
 

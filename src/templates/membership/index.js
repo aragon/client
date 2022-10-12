@@ -118,12 +118,7 @@ export default {
     const adjustedDuration = new BN(duration).toString()
     const votingSettings = [adjustedSupport, adjustedQuorum, adjustedDuration]
 
-    // Rinkeby has its gas limit capped at 7M, so some larger 6.5M+ transactions are
-    // often not mined
-    const forceMultipleTransactions =
-      networkType === 'rinkeby' && members.length > 1
-
-    if (!hasPayroll && !forceMultipleTransactions) {
+    if (!hasPayroll) {
       return [
         {
           name: 'Create organization',

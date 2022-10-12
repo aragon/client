@@ -4,7 +4,7 @@ export function testTokensEnabled(network) {
   return !!tokens[network]
 }
 
-export default (web3, financeAddr, from, network = 'rinkeby') => {
+export default (web3, financeAddr, from, network = 'goerli') => {
   const ts = tokens[network]
   const depositer = new web3.eth.Contract(tokens.depositerABI, ts.depositer)
 

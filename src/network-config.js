@@ -4,7 +4,7 @@ import { chains } from 'use-wallet'
 
 const localEnsRegistryAddress = getEnsRegistryAddress()
 const DAI_MAINNET_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f'
-const DAI_RINKEBY_TOKEN_ADDRESS = '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa'
+const DAI_GOERLI_TOKEN_ADDRESS = '0xdc31ee1784292379fbb2964b3b9c4124d8f89c60'
 
 // TODO stop exposing data object [vr 17-09-2021]
 // cconnectGraphEndpoint is https://github.com/aragon/connect/tree/master/packages/connect-thegraph
@@ -46,23 +46,23 @@ export const networkConfigs = {
       ...chains.getChainInformation(3),
     },
   },
-  [chains.getChainInformation(4).type]: {
+  [chains.getChainInformation(5).type]: {
     isActive: true,
     addresses: {
       ensRegistry:
-        localEnsRegistryAddress || '0x98df287b6c145399aaa709692c8d308357bc085d',
-      dai: DAI_RINKEBY_TOKEN_ADDRESS,
+        localEnsRegistryAddress || '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+      dai: DAI_GOERLI_TOKEN_ADDRESS,
       governExecutorProxy: '0x0451533f685fe028c439821b7502e4cf63b4c32f',
     },
     nodes: {
-      defaultEth: 'wss://rinkeby.eth.aragon.network/ws',
+      defaultEth: 'wss://goerli.eth.aragon.network/ws',
     },
     connectGraphEndpoint:
-      'https://api.thegraph.com/subgraphs/name/aragon/aragon-rinkeby',
+      'https://api.thegraph.com/subgraphs/name/aragon/aragon-goerli',
     settings: {
-      chainId: 4,
+      chainId: 5,
       testnet: true,
-      ...chains.getChainInformation(4), // as returned by web3.eth.net.getNetworkType()
+      ...chains.getChainInformation(5), // as returned by web3.eth.net.getNetworkType()
       live: true,
     },
   },
