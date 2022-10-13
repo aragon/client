@@ -182,7 +182,7 @@ export function getWeb3(provider) {
 
 /**
  * Get the web3 provider by the network type
- * @param {string} networkType node network type, i.e. main, rinkeby
+ * @param {string} networkType node network type, i.e. main, goerli
  * @returns {object} web3 web socket provider
  */
 export function getWeb3Provider(networkType) {

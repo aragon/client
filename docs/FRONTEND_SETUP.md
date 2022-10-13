@@ -41,12 +41,12 @@ cd aragon
 yarn install
 ```
 
-If a change only impacts the Aragon client, the easiest is to run it connected to rinkeby, and create a testing organization. It requires an internet connection, but it doesn’t require to setup anything else (local Ethereum / IPFS nodes).
+If a change only impacts the Aragon client, the easiest is to run it connected to goerli, and create a testing organization. It requires an internet connection, but it doesn’t require to setup anything else (local Ethereum / IPFS nodes).
 
 Run it:
 
 ```
-yarn start:rinkeby
+yarn start:goerli
 ```
 
 The development server is now running on http://localhost:3000/, and file changes will trigger a rebuild and reload the page.
@@ -106,7 +106,7 @@ Apps need to receive data from the client to run properly, and won’t work when
 
 ```
 cd aragon
-ARAGON_APP_LOCATOR=local yarn start:rinkeby
+ARAGON_APP_LOCATOR=local yarn start:goerli
 ```
 
 Aragon client knows the local ports of every app, so loading any organization and trying to access e.g. the Token Manager will load it from the version running locally.
