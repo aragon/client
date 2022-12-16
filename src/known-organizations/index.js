@@ -1,5 +1,4 @@
 import aragonGovernanceImage from './images/aragon-governance.svg'
-import aragonMesh from './images/aragon-mesh.svg'
 import aragonNetworkImage from './images/aragon-network.svg'
 import aragonOneImage from './images/aragon-one.svg'
 import blankDaoImage from './images/blankdao.svg'
@@ -11,14 +10,12 @@ import lightwaveImage from './images/lightwave.svg'
 import livepeerImage from './images/livepeer.svg'
 import melonCouncilImage from './images/melon-council.svg'
 import myBitImage from './images/mybit.svg'
-import onehive from './images/1hive.svg'
 import saintFameImage from './images/saint-fame.svg'
 import pieDaoImage from './images/pie-dao.png'
 import valtechImage from './images/valtech.png'
 import pNetworkImage from './images/pnetwork.png'
 import cryptokekImage from './images/cryptokek.svg'
 import nucypherDaoImage from './images/nucypher.svg'
-import nucypherIbexImage from './images/nucypher-ibex.png'
 
 const TEMPLATE_DEMOCRACY = 'Democracy'
 const TEMPLATE_REPUTATION = 'Reputation'
@@ -159,64 +156,6 @@ export const KnownOrganizations = {
         domain: 'nucypherdao.aragonid.eth',
         image: nucypherDaoImage,
         name: 'NuCypher DAO',
-        template: null,
-      },
-    ].map(org => [org.address.toLowerCase(), org])
-  ),
-  rinkeby: new Map(
-    [
-      {
-        address: '0x43374144c33def77a0ebacec72e9c944a6c375fe',
-        domain: 'reputation08.aragonid.eth',
-        name: 'Example reputation organization',
-        image: null,
-        recommended: true,
-        template: TEMPLATE_REPUTATION,
-      },
-      {
-        address: '0xb2a22974bd09eb5d1b5c726e7c29f4faef636dd2',
-        domain: 'company08.aragonid.eth',
-        name: 'Example company',
-        image: null,
-        recommended: true,
-        template: TEMPLATE_COMPANY,
-      },
-      {
-        address: '0x0d9938b8720eb5124371c9fa2049144626f67d2e',
-        domain: 'membership08.aragonid.eth',
-        name: 'Example membership',
-        image: null,
-        recommended: true,
-        template: TEMPLATE_MEMBERSHIP,
-      },
-      {
-        address: '0xe520428c232f6da6f694b121181f907931fd2211',
-        domain: 'hive.aragonid.eth',
-        name: '1Hive',
-        image: onehive,
-        recommended: true,
-        template: null,
-      },
-      {
-        address: '0xa48300a4e89b59a79452db7d3cd408df57f4aa78',
-        domain: 'mesh.aragonid.eth',
-        name: 'Aragon Mesh',
-        image: aragonMesh,
-        recommended: true,
-        template: null,
-      },
-      {
-        address: '0xf55DB37807a95C937A0c9c16941D19B54Ce046D2',
-        domain: 'pnetwork.aragonid.eth',
-        image: pNetworkImage,
-        name: 'pNetwork',
-        template: null,
-      },
-      {
-        address: '0x6781aa0CA10d409010d169C9598AC89F2446F2A5',
-        domain: 'ibex.aragonid.eth',
-        image: nucypherIbexImage,
-        name: 'NuCypher IBEX Tesnet DAO',
         template: null,
       },
     ].map(org => [org.address.toLowerCase(), org])

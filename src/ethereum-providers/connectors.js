@@ -7,7 +7,7 @@ export const connectors = [
   {
     id: 'injected',
     properties: {
-      chainId: [1, 4, 137, 80001, 1666600000, 1666700000, 97, 56, 588, 1088], // add here to handle more injected chains
+      chainId: [1, 5, 137, 80001, 1666600000, 1666700000, 97, 56, 588, 1088], // add here to handle more injected chains
     },
   },
   {
@@ -37,10 +37,10 @@ export const connectors = [
   {
     id: 'walletconnect',
     properties: {
-      chainId: [1, 4, 137, 80001, 1666600000, 1666700000, 97, 56, 588, 1088], // add here to handle more injected chains
+      chainId: [1, 5, 137, 80001, 1666600000, 1666700000, 97, 56, 588, 1088], // add here to handle more injected chains
       rpc: {
         '1': 'https://mainnet.eth.aragon.network',
-        '4': 'https://rinkeby.eth.aragon.network',
+        '5': 'https://goerli.eth.aragon.network',
         '137': 'https://polygon-rpc.com',
         '80001': 'https://rpc-mumbai.maticvigil.com',
         '1666600000': 'https://api.harmony.one/',
