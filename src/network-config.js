@@ -183,158 +183,158 @@ export const networkConfigs = {
       live: true,
     },
   },
-  [chains.getChainInformation(97).type]: {
-    isActive: true,
-    addresses: {
-      ensRegistry:
-        localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
-      governExecutorProxy: null,
-      dai: '0xec5dcb5dbf4b114c9d0f65bccab49ec54f6a0867',
-    },
-    nodes: {
-      defaultEth:
-        'wss://speedy-nodes-nyc.moralis.io/e2537fd4d6ad21265cf9d450/bsc/testnet/ws',
-    },
-    connectGraphEndpoint: null,
-    settings: {
-      chainId: 97,
-      testnet: true,
-      ...chains.getChainInformation(97),
-      live: true,
-    },
-  },
+  // [chains.getChainInformation(97).type]: {
+  //   isActive: true,
+  //   addresses: {
+  //     ensRegistry:
+  //       localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
+  //     governExecutorProxy: null,
+  //     dai: '0xec5dcb5dbf4b114c9d0f65bccab49ec54f6a0867',
+  //   },
+  //   nodes: {
+  //     defaultEth:
+  //       'wss://speedy-nodes-nyc.moralis.io/e2537fd4d6ad21265cf9d450/bsc/testnet/ws',
+  //   },
+  //   connectGraphEndpoint: null,
+  //   settings: {
+  //     chainId: 97,
+  //     testnet: true,
+  //     ...chains.getChainInformation(97),
+  //     live: true,
+  //   },
+  // },
 
-  [chains.getChainInformation(1666600000).type]: {
-    isActive: true,
-    enableMigrateBanner: false,
-    addresses: {
-      ensRegistry:
-        localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
-      governExecutorProxy: null,
-      dai: '0xef977d2f931c1978db5f6747666fa1eacb0d0339',
-    },
-    nodes: {
-      defaultEth: 'wss://ws.s0.t.hmny.io/',
-    },
-    connectGraphEndpoint: null,
-    settings: {
-      chainId: 1666600000,
-      ...chains.getChainInformation(1666600000),
-      live: false,
-      events: {
-        blockSizeLimit: 1024,
-      },
-      options: {
-        timeout: 30000, // ms
+  // [chains.getChainInformation(1666600000).type]: {
+  //   isActive: true,
+  //   enableMigrateBanner: false,
+  //   addresses: {
+  //     ensRegistry:
+  //       localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
+  //     governExecutorProxy: null,
+  //     dai: '0xef977d2f931c1978db5f6747666fa1eacb0d0339',
+  //   },
+  //   nodes: {
+  //     defaultEth: 'wss://ws.s0.t.hmny.io/',
+  //   },
+  //   connectGraphEndpoint: null,
+  //   settings: {
+  //     chainId: 1666600000,
+  //     ...chains.getChainInformation(1666600000),
+  //     live: false,
+  //     events: {
+  //       blockSizeLimit: 1024,
+  //     },
+  //     options: {
+  //       timeout: 30000, // ms
 
-        clientConfig: {
-          // Useful if requests are large
-          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
-          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
-          // Useful to keep a connection alive
-          keepalive: true,
-          keepaliveInterval: 60000, // ms
-        },
+  //       clientConfig: {
+  //         // Useful if requests are large
+  //         maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+  //         maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+  //         // Useful to keep a connection alive
+  //         keepalive: true,
+  //         keepaliveInterval: 60000, // ms
+  //       },
 
-        // Enable auto reconnection
-        reconnect: {
-          auto: true,
-          delay: 5000, // ms
-          maxAttempts: 5,
-          onTimeout: false,
-        },
-      },
-    },
-  },
+  //       // Enable auto reconnection
+  //       reconnect: {
+  //         auto: true,
+  //         delay: 5000, // ms
+  //         maxAttempts: 5,
+  //         onTimeout: false,
+  //       },
+  //     },
+  //   },
+  // },
 
-  [chains.getChainInformation(588).type]: {
-    isActive: true,
-    addresses: {
-      ensRegistry:
-        localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
-      governExecutorProxy: null,
-    },
-    nodes: {
-      defaultEth: 'wss://stardust-ws.metis.io/',
-    },
-    connectGraphEndpoint: null,
-    settings: {
-      chainId: 588,
-      testnet: true,
-      customSyncDelays: {
-        MILD_PROVIDER_SYNC_DELAY: 25,
-        OK_PROVIDER_SYNC_DELAY: 15,
-      },
-      ...chains.getChainInformation(588),
-      live: true,
-    },
-  },
-  [chains.getChainInformation(1088).type]: {
-    isActive: true,
-    addresses: {
-      ensRegistry:
-        localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
-      governExecutorProxy: null,
-    },
-    nodes: {
-      defaultEth: 'wss://andromeda-ws.metis.io/',
-    },
-    connectGraphEndpoint: null,
-    settings: {
-      chainId: 1088,
-      testnet: false,
-      customSyncDelays: {
-        MILD_PROVIDER_SYNC_DELAY: 25,
-        OK_PROVIDER_SYNC_DELAY: 15,
-      },
-      ...chains.getChainInformation(1088),
-      live: true,
-    },
-  },
+  // [chains.getChainInformation(588).type]: {
+  //   isActive: true,
+  //   addresses: {
+  //     ensRegistry:
+  //       localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
+  //     governExecutorProxy: null,
+  //   },
+  //   nodes: {
+  //     defaultEth: 'wss://stardust-ws.metis.io/',
+  //   },
+  //   connectGraphEndpoint: null,
+  //   settings: {
+  //     chainId: 588,
+  //     testnet: true,
+  //     customSyncDelays: {
+  //       MILD_PROVIDER_SYNC_DELAY: 25,
+  //       OK_PROVIDER_SYNC_DELAY: 15,
+  //     },
+  //     ...chains.getChainInformation(588),
+  //     live: true,
+  //   },
+  // },
+  // [chains.getChainInformation(1088).type]: {
+  //   isActive: true,
+  //   addresses: {
+  //     ensRegistry:
+  //       localEnsRegistryAddress || '0x843ddfab8406e752d03fa75dbb275070f368658d',
+  //     governExecutorProxy: null,
+  //   },
+  //   nodes: {
+  //     defaultEth: 'wss://andromeda-ws.metis.io/',
+  //   },
+  //   connectGraphEndpoint: null,
+  //   settings: {
+  //     chainId: 1088,
+  //     testnet: false,
+  //     customSyncDelays: {
+  //       MILD_PROVIDER_SYNC_DELAY: 25,
+  //       OK_PROVIDER_SYNC_DELAY: 15,
+  //     },
+  //     ...chains.getChainInformation(1088),
+  //     live: true,
+  //   },
+  // },
 
-  [chains.getChainInformation(1666700000).type]: {
-    isActive: true,
-    enableMigrateBanner: false,
-    addresses: {
-      ensRegistry:
-        localEnsRegistryAddress || '0xbc7828fa8665c637901ad5abd5c7e647c9ab140f',
-      governExecutorProxy: null,
-      dai: '0x97F2f01096c1B6942220158c130662f35C3a3166',
-    },
-    nodes: {
-      defaultEth: 'wss://ws.s0.pops.one/',
-    },
-    connectGraphEndpoint: null,
-    settings: {
-      chainId: 1666700000,
-      ...chains.getChainInformation(1666700000),
-      live: true,
-      events: {
-        blockSizeLimit: 1024,
-      },
-      options: {
-        timeout: 30000, // ms
+  // [chains.getChainInformation(1666700000).type]: {
+  //   isActive: true,
+  //   enableMigrateBanner: false,
+  //   addresses: {
+  //     ensRegistry:
+  //       localEnsRegistryAddress || '0xbc7828fa8665c637901ad5abd5c7e647c9ab140f',
+  //     governExecutorProxy: null,
+  //     dai: '0x97F2f01096c1B6942220158c130662f35C3a3166',
+  //   },
+  //   nodes: {
+  //     defaultEth: 'wss://ws.s0.pops.one/',
+  //   },
+  //   connectGraphEndpoint: null,
+  //   settings: {
+  //     chainId: 1666700000,
+  //     ...chains.getChainInformation(1666700000),
+  //     live: true,
+  //     events: {
+  //       blockSizeLimit: 1024,
+  //     },
+  //     options: {
+  //       timeout: 30000, // ms
 
-        clientConfig: {
-          // Useful if requests are large
-          maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
-          maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
+  //       clientConfig: {
+  //         // Useful if requests are large
+  //         maxReceivedFrameSize: 100000000, // bytes - default: 1MiB
+  //         maxReceivedMessageSize: 100000000, // bytes - default: 8MiB
 
-          // Useful to keep a connection alive
-          keepalive: true,
-          keepaliveInterval: 60000, // ms
-        },
+  //         // Useful to keep a connection alive
+  //         keepalive: true,
+  //         keepaliveInterval: 60000, // ms
+  //       },
 
-        // Enable auto reconnection
-        reconnect: {
-          auto: true,
-          delay: 5000, // ms
-          maxAttempts: 5,
-          onTimeout: false,
-        },
-      },
-    },
-  },
+  //       // Enable auto reconnection
+  //       reconnect: {
+  //         auto: true,
+  //         delay: 5000, // ms
+  //         maxAttempts: 5,
+  //         onTimeout: false,
+  //       },
+  //     },
+  //   },
+  // },
 
   unknown: {
     isActive: false,
