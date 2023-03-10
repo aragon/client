@@ -1,4 +1,4 @@
-name: Client Production CI/CD
+name: Client Development CI/CD
 on:
   push:
     branches:
@@ -54,17 +54,17 @@ jobs:
           apiKey: ${{ secrets.FLEEK_API_KEY }}
       - name: Get the output url
         run: echo "Deploy url is ${{ steps.deploy.outputs.deployUrl }}"
-      - name: upload sourcemap to apm
-        env:
-          COMMIT_SHA: ${{ github.sha }}
-        run: |
-          for f in $(find ./public/ -name *.js.map) ; do 
-            curl -X POST "https://kibana-sourcemaps.aragon.org/api/apm/sourcemaps" \
-              -H 'Content-Type: multipart/form-data' \
-              -H 'kbn-xsrf: true' \
-              -H 'Authorization: ApiKey ${{ secrets.APM_API_KEY }}' \
-              -F service_name="client" \
-              -F service_version="$COMMIT_SHA" \
-              -F bundle_filepath="http://localhost/static/js/$(basename $f)" \
-              -F sourcemap=@$f
-          done
+      # - name: upload sourcemap to apm
+      #   env:
+      #     COMMIT_SHA: ${{ github.sha }}
+      #   run: |
+      #     for f in $(find ./public/ -name *.js.map) ; do 
+      #       curl -X POST "https://kibana-sourcemaps.aragon.org/api/apm/sourcemaps" \
+      #         -H 'Content-Type: multipart/form-data' \
+      #         -H 'kbn-xsrf: true' \
+      #         -H 'Authorization: ApiKey ${{ secrets.APM_API_KEY }}' \
+      #         -F service_name="client" \
+      #         -F service_version="$COMMIT_SHA" \
+      #         -F bundle_filepath="http://localhost/static/js/$(basename $f)" \
+      #         -F sourcemap=@$f
+      #     done
