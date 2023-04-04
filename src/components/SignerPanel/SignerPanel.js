@@ -25,6 +25,9 @@ import {
   isSignatureSuccess,
 } from './signer-statuses'
 
+const { chainId } = useWallet()
+const PRIORITY_FEE_MULTIPLIER = chainId===137 ? 1.3 : 1  // need more agressive priorityFees since 04.23 otherwise transactions on Polygon got stuck (in MATIC is about +0.01 to ~0.05 overall fee)
+
 const INITIAL_STATE = {
   actionPaths: [],
   directPath: false,
@@ -34,7 +37,6 @@ const INITIAL_STATE = {
   signError: null,
   status: STATUS_TX_CONFIRMING, // initially default to rendering the tx signing panel
 }
-
 const RECIEPT_ERROR_STATUS = '0x0'
 const WEB3_TX_OBJECT_KEYS = new Set([
   'from',
@@ -48,23 +50,19 @@ const WEB3_TX_OBJECT_KEYS = new Set([
   'gasPrice',
   'maxFeePerGas',
 ])
-
 const getAppName = (apps, proxyAddress) => {
   const app = apps.find(app => addressesEqual(app.proxyAddress, proxyAddress))
   return (app && app.name) || ''
 }
-
 const getPretransactionDescription = intent =>
   `Allow ${intent.name} to ${intent.description.slice(0, 1).toLowerCase() +
     intent.description.slice(1)}`
-
 // Clean up a transaction object removing all non-standard transaction parameters
 // https://web3js.readthedocs.io/en/v1.2.0/web3-eth.html#sendtransaction
 const sanitizeTxObject = tx =>
   Object.keys(tx)
     .filter(key => WEB3_TX_OBJECT_KEYS.has(key))
     .reduce((newTx, key) => ({ ...newTx, [key]: tx[key] }), {})
-
 class SignerPanel extends React.PureComponent {
   static propTypes = {
     apps: PropTypes.arrayOf(AppType).isRequired,
@@ -79,41 +77,33 @@ class SignerPanel extends React.PureComponent {
     web3: PropTypes.object.isRequired,
     walletProviderId: PropTypes.string.isRequired,
   }
-
   state = { ...INITIAL_STATE }
-
   componentDidUpdate(prevProps, prevState) {
     const { status } = this.state
     const { transactionBag, signatureBag } = this.props
-
     // Received a new transaction to sign
     if (transactionBag && transactionBag !== prevProps.transactionBag) {
       this.transactionBagUpdate(transactionBag)
     }
-
     // Received a new message to sign
     if (signatureBag && signatureBag !== prevProps.signatureBag) {
       this.signatureBagUpdate(signatureBag)
     }
-
     if (prevState.status !== status && !isSignatureSuccess(status)) {
       clearTimeout(this._closeTimer)
     }
   }
-
   transactionBagUpdate(transactionBag) {
     this.setState({
       ...INITIAL_STATE,
       panelOpened: true,
       status: STATUS_TX_CONFIRMING,
-
       // When Aragon.js starts returning the new format (see
       // stateFromTransactionBag), we can simply search and replace this
       // function with `transactionBag`.
       ...this.stateFromTransactionBag(transactionBag),
     })
   }
-
   signatureBagUpdate(signatureBag) {
     this.setState({
       ...INITIAL_STATE,
@@ -122,7 +112,6 @@ class SignerPanel extends React.PureComponent {
       ...this.stateFromMsgSigBag(signatureBag),
     })
   }
-
   // This is a temporary method to reshape the transaction bag
   // to the future format we expect from Aragon.js
   stateFromTransactionBag(bag) {
@@ -131,7 +120,6 @@ class SignerPanel extends React.PureComponent {
       ...path,
       name: getAppName(this.props.apps, path.to),
     }))
-
     return {
       intent: (transaction && this.transactionIntent(bag)) || {},
       directPath: decoratedPaths.length === 1,
@@ -139,7 +127,6 @@ class SignerPanel extends React.PureComponent {
       pretransaction: (transaction && transaction.pretransaction) || null,
     }
   }
-
   stateFromMsgSigBag({ requestingApp, message }) {
     const messageToSign = message || ''
     return {
@@ -151,10 +138,8 @@ class SignerPanel extends React.PureComponent {
       },
     }
   }
-
   transactionIntent({ external, path, transaction = {} }) {
     const { apps } = this.props
-
     // If the path includes forwarders, the intent is always the last node
     // Otherwise, it's the direct transaction
     const targetIntent = path.length > 1 ? path[path.length - 1] : transaction
@@ -163,7 +148,6 @@ class SignerPanel extends React.PureComponent {
     const installed = apps.some(
       ({ proxyAddress }) => proxyAddress === transaction.to
     )
-
     return {
       annotatedDescription,
       description,
@@ -174,7 +158,6 @@ class SignerPanel extends React.PureComponent {
       transaction,
     }
   }
-
   signTransaction(transaction, intent, isPretransaction = false) {
     const {
       addTransactionActivity,
@@ -184,7 +167,6 @@ class SignerPanel extends React.PureComponent {
       setActivityFailed,
       setActivityNonce,
     } = this.props
-
     return new Promise((resolve, reject) => {
       walletWeb3.eth
         .sendTransaction(sanitizeTxObject(transaction))
@@ -195,19 +177,15 @@ class SignerPanel extends React.PureComponent {
           // a pending transaction with a lower nonce was manually re-sent by the user
           // (most likely done through their Ethereum wallet directly with a different
           // gas price or transaction data that results in a different transaction hash).
-
           web3.eth
             .getTransaction(transactionHash)
             .then(({ nonce }) => setActivityNonce({ transactionHash, nonce }))
             .catch(console.error)
-
           // Pretransactions are for so the app can get approval
           const description = isPretransaction
             ? getPretransactionDescription(intent)
             : intent.description
-
           const hasForwarder = intent.to !== intent.transaction.to
-
           // Create new activiy
           addTransactionActivity({
             transactionHash,
@@ -232,12 +210,9 @@ class SignerPanel extends React.PureComponent {
         })
     })
   }
-
   handleSign = async (transaction, intent, pretransaction) => {
     const { transactionBag } = this.props
-
     this.setState({ status: STATUS_TX_SIGNING })
-
     try {
       if (pretransaction) {
         pretransaction = await this.applyGasAndPriorityEstimation(
@@ -245,14 +220,12 @@ class SignerPanel extends React.PureComponent {
         )
         await this.signTransaction(pretransaction, intent, true)
       }
-
       transaction = await this.applyGasAndPriorityEstimation(transaction)
       const transactionHash = await this.signTransaction(
         transaction,
         intent,
         false
       )
-
       transactionBag.resolve(transactionHash)
       this.setState({ signError: null, status: STATUS_TX_SIGNED })
       this.startClosing()
@@ -262,17 +235,14 @@ class SignerPanel extends React.PureComponent {
       this.setState({ signError: err, status: STATUS_TX_ERROR })
     }
   }
-
   handleMsgSign = async () => {
     const { account, signatureBag, walletWeb3 } = this.props
-
     this.setState({ status: STATUS_MSG_SIGNING })
     try {
       const signature = await walletWeb3.eth.personal.sign(
         signatureBag.message,
         account
       )
-
       signatureBag.resolve(signature)
       this.setState({ signError: null, status: STATUS_MSG_SIGNED })
       this.startClosing()
@@ -284,7 +254,6 @@ class SignerPanel extends React.PureComponent {
       })
     }
   }
-
   startClosing = () => {
     this._closeTimer = setTimeout(() => {
       if (isSignatureSuccess(this.state.status)) {
@@ -292,11 +261,9 @@ class SignerPanel extends React.PureComponent {
       }
     }, 3000)
   }
-
   handleSignerClose = () => {
     const { transactionBag, signatureBag } = this.props
     const { status } = this.state
-
     // Panel was closed manually by user to cancel the signing, so we need to
     // send feedback back to the apps
     if (status === STATUS_TX_CONFIRMING) {
@@ -304,30 +271,26 @@ class SignerPanel extends React.PureComponent {
     } else if (status === STATUS_MSG_CONFIRMING) {
       signatureBag.reject(new Error('User cancelled signing'))
     }
-
     this.setState({ panelOpened: false })
   }
-
   handleSignerTransitionEnd = opened => {
     // Reset signer state only after it has finished transitioning out
     if (!opened) {
       this.setState({ ...INITIAL_STATE })
     }
   }
-
   // adds maxPriorityFeePerGas, gasPrice and maxFeePerGas to the transaction if the RPC supports these
   applyGasAndPriorityEstimation = async transaction => {
     const { walletWeb3 } = this.props
     const estimatedPriorityFee = await getPriorityFeeEstimation(walletWeb3)
     return {
       ...transaction,
-      maxPriorityFeePerGas: estimatedPriorityFee,
+      maxPriorityFeePerGas: estimatedPriorityFee * PRIORITY_FEE_MULTIPLIER,
     }
   }
 
   render() {
     const { account, apps, walletProviderId, walletWeb3 } = this.props
-
     const {
       actionPaths,
       directPath,
@@ -337,9 +300,7 @@ class SignerPanel extends React.PureComponent {
       signError,
       status,
     } = this.state
-
     const isTransaction = isTxSignerStatus(status)
-
     return (
       <SidePanel
         onClose={this.handleSignerClose}
@@ -425,7 +386,6 @@ class SignerPanel extends React.PureComponent {
     )
   }
 }
-
 const Main = styled.div`
   position: relative;
   margin: 0 -${SidePanel.HORIZONTAL_PADDING}px;
@@ -433,7 +393,6 @@ const Main = styled.div`
   min-height: 0;
   flex-grow: 1;
 `
-
 const ScreenWrapper = styled(animated.div)`
   position: absolute;
   top: 0;
@@ -443,22 +402,18 @@ const ScreenWrapper = styled(animated.div)`
   display: flex;
   min-height: 100%;
 `
-
 const Screen = styled.div`
   width: 100%;
   margin-top: ${3 * GU}px;
 `
-
 export default function SignerPanelWrapper(props) {
   const wallet = useWallet()
-
   const {
     addTransactionActivity,
     setActivityConfirmed,
     setActivityFailed,
     setActivityNonce,
   } = useContext(ActivityContext)
-
   return (
     <SignerPanel
       {...props}
