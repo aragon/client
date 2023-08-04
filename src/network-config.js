@@ -66,6 +66,25 @@ export const networkConfigs = {
       live: true,
     },
   },
+  [chains.getChainInformation(10).type]: {
+    isActive: true,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0x6f2CA655f58d5fb94A08460aC19A552EB19909FD',
+      dai: '0xdc31ee1784292379fbb2964b3b9c4124d8f89c60',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: null, // TBD
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 10,
+      testnet: false,
+      ...chains.getChainInformation(10),
+      live: true,
+    },
+  },
   [chains.getChainInformation(1337).type]: {
     isActive: false,
     addresses: {

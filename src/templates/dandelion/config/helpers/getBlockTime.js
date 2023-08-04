@@ -5,6 +5,7 @@ const NETWORK_TIMES = new Map([
   ['ropsten', 11],
   ['goerli', 15],
   ['private', 2],
+  ['optimism', 2],
   ['matic', 2],
   ['mumbai', 2],
   ['harmonyTest', 2],
