@@ -71,17 +71,35 @@ export const networkConfigs = {
     addresses: {
       ensRegistry:
         localEnsRegistryAddress || '0x6f2CA655f58d5fb94A08460aC19A552EB19909FD',
-      dai: '0xdc31ee1784292379fbb2964b3b9c4124d8f89c60',
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: null, // TBD
+      defaultEth: 'wss://optimism.publicnode.com/',
     },
     connectGraphEndpoint: null,
     settings: {
       chainId: 10,
       testnet: false,
       ...chains.getChainInformation(10),
+      live: true,
+    },
+  },
+  [chains.getChainInformation(11155420).type]: {
+    isActive: true,
+    addresses: {
+      ensRegistry:
+        localEnsRegistryAddress || '0xcb6c0101047dbbf242747c6f2e5a0a88f292dad4',
+      dai: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+      governExecutorProxy: null,
+    },
+    nodes: {
+      defaultEth: 'https://sepolia.optimism.io/',
+    },
+    connectGraphEndpoint: null,
+    settings: {
+      chainId: 11155420,
+      testnet: true,
+      ...chains.getChainInformation(11155420),
       live: true,
     },
   },
