@@ -29,23 +29,6 @@ export const networkConfigs = {
       live: true,
     },
   },
-  [chains.getChainInformation(3).type]: {
-    isActive: false,
-    addresses: {
-      ensRegistry:
-        localEnsRegistryAddress || '0x6afe2cacee211ea9179992f89dc61ff25c61e923',
-      governExecutorProxy: null,
-    },
-    nodes: {
-      defaultEth: 'wss://ropsten.eth.aragon.network/ws',
-    },
-    connectGraphEndpoint: null,
-    settings: {
-      chainId: 3,
-      testnet: true,
-      ...chains.getChainInformation(3),
-    },
-  },
   [chains.getChainInformation(5).type]: {
     isActive: true,
     addresses: {
