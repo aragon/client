@@ -68,7 +68,7 @@
     "scrypt": "github:barrysteyn/node-scrypt#fb60a8d3c158fe115a624b5ffa7480f3a24b03fb",
     "secp256k1": "^4.0.2",
     "styled-components": ">=4.0.0",
-    "use-wallet": "^0.13.6",
+    "use-wallet": "^0.15.0",
     "web3": "^1.5.2",
     "web3-eth-abi": "^1.5.2",
     "web3-utils": "^1.5.2"
@@ -116,14 +116,12 @@
     "start:mainnet": "cross-env ARAGON_ETH_NETWORK_TYPE=main npm start",
     "start:goerli": "npm start",
     "start:staging": "cross-env ARAGON_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm start",
-    "start:ropsten": "cross-env ARAGON_ETH_NETWORK_TYPE=ropsten npm start",
     "start:xdai": "cross-env ARAGON_ETH_NETWORK_TYPE=xdai npm start",
     "build": "node scripts/build",
     "build:local": "node scripts/build-local",
     "build:mainnet": "cross-env ARAGON_ETH_NETWORK_TYPE=main npm run build",
     "build:goerli": "npm run build",
     "build:staging": "cross-env ARAGON_ENS_REGISTRY_ADDRESS=0xfe03625ea880a8cba336f9b5ad6e15b0a3b5a939 npm run build",
-    "build:ropsten": "cross-env ARAGON_ETH_NETWORK_TYPE=ropsten npm run build",
     "build:xdai": "cross-env ARAGON_ETH_NETWORK_TYPE=xdai npm run build",
     "lint": "eslint ./src",
     "test": "npm run lint && npm run jest",
@@ -139,10 +137,7 @@
     "publish:goerli:patch": "npm run publish:patch -- --environment goerli --build-script build:goerli",
     "publish:staging:major": "npm run publish:major -- --environment staging --build-script build:staging",
     "publish:staging:minor": "npm run publish:minor -- --environment staging --build-script build:staging",
-    "publish:staging:patch": "npm run publish:patch -- --environment staging --build-script build:staging",
-    "publish:ropsten:major": "npm run publish:major -- --environment ropsten --build-script build:ropsten",
-    "publish:ropsten:minor": "npm run publish:minor -- --environment ropsten --build-script build:ropsten",
-    "publish:ropsten:patch": "npm run publish:patch -- --environment ropsten --build-script build:ropsten"
+    "publish:staging:patch": "npm run publish:patch -- --environment staging --build-script build:staging"
   },
   "browserslist": {
     "development": ">2%, last 1 edge versions, not ie > 0, not op_mini all",
