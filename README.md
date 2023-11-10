@@ -1,6 +1,6 @@
 # Aragon Client <a href="https://aragon.org/"><img align="right" src=".github/assets/aragon.svg" height="80px" /></a>
 
-[![Build Status](https://img.shields.io/github/workflow/status/aragon/client/Run%20tests?style=flat-square)](https://github.com/aragon/client/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/aragon/client/tests.yml?branch=develop&style=flat-square)](https://github.com/aragon/client/actions)
 [![All Contributors](https://img.shields.io/badge/all_contributors-47-orange.svg?style=flat-square)](#contributors)
 
 **🌎🚀 Trusted by over 1500 organizations, securing more than $300MM in funds. [Try it out](https://client.aragon.org).**
