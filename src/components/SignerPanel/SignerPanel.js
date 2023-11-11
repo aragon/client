@@ -25,6 +25,9 @@ import {
   isSignatureSuccess,
 } from './signer-statuses'
 
+const { chainId } = useWallet()
+const PRIORITY_FEE_MULTIPLIER = chainId===137 ? 1.3 : 1  // need more agressive priorityFees on Polygon
+
 const INITIAL_STATE = {
   actionPaths: [],
   directPath: false,
@@ -321,7 +324,7 @@ class SignerPanel extends React.PureComponent {
     const estimatedPriorityFee = await getPriorityFeeEstimation(walletWeb3)
     return {
       ...transaction,
-      maxPriorityFeePerGas: estimatedPriorityFee,
+      maxPriorityFeePerGas: estimatedPriorityFee * PRIORITY_FEE_MULTIPLIER,
     }
   }
 
