@@ -21,7 +21,7 @@ export const networkConfigs = {
       defaultEth: 'wss://mainnet.eth.aragon.network/ws',
     },
     connectGraphEndpoint:
-      'https://gateway.thegraph.com/api/2beceb14035d698246ab171cdf757fb1/subgraphs/id/2FimrYNeZ58czJkUqpBpEWPwYqBs1Duv29hXPyUmAre4',
+      'https://gateway.thegraph.com/api/2beceb14035d698246ab171cdf757fb1/subgraphs/id/4yGHqv2uE7zDNxkZcevTMBzwzXKpMm3FGJRJ3c3r5Qw8',
     settings: {
       chainId: 1,
       testnet: false,
