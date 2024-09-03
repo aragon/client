@@ -5,13 +5,25 @@
       {
         "modules": false,
         "useBuiltIns": "entry",
-        "corejs": 3
+        "corejs": 3,
+        "shippedProposals": true
       }
     ],
     "@babel/preset-react"
   ],
   "plugins": [
-    ["styled-components", { "displayName": true }]
+    ["styled-components", { "displayName": true }],
+    "@babel/plugin-proposal-class-properties",
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "^@/(.+)": "./src/\\1"
+        }
+      }
+    ],
+    "@babel/plugin-proposal-optional-chaining",
+    "@babel/plugin-proposal-nullish-coalescing-operator"
   ],
   "env": {
     "test": {

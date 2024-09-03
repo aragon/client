@@ -11,7 +11,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 16
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Build Aragon
@@ -32,7 +32,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 16
       - name: Activate fleek
         run: cp .github/fleek/develop.fleek.json ./.fleek.json
       - name: Install build dependencies
@@ -45,11 +45,10 @@ jobs:
           ARAGON_ETH_SUBSCRIPTION_EVENT_DELAY: 5000
           ARAGON_FORTMATIC_API_KEY: ${{ secrets.FORMATIC_API_KEY }}
           ARAGON_PORTIS_DAPP_ID: ${{ secrets.PORTIS_DAPP_ID }}
-        # TODO remove --network-concurrency 1 once use-wallet 0.9.0 is published
-        run: yarn install --frozen-lockfile --network-concurrency 1 && yarn build
+        run: yarn install --frozen-lockfile && yarn build
       - name: Deploy fleek
         id: deploy
-        uses: fleekhq/action-deploy@v1
+        uses: fleekhq/action-deploy@v1.0.1
         with:
           apiKey: ${{ secrets.FLEEK_API_KEY }}
       - name: Get the output url
