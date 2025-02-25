@@ -20,8 +20,7 @@ export const networkConfigs = {
     nodes: {
       defaultEth: 'wss://mainnet.eth.aragon.network/ws',
     },
-    connectGraphEndpoint:
-      'https://gateway.thegraph.com/api/2beceb14035d698246ab171cdf757fb1/subgraphs/id/4yGHqv2uE7zDNxkZcevTMBzwzXKpMm3FGJRJ3c3r5Qw8',
+    connectGraphEndpoint: `https://gateway.thegraph.com/api/${process.env.SUBGRAPH_API_KEY}/subgraphs/id/4yGHqv2uE7zDNxkZcevTMBzwzXKpMm3FGJRJ3c3r5Qw8`,
     settings: {
       chainId: 1,
       testnet: false,
@@ -174,7 +173,7 @@ export const networkConfigs = {
     },
     nodes: {
       defaultEth:
-        'wss://polygon-mumbai.g.alchemy.com/v2/wgOXirpZVAKhsdwji9jzIE2rax8BsmHT',
+        `wss://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
     },
     connectGraphEndpoint: null,
     settings: {
