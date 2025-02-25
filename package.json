@@ -125,7 +125,7 @@
     "test": "jest",
     "start": "npm run sync-assets & webpack-dev-server --mode development --open --hot",
     "build": "rm -rf ./public/ && npm run sync-assets && webpack build --progress --mode production -o ./public",
-    "sync-assets": "copy-aragon-ui-assets -n aragon-ui ./public"
+    "sync-assets": "yarn copy-aragon-ui-assets -n aragon-ui ./public"
   },
   "browserslist": {
     "development": ">2%, last 1 edge versions, not ie > 0, not op_mini all",
