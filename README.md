@@ -24,6 +24,20 @@ docker build -t aragon-client . ; docker run --rm -p 8080:80 aragon-client
 
 Then open [http://localhost:8080](http://localhost:8080) in your browser.
 
+To extract the built files for local serving or IPFS upload:
+
+```sh
+docker create --name aragon-tmp aragon-client && \
+docker cp aragon-tmp:/export ./dist && \
+docker rm aragon-tmp
+```
+
+Then serve locally:
+
+```sh
+cd dist && python3 -m http.server 8080
+```
+
 ## Quick start
 
 Install with `yarn` and launch the app with `yarn start`. By default, the app is configured to connect to the Ethereum Goerli testnet.
