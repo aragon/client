@@ -1,5 +1,6 @@
 import { getParsedAppLocator } from '../environment'
 import { getIpfsGateway } from '../local-settings'
+import { rewriteCid } from '../ipfs-cid-overrides'
 import { appendTrailingSlash } from './utils'
 
 /*
@@ -19,7 +20,7 @@ function contentBaseUrl(content, gateway) {
 
   const { provider, location } = content
   if (provider === 'ipfs') {
-    return `${gateway}/${location}/`
+    return `${gateway}/${rewriteCid(location)}/`
   }
   if (provider === 'http') {
     return /^https?:\/\//.test(location)

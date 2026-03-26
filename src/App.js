@@ -73,14 +73,14 @@ class App extends React.Component {
     // analytics
     if (process.env.REACT_APP_ANALYTICS_KEY) {
       const cdn = document.createElement('script')
-      cdn.src = 'https://cdn.rudderlabs.com/v1/rudder-analytics.min.js'
+      cdn.src = process.env.REACT_APP_RUDDERSTACK_CDN || 'https://cdn.rudderlabs.com/v1/rudder-analytics.min.js'
       cdn.async = true
       document.body.appendChild(cdn)
 
       const script = document.createElement('script')
       script.innerText = `!function(){
         rudderanalytics=window.rudderanalytics=[];for(var methods=["load","page","track","identify","alias","group","ready","reset","getAnonymousId","setAnonymousId"],i=0;i<methods.length;i++){var method=methods[i];rudderanalytics[method]=function(a){return function(){rudderanalytics.push([a].concat(Array.prototype.slice.call(arguments)))}}(method)}
-        rudderanalytics.load("${process.env.REACT_APP_ANALYTICS_KEY}","https://rudderstack.aragon.org");
+        rudderanalytics.load("${process.env.REACT_APP_ANALYTICS_KEY}","${process.env.REACT_APP_RUDDERSTACK_URL || 'https://rudderstack.aragon.org'}");
         rudderanalytics.page();
         }();`
       document.body.appendChild(script)

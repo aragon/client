@@ -18,10 +18,11 @@ export const networkConfigs = {
       governExecutorProxy: '0x2ac40310167fb00afa3c0bb5953c707db155afac',
     },
     nodes: {
-      defaultEth: 'wss://mainnet.eth.aragon.network/ws',
+      defaultEth: process.env.ARAGON_ETH_NODE_MAINNET || 'wss://mainnet.eth.aragon.network/ws',
     },
     connectGraphEndpoint:
-      `https://gateway.thegraph.com/api/${process.env.SUBGRAPH_API_KEY}/subgraphs/id/4yGHqv2uE7zDNxkZcevTMBzwzXKpMm3FGJRJ3c3r5Qw8`,
+      process.env.ARAGON_GRAPH_ENDPOINT_MAINNET ||
+      `https://gateway.thegraph.com/api/${process.env.SUBGRAPH_API_KEY}/subgraphs/id/3dg4svN8zTYdgskuV6XvSXn4xZYHPEZcU9EjpnvGvQRo`,
     settings: {
       chainId: 1,
       testnet: false,
@@ -38,10 +39,10 @@ export const networkConfigs = {
       governExecutorProxy: '0x0451533f685fe028c439821b7502e4cf63b4c32f',
     },
     nodes: {
-      defaultEth: 'wss://goerli.eth.aragon.network/ws',
+      defaultEth: process.env.ARAGON_ETH_NODE_GOERLI || 'wss://goerli.eth.aragon.network/ws',
     },
     connectGraphEndpoint:
-      'https://api.thegraph.com/subgraphs/name/aragon/aragon-goerli',
+      process.env.ARAGON_GRAPH_ENDPOINT_GOERLI || 'https://api.thegraph.com/subgraphs/name/aragon/aragon-goerli',
     settings: {
       chainId: 5,
       testnet: true,
@@ -58,7 +59,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://optimism.publicnode.com/',
+      defaultEth: process.env.ARAGON_ETH_NODE_OPTIMISM || 'wss://optimism.publicnode.com/',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -76,7 +77,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'https://sepolia.optimism.io/',
+      defaultEth: process.env.ARAGON_ETH_NODE_OPTIMISM_SEPOLIA || 'https://sepolia.optimism.io/',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -116,7 +117,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://xdai.poanetwork.dev/wss',
+      defaultEth: process.env.ARAGON_ETH_NODE_XDAI || 'wss://xdai.poanetwork.dev/wss',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -134,7 +135,7 @@ export const networkConfigs = {
       dai: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
     },
     nodes: {
-      defaultEth: 'wss://mainnet-polygon.aragon.network/ws',
+      defaultEth: process.env.ARAGON_ETH_NODE_POLYGON || 'wss://mainnet-polygon.aragon.network/ws',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -174,7 +175,7 @@ export const networkConfigs = {
     },
     nodes: {
       defaultEth:
-        `wss://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
+        process.env.ARAGON_ETH_NODE_POLYGON_MUMBAI || `wss://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`,
     },
     connectGraphEndpoint: null,
     settings: {
@@ -213,7 +214,7 @@ export const networkConfigs = {
     },
     nodes: {
       defaultEth:
-        'wss://speedy-nodes-nyc.moralis.io/e2537fd4d6ad21265cf9d450/bsc/testnet/ws',
+        process.env.ARAGON_ETH_NODE_BSC_TESTNET || 'wss://speedy-nodes-nyc.moralis.io/e2537fd4d6ad21265cf9d450/bsc/testnet/ws',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -234,7 +235,7 @@ export const networkConfigs = {
       dai: '0xef977d2f931c1978db5f6747666fa1eacb0d0339',
     },
     nodes: {
-      defaultEth: 'wss://ws.s0.t.hmny.io/',
+      defaultEth: process.env.ARAGON_ETH_NODE_HARMONY || 'wss://ws.s0.t.hmny.io/',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -275,7 +276,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://stardust-ws.metis.io/',
+      defaultEth: process.env.ARAGON_ETH_NODE_METIS_TESTNET || 'wss://stardust-ws.metis.io/',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -297,7 +298,7 @@ export const networkConfigs = {
       governExecutorProxy: null,
     },
     nodes: {
-      defaultEth: 'wss://andromeda-ws.metis.io/',
+      defaultEth: process.env.ARAGON_ETH_NODE_METIS || 'wss://andromeda-ws.metis.io/',
     },
     connectGraphEndpoint: null,
     settings: {
@@ -322,7 +323,7 @@ export const networkConfigs = {
       dai: '0x97F2f01096c1B6942220158c130662f35C3a3166',
     },
     nodes: {
-      defaultEth: 'wss://ws.s0.pops.one/',
+      defaultEth: process.env.ARAGON_ETH_NODE_HARMONY_TESTNET || 'wss://ws.s0.pops.one/',
     },
     connectGraphEndpoint: null,
     settings: {

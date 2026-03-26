@@ -1,6 +1,6 @@
 import { extendError } from '../../../errors'
 
-const NOTIFICATION_SERVICE_URL = 'https://notifications.eth.aragon.network'
+const NOTIFICATION_SERVICE_URL = process.env.ARAGON_NOTIFICATIONS_URL || 'https://notifications.eth.aragon.network'
 export const NOTIFICATION_SERVICE_ACCOUNT = `${NOTIFICATION_SERVICE_URL}/account`
 export const NOTIFICATION_SERVICE_LOGIN = `${NOTIFICATION_SERVICE_URL}/login`
 export const NOTIFICATION_SERVICE_VERIFY = `${NOTIFICATION_SERVICE_URL}/verify`

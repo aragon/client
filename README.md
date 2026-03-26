@@ -14,6 +14,16 @@
 - 📖 To learn more about contributing to the Aragon client itself, please check the [contributing guide](./CONTRIBUTING.md).
 - 🚢 For an overview of what changed with each release, check the [releases](https://github.com/aragon/client/releases).
 
+## Docker
+
+Build and run the app with Docker:
+
+```sh
+docker build -t aragon-client . ; docker run --rm -p 8080:80 aragon-client
+```
+
+Then open [http://localhost:8080](http://localhost:8080) in your browser.
+
 ## Quick start
 
 Install with `yarn` and launch the app with `yarn start`. By default, the app is configured to connect to the Ethereum Goerli testnet.
